@@ -15,7 +15,6 @@ $services = require __DIR__ . '/services.php';
 $app = new \Slim\App($services);
 
 require __DIR__ . '/routes.php';
-
 $services['db']->connect()  || die('Could not connect to database.');
 $app->run();
 $services['db']->close();

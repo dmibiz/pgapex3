@@ -33,7 +33,9 @@ class Database implements Service {
     try {
       $this->connection = new PDO($this->getDns(), $this->getUsername(), $this->getPassword());
       return true;
-    } catch(\Exception $e) {}
+    } catch(\Exception $e) {
+      echo $e;
+    }
     return false;
   }
 

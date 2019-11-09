@@ -118,8 +118,11 @@
                                                                     reportPageId, detailViewRegionId, detailViewName,
                                                                     detailViewSequence, detailViewRegionTemplate,
                                                                     detailViewIsVisible, detailViewTemplate, detailViewPageId,
+                                                                    reportIncludeEntityCreateButton, reportCreateEntityButtonLabel,
+                                                                    reportCreateEntityPageId,
                                                                     reportColumns, detailViewColumns, pageTemplateDisplayPointId,
                                                                     subRegions, addReportColumnsFormName, addDetailViewColumnsFormName) {
+                                                                    
     var attributes = {
       'viewSchema': viewSchema,
       'viewName': viewName,
@@ -146,7 +149,10 @@
       'pageTemplateDisplayPointId': pageTemplateDisplayPointId,
       'subRegions': subRegions,
       'addReportColumnsFormName': addReportColumnsFormName,
-      'addDetailViewColumnsFormName': addDetailViewColumnsFormName
+      'addDetailViewColumnsFormName': addDetailViewColumnsFormName,
+      'reportIncludeEntityCreateButton': reportIncludeEntityCreateButton,
+      'reportCreateEntityButtonLabel': reportCreateEntityButtonLabel,
+      'reportCreateEntityPageId': reportCreateEntityPageId
     };
 
     var request = this.apiService.createApiRequest()

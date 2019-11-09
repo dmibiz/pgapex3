@@ -283,7 +283,7 @@ CREATE TABLE pgapex.page_type (
 	CONSTRAINT pk_page_type PRIMARY KEY (page_type_ID)
 	);
 CREATE TABLE pgapex.report_region (
-  report_region_ID BIGSERIAL NOT NULL,
+  	report_region_ID BIGSERIAL NOT NULL,
 	region_ID INTEGER,
 	subregion_ID INTEGER,
 	template_ID INTEGER,
@@ -292,6 +292,9 @@ CREATE TABLE pgapex.report_region (
 	view_name VARCHAR ( 64 ) NOT NULL,
 	items_per_page INTEGER NOT NULL,
 	show_header BOOLEAN DEFAULT TRUE NOT NULL,
+	include_create_entity_button BOOLEAN DEFAULT FALSE NOT NULL,
+	create_entity_button_label VARCHAR,
+	create_entity_page_id INTEGER,
 	unique_id VARCHAR ( 64 ),
 	CONSTRAINT pk_report_region PRIMARY KEY (report_region_ID),
 	CONSTRAINT uq_report_region_region_id UNIQUE (region_ID),
@@ -483,6 +486,9 @@ CREATE TABLE pgapex.report_link_template (
 	template_ID INTEGER NOT NULL,
 	report_begin TEXT NOT NULL,
 	report_end TEXT NOT NULL,
+	buttons_row_begin TEXT NOT NULL,
+	buttons_row_content TEXT NOT NULL,
+	buttons_row_end TEXT NOT NULL,
 	header_begin TEXT NOT NULL,
 	header_row_begin TEXT NOT NULL,
 	header_cell TEXT NOT NULL,
@@ -615,6 +621,13 @@ CREATE TABLE pgapex.subregion_template (
 	template_ID INTEGER NOT NULL,
 	template TEXT NOT NULL,
 	CONSTRAINT pk_subregion_template PRIMARY KEY (template_ID)
+	);
+
+/* PgApex3 new tables */
+CREATE TABLE pgapex.link_button_template (
+	template_ID INTEGER NOT NULL,
+	template TEXT NOT NULL,
+	CONSTRAINT pk_link_button_template PRIMARY KEY (template_ID)
 	);
 
 ALTER TABLE pgapex.button_template ADD CONSTRAINT fk_button_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;

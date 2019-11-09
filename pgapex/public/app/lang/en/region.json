@@ -166,6 +166,8 @@
     "buttonsHelpText": "Button, when clicked, launches the database function created by the developer. The function can contain up to 2 parameters: the first parameter is the unique ID of the table column (previously defined) and the second is the system variable APP_USER that equals the username",
     "detailViewUniqueIdHelpText": "Unique ID of the table column, that connects the report and the detail view.",
     "subRegionHelpText": "Detail View can contain 0 or more subregions. A subregion can be connected to a region using linked column: the value of the linked column must be equal to the unique ID of the region. Pagination query parameter is URL parameter that is used for pagination. It may contain characters a-z A-Z and _.",
-    "htmlRegionContentHelpText": "Use #APP_USER# to display the username of the currently logged-in user."
+    "htmlRegionContentHelpText": "Use #APP_USER# to display the username of the currently logged-in user.",
+    "reportIncludeEntityCreateButton": "Include button for creating entity",
+    "createEntityPage": "Entity creation page"
   }
 }

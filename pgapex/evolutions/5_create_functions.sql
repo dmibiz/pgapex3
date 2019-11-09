@@ -1363,6 +1363,9 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_save_report_region(
   , i_unique_id                      pgapex.report_region.unique_id%TYPE
   , i_link_template_id               pgapex.report_region.link_template_id%TYPE
   , v_pagination_query_parameter     pgapex.page_item.name%TYPE
+  , b_include_create_entity_button   pgapex.report_region.include_create_entity_button%TYPE
+  , v_create_entity_button_label     pgapex.report_region.create_entity_button_label%TYPE
+  , i_create_entity_page_id          pgapex.report_region.create_entity_page_id%TYPE
 )
   RETURNS int AS $$
 DECLARE
@@ -1374,8 +1377,8 @@ BEGIN
     INSERT INTO pgapex.region (region_id, page_id, template_id, page_template_display_point_id, name, sequence, is_visible)
     VALUES (i_new_region_id, i_page_id, i_region_template_id, i_page_template_display_point_id, v_name, i_sequence, b_is_visible);
 
-    INSERT INTO pgapex.report_region (region_id, template_id, schema_name, view_name, items_per_page, show_header, unique_id, link_template_id)
-    VALUES (i_new_region_id, i_report_template_id, v_schema_name, v_view_name, i_items_per_page, b_show_header, i_unique_id, i_link_template_id);
+    INSERT INTO pgapex.report_region (region_id, template_id, schema_name, view_name, items_per_page, show_header, unique_id, link_template_id, include_create_entity_button, create_entity_button_label)
+    VALUES (i_new_region_id, i_report_template_id, v_schema_name, v_view_name, i_items_per_page, b_show_header, i_unique_id, i_link_template_id, b_include_create_entity_button, v_create_entity_button_label, i_create_entity_page_id);
 
     INSERT INTO pgapex.page_item (page_id, region_id, name) VALUES (i_page_id, i_new_region_id, v_pagination_query_parameter);
     RETURN i_new_region_id;
@@ -1397,6 +1400,9 @@ BEGIN
       , show_header = b_show_header
       , unique_id = i_unique_id
       , link_template_id = i_link_template_id
+      , include_create_entity_button = b_include_create_entity_button
+      , create_entity_button_label = v_create_entity_button_label
+      , create_entity_page_id = i_create_entity_page_id
     WHERE region_id = i_region_id;
 
     UPDATE pgapex.page_item
@@ -1494,6 +1500,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_report_region(
             , 'showHeader', rr.show_header
             , 'itemsPerPage', rr.items_per_page
             , 'paginationQueryParameter', pi.name
+            , 'includeEntityCreateButton', rr.include_create_entity_button
             , 'reportColumns', json_agg(
                 CASE
                 WHEN rcl.report_column_link_id IS NULL THEN
@@ -1534,7 +1541,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_report_region(
   WHERE r.region_id = i_region_id
   GROUP BY r.region_id, r.name, r.sequence, r.template_id, r.is_visible,
     rr.template_id, rr.schema_name, rr.view_name, rr.show_header,
-    rr.items_per_page, pi.name
+    rr.items_per_page, rr.include_create_entity_button, pi.name
 $$ LANGUAGE sql
 SECURITY DEFINER
 SET search_path = pgapex, public, pg_temp;
@@ -2462,6 +2469,9 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_report_and_detailview_region_by_r
     'reportShowHeader', rr.show_header,
     'reportItemsPerPage', rr.items_per_page,
     'reportPaginationQueryParameter', pi.name,
+    'reportIncludeEntityCreateButton', rr.include_create_entity_button,
+    'reportCreateEntityButtonLabel', rr.create_entity_button_label,
+    'reportCreateEntityPageId', rr.create_entity_page_id,
     'reportPageId', (SELECT page_id FROM pgapex.region WHERE region_id = rr.region_id),
     'detailViewRegionId', dvr.region_id,
     'detailViewName', (SELECT name FROM pgapex.region WHERE region_id = dvr.region_id),
@@ -2570,6 +2580,9 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_report_and_detailview_region_by_d
     'reportShowHeader', rr.show_header,
     'reportItemsPerPage', rr.items_per_page,
     'reportPaginationQueryParameter', pi.name,
+    'reportIncludeEntityCreateButton', rr.include_create_entity_button,
+    'reportCreateEntityButtonLabel', rr.create_entity_button_label,
+    'reportCreateEntityPageId', rr.create_entity_page_id,
     'reportPageId', (SELECT page_id FROM pgapex.region WHERE region_id = rr.region_id),
     'detailViewRegionId', dvr.region_id,
     'detailViewName', (SELECT name FROM pgapex.region WHERE region_id = dvr.region_id),

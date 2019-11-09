@@ -23,6 +23,7 @@
     this.$scope.region = {
       'reportSequence': 1,
       'reportShowHeader': true,
+      'reportIncludeEntityCreateButton': false,
       'reportItemsPerPage': 15,
       'reportColumns': [],
       'detailViewSequence': 1,
@@ -260,6 +261,7 @@
   };
 
   ManageDetailViewRegionController.prototype.saveRegion = function () {
+    console.log(this.$scope.region);
     this.regionService.saveReportAndDetailViewRegion(
       this.$scope.region.view.attributes.schema,
       this.$scope.region.view.attributes.name,
@@ -281,6 +283,9 @@
       this.$scope.region.detailViewIsVisible,
       this.$scope.region.detailViewTemplate,
       this.$scope.region.detailViewPageId,
+      this.$scope.region.reportIncludeEntityCreateButton,
+      this.$scope.region.reportCreateEntityButtonLabel,
+      this.$scope.region.reportCreateEntityPageId,
       this.getReportColumns(),
       this.getDetailViewColumns(),
       this.getDisplayPoint(),
@@ -324,6 +329,7 @@
     if (!this.isEditPage()) { return; }
     this.regionService.getRegion(this.getRegionId()).then(function (response) {
       var region = response.getDataOrDefault({'attributes': {}});
+      console.log(region);
       region.view = {'attributes': {'schema': region.viewSchema, 'name': region.viewName}};
       this.$scope.region = region;
 

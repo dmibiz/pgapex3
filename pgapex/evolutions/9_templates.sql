@@ -19,6 +19,7 @@ INSERT INTO pgapex.template (template_id, name) VALUES (18, 'Red button');
 INSERT INTO pgapex.template (template_id, name) VALUES (19, 'Report with links template');
 INSERT INTO pgapex.template (template_id, name) VALUES (20, 'Default detail view page');
 INSERT INTO pgapex.template (template_id, name) VALUES (21, 'Subregion template');
+INSERT INTO pgapex.template (template_id, name) VALUES (22, 'Create entity page template');
 
 
 INSERT INTO pgapex.navigation_template (template_id, navigation_begin, navigation_end) VALUES (3, '<ul class="nav navbar-nav">', '</ul>');
@@ -195,11 +196,11 @@ INSERT INTO pgapex.tabularform_button_template (template_ID, template) VALUES (1
 INSERT INTO pgapex.tabularform_button_template (template_ID, template) VALUES (18,
 '<button type="submit" name="PGAPEX_BUTTON" value="#VALUE#"class="btn btn-danger btn--margin-left">#LABEL#</button>');
 
-INSERT INTO pgapex.report_link_template (template_ID, report_begin, report_end,
+INSERT INTO pgapex.report_link_template (template_ID, report_begin, report_end, buttons_row_begin, buttons_row_content, buttons_row_end,
                                     header_begin, header_row_begin, header_cell, header_row_end, header_end,
                                     body_begin, body_row_begin, body_row_link, body_row_cell, body_row_end, body_end,
                                     pagination_begin, pagination_end, previous_page, next_page, active_page, inactive_page)
-VALUES (19, '<div><table class="table table-bordered">', '</table>#PAGINATION#</div>',
+VALUES (19, '<div><table class="table table-bordered">', '</table>#PAGINATION#</div>', '<div class="form-group pull-right">', '#CREATE_ENTITY_BUTTON#', '</div>',
 '<thead>', '<tr><th ></th>', '<th>#CELL_CONTENT#</th>', '</tr>', '</thead>',
 '<tbody>', '<tr>', '<td class="cell--fit-content"><a href="#PATH#?#UNIQUE_ID#=#UNIQUE_ID_VALUE#"><span class="glyphicon glyphicon-list"></span></td>', '<td>#CELL_CONTENT#</td>', '</tr>', '</tbody>',
 '<nav><ul class="pagination">', '</ul></nav>', '<li><a href="#LINK#">&laquo;</a></li>', '<li><a href="#LINK#">&raquo;</a></li>', '<li class="active"><a href="#LINK#">#NUMBER#</a></li>', '<li><a href="#LINK#">#NUMBER#</a></li>');
@@ -210,3 +211,7 @@ VALUES (20, '<dl class="dl-horizontal">', '</dl>', '<dt>#COLUMN_HEADING#</dt>',
 '<dd style="margin-bottom: 2em">#COLUMN_CONTENT#</dd>');
 
 INSERT INTO pgapex.subregion_template (template_id, template) VALUES (21, '<div class="panel panel-info subregion"> <div class="panel-heading">#SUBREGION_TITLE#</div> #SUBREGION_BODY# </div>');
+
+/*Pgapex 3*/
+INSERT INTO pgapex.link_button_template(template_ID, template)
+VALUES (1, '<a href="#PATH#" class="btn btn-primary btn" role="button">#LABEL#</a>');

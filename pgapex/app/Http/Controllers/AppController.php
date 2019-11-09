@@ -25,7 +25,6 @@ class AppController extends Controller {
     $headers = json_encode($request->getHeaders());
     $getParams = json_encode($request->getQueryParams());
     $postParams = json_encode($request->getParsedBody());
-
     $queryResponse = json_decode($this->getAppModel()->queryPage($_SERVER['SCRIPT_NAME'], $applicationId, $pageId, $method, $headers, $getParams, $postParams), true);
     return $this->createResponse($response, $queryResponse);
   }

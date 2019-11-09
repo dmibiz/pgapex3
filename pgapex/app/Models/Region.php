@@ -142,21 +142,24 @@ class Region extends Model {
       }
 
       $reportStatement = $connection->prepare('SELECT pgapex.f_region_save_report_region(:regionId, :pageId, :templateId, :tplDpId, :name, :sequence, :isVisible, '
-        . 'null, :viewSchema, :viewName, :itemsPerPage, :showHeader, :uniqueId, :linkTemplateId, :paginationQueryParameter)');
-      $reportStatement->bindValue(':regionId',                 $request->getApiAttribute('reportRegionId'),                 PDO::PARAM_INT);
-      $reportStatement->bindValue(':pageId',                   $request->getApiAttribute('reportPageId'),                   PDO::PARAM_INT);
-      $reportStatement->bindValue(':templateId',               $request->getApiAttribute('reportRegionTemplate'),           PDO::PARAM_INT);
-      $reportStatement->bindValue(':tplDpId',                  $request->getApiAttribute('pageTemplateDisplayPointId'),     PDO::PARAM_INT);
-      $reportStatement->bindValue(':name',                     $request->getApiAttribute('reportName'),                     PDO::PARAM_STR);
-      $reportStatement->bindValue(':sequence',                 $request->getApiAttribute('reportSequence'),                 PDO::PARAM_INT);
-      $reportStatement->bindValue(':isVisible',                $request->getApiAttribute('reportIsVisible'),                PDO::PARAM_BOOL);
-      $reportStatement->bindValue(':viewSchema',               $request->getApiAttribute('viewSchema'),                     PDO::PARAM_STR);
-      $reportStatement->bindValue(':viewName',                 $request->getApiAttribute('viewName'),                       PDO::PARAM_STR);
-      $reportStatement->bindValue(':itemsPerPage',             $request->getApiAttribute('reportItemsPerPage'),             PDO::PARAM_INT);
-      $reportStatement->bindValue(':showHeader',               $request->getApiAttribute('reportShowHeader'),               PDO::PARAM_BOOL);
-      $reportStatement->bindValue(':uniqueId',                 $request->getApiAttribute('uniqueId'),                       PDO::PARAM_STR);
-      $reportStatement->bindValue(':linkTemplateId',           $request->getApiAttribute('reportTemplate'),                 PDO::PARAM_INT);
-      $reportStatement->bindValue(':paginationQueryParameter', $request->getApiAttribute('reportPaginationQueryParameter'), PDO::PARAM_STR);
+        . 'null, :viewSchema, :viewName, :itemsPerPage, :showHeader, :uniqueId, :linkTemplateId, :paginationQueryParameter, :includeCreateEntityButton, :createEntityButtonLabel, :createEntityPageId)');
+      $reportStatement->bindValue(':regionId',                 $request->getApiAttribute('reportRegionId'),                       PDO::PARAM_INT);
+      $reportStatement->bindValue(':pageId',                   $request->getApiAttribute('reportPageId'),                         PDO::PARAM_INT);
+      $reportStatement->bindValue(':templateId',               $request->getApiAttribute('reportRegionTemplate'),                 PDO::PARAM_INT);
+      $reportStatement->bindValue(':tplDpId',                  $request->getApiAttribute('pageTemplateDisplayPointId'),           PDO::PARAM_INT);
+      $reportStatement->bindValue(':name',                     $request->getApiAttribute('reportName'),                           PDO::PARAM_STR);
+      $reportStatement->bindValue(':sequence',                 $request->getApiAttribute('reportSequence'),                       PDO::PARAM_INT);
+      $reportStatement->bindValue(':isVisible',                $request->getApiAttribute('reportIsVisible'),                      PDO::PARAM_BOOL);
+      $reportStatement->bindValue(':viewSchema',               $request->getApiAttribute('viewSchema'),                           PDO::PARAM_STR);
+      $reportStatement->bindValue(':viewName',                 $request->getApiAttribute('viewName'),                             PDO::PARAM_STR);
+      $reportStatement->bindValue(':itemsPerPage',             $request->getApiAttribute('reportItemsPerPage'),                   PDO::PARAM_INT);
+      $reportStatement->bindValue(':showHeader',               $request->getApiAttribute('reportShowHeader'),                     PDO::PARAM_BOOL);
+      $reportStatement->bindValue(':uniqueId',                 $request->getApiAttribute('uniqueId'),                             PDO::PARAM_STR);
+      $reportStatement->bindValue(':linkTemplateId',           $request->getApiAttribute('reportTemplate'),                       PDO::PARAM_INT);
+      $reportStatement->bindValue(':paginationQueryParameter', $request->getApiAttribute('reportPaginationQueryParameter'),       PDO::PARAM_STR);
+      $reportStatement->bindValue(':includeCreateEntityButton',$request->getApiAttribute('reportIncludeEntityCreateButton'),      PDO::PARAM_BOOL);
+      $reportStatement->bindValue(':createEntityButtonLabel',  $request->getApiAttribute('reportCreateEntityButtonLabel'),        PDO::PARAM_STR);
+      $reportStatement->bindValue(':createEntityPageId',       $request->getApiAttribute('reportCreateEntityPageId'),             PDO::PARAM_INT);
       $reportStatement->execute();
       $reportRegionId = $reportStatement->fetchColumn();
 
@@ -197,7 +200,7 @@ class Region extends Model {
       $detailViewStatement->bindValue(':name',                  $request->getApiAttribute('detailViewName'),              PDO::PARAM_STR);
       $detailViewStatement->bindValue(':sequence',              $request->getApiAttribute('detailViewSequence'),          PDO::PARAM_INT);
       $detailViewStatement->bindValue(':isVisible',             $request->getApiAttribute('detailViewIsVisible'),         PDO::PARAM_BOOL);
-      $detailViewStatement->bindValue(':reportRegionId',        $reportRegionId,                                                   PDO::PARAM_INT);
+      $detailViewStatement->bindValue(':reportRegionId',        $reportRegionId,                                          PDO::PARAM_INT);
       $detailViewStatement->bindValue(':detailViewTemplateId',  $request->getApiAttribute('detailViewTemplate'),          PDO::PARAM_INT);
       $detailViewStatement->bindValue(':viewSchema',            $request->getApiAttribute('viewSchema'),                  PDO::PARAM_STR);
       $detailViewStatement->bindValue(':viewName',              $request->getApiAttribute('viewName'),                    PDO::PARAM_STR);
