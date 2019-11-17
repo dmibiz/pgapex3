@@ -1196,6 +1196,29 @@ SET search_path = pgapex, public, pg_temp;
 
 ----------
 
+CREATE OR REPLACE FUNCTION pgapex.f_app_get_form_page_path(
+  i_form_page_id INT
+)
+  RETURNS TEXT AS $$
+DECLARE
+  i_application_id INT;
+  t_url            TEXT;
+BEGIN
+  SELECT p.application_id
+  INTO i_application_id
+  FROM pgapex.page p
+  WHERE p.page_id = i_form_page_id;
+
+  t_url := '../' || i_application_id::text || '/' || i_form_page_id::text;
+  
+  RETURN t_url;
+END
+$$ LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pgapex, public, pg_temp;
+
+----------
+
 CREATE OR REPLACE FUNCTION pgapex.f_app_get_detailview_path(
   i_report_region_id  INT
 )
@@ -1391,6 +1414,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_app_get_report_region_with_template(
 , b_include_create_entity_button  BOOLEAN
 , v_create_entity_button_label    VARCHAR
 , i_create_entity_page_id         INT
+, i_form_page_id                  INT
 )
   RETURNS TEXT AS $$
 DECLARE
@@ -1456,7 +1480,12 @@ BEGIN
     LEFT JOIN pgapex.report_link_template rlt ON rlt.template_id = rr.link_template_id
     WHERE rr.region_id = i_region_id;
 
-    SELECT pgapex.f_app_get_detailview_path(i_region_id) INTO t_detailview_path;
+    IF i_form_page_id IS NULL THEN
+      SELECT pgapex.f_app_get_detailview_path(i_region_id) INTO t_detailview_path;
+    ELSE
+      SELECT pgapex.f_app_get_form_page_path(i_form_page_id) INTO t_detailview_path;
+    END IF;
+
   END IF;
 
   SELECT ARRAY(
@@ -1601,6 +1630,7 @@ DECLARE
   b_include_create_entity_button  BOOLEAN;
   v_create_entity_button_label    VARCHAR;
   i_create_entity_page_id         INT; 
+  i_form_page_id                  INT;
   v_pagination_query_param        VARCHAR;
   i_current_page                  INT      := 1;
   i_row_count                     INT;
@@ -1609,8 +1639,8 @@ DECLARE
   j_rows                          JSON;
   v_query                         VARCHAR;
 BEGIN
-  SELECT rr.schema_name, rr.view_name, rr.items_per_page, rr.show_header, pi.name, rr.include_create_entity_button, rr.create_entity_button_label, rr.create_entity_page_id
-  INTO v_schema_name, v_view_name, i_items_per_page, b_show_header, v_pagination_query_param, b_include_create_entity_button, v_create_entity_button_label, i_create_entity_page_id
+  SELECT rr.schema_name, rr.view_name, rr.items_per_page, rr.show_header, pi.name, rr.include_create_entity_button, rr.create_entity_button_label, rr.create_entity_page_id, rr.form_page_id
+  INTO v_schema_name, v_view_name, i_items_per_page, b_show_header, v_pagination_query_param, b_include_create_entity_button, v_create_entity_button_label, i_create_entity_page_id, i_form_page_id
   FROM pgapex.report_region rr
   LEFT JOIN pgapex.page_item pi ON rr.region_id = pi.region_id
   WHERE rr.region_id = i_region_id;
@@ -1632,7 +1662,7 @@ BEGIN
 
   SELECT res_rows INTO j_rows FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_query, FALSE) AS ( res_rows JSON );
 
-  RETURN pgapex.f_app_get_report_region_with_template(i_region_id, j_rows, v_pagination_query_param, i_page_count, i_current_page, b_show_header, b_include_create_entity_button, v_create_entity_button_label, i_create_entity_page_id);
+  RETURN pgapex.f_app_get_report_region_with_template(i_region_id, j_rows, v_pagination_query_param, i_page_count, i_current_page, b_show_header, b_include_create_entity_button, v_create_entity_button_label, i_create_entity_page_id, i_form_page_id);
 END
 $$ LANGUAGE plpgsql
 SECURITY DEFINER

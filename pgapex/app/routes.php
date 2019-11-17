@@ -68,6 +68,7 @@ $app->group('/api', function () {
     $this->post('/region/region/navigation/save', '\App\Http\Controllers\RegionController:saveNavigationRegion');
     $this->post('/region/region/report/save', '\App\Http\Controllers\RegionController:saveReportRegion');
     $this->post('/region/region/report-and-detailview/save', '\App\Http\Controllers\RegionController:saveReportAndDetailViewRegion');
+    $this->post('/region/region/report-and-form/save', '\App\Http\Controllers\RegionController:saveReportAndFormRegion');
     $this->post('/region/region/form/save', '\App\Http\Controllers\RegionController:saveFormRegion');
     $this->post('/region/region/tabularform/save', '\App\Http\Controllers\RegionController:saveTabularFormRegion');
   })->add(new AuthMiddleware($this->getContainer()));

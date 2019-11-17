@@ -17,7 +17,6 @@ class App extends Model {
     $statement->bindValue(':getParams',     $getParams,     PDO::PARAM_STR);
     $statement->bindValue(':postParams',    $postParams,    PDO::PARAM_STR);
     $statement->execute();
-
     return $statement->fetchColumn();
   }
 

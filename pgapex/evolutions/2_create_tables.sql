@@ -295,6 +295,7 @@ CREATE TABLE pgapex.report_region (
 	include_create_entity_button BOOLEAN DEFAULT FALSE NOT NULL,
 	create_entity_button_label VARCHAR,
 	create_entity_page_id INTEGER,
+	form_page_id INTEGER,
 	unique_id VARCHAR ( 64 ),
 	CONSTRAINT pk_report_region PRIMARY KEY (report_region_ID),
 	CONSTRAINT uq_report_region_region_id UNIQUE (region_ID),
@@ -630,6 +631,33 @@ CREATE TABLE pgapex.link_button_template (
 	CONSTRAINT pk_link_button_template PRIMARY KEY (template_ID)
 	);
 
+CREATE TABLE pgapex.report_form_template (
+	template_ID INTEGER NOT NULL,
+	report_begin TEXT NOT NULL,
+	report_end TEXT NOT NULL,
+	buttons_row_begin TEXT NOT NULL,
+	buttons_row_content TEXT NOT NULL,
+	buttons_row_end TEXT NOT NULL,
+	header_begin TEXT NOT NULL,
+	header_row_begin TEXT NOT NULL,
+	header_cell TEXT NOT NULL,
+	header_row_end TEXT NOT NULL,
+	header_end TEXT NOT NULL,
+	body_begin TEXT NOT NULL,
+	body_row_begin TEXT NOT NULL,
+	body_row_link TEXT NOT NULL,
+	body_row_cell TEXT NOT NULL,
+	body_row_end TEXT NOT NULL,
+	body_end TEXT NOT NULL,
+	pagination_begin TEXT NOT NULL,
+	pagination_end TEXT NOT NULL,
+	previous_page TEXT NOT NULL,
+	next_page TEXT NOT NULL,
+	active_page TEXT NOT NULL,
+	inactive_page TEXT NOT NULL,
+	CONSTRAINT pk_report_form_template PRIMARY KEY (template_ID)
+  );
+
 ALTER TABLE pgapex.button_template ADD CONSTRAINT fk_button_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.page_item ADD CONSTRAINT fk_page_item_region_id FOREIGN KEY (region_ID) REFERENCES pgapex.report_region (region_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.page_item ADD CONSTRAINT fk_page_item_tabularform_id FOREIGN KEY (tabularform_region_ID) REFERENCES pgapex.tabularform_region (region_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
@@ -711,3 +739,4 @@ ALTER TABLE pgapex.detailview_template ADD CONSTRAINT fk_detailview_template_tem
 ALTER TABLE pgapex.detailview_column ADD CONSTRAINT fk_detailview_column_region_id FOREIGN KEY (region_ID) REFERENCES pgapex.detailview_region (region_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.detailview_column ADD CONSTRAINT fk_detailview_column_detailview_column_type_id FOREIGN KEY (detailview_column_type_ID) REFERENCES pgapex.detailview_column_type (detailview_column_type_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.detailview_column_link ADD CONSTRAINT fk_detailview_column_link_detailview_column_id FOREIGN KEY (detailview_column_ID) REFERENCES pgapex.detailview_column (detailview_column_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE pgapex.report_form_template ADD CONSTRAINT fk_report_form_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;

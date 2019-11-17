@@ -56,6 +56,14 @@
       controller: 'pgApexApp.region.ManageDetailViewRegionController',
       templateUrl: 'app/partials/region/manage-detail-view-region.html'
     })
+    .when( '/application-builder/app/:applicationId/pages/:pageId/regions/:displayPoint/report-for-form/create', {
+      controller: 'pgApexApp.region.ManageReportAndFormRegionController',
+      templateUrl: 'app/partials/region/manage-report-and-form-region.html'
+    })
+    .when('/application-builder/app/:applicationId/pages/:pageId/regions/:displayPoint/report-for-form/:regionId/edit', {
+      controller: 'pgApexApp.region.ManageReportAndFormRegionController',
+      templateUrl: 'app/partials/region/manage-report-and-form-region.html'
+    })
     .when('/application-builder/app/:applicationId/pages/:pageId/regions/:displayPoint/report-for-detail-view/:regionId/edit', {
       controller: 'pgApexApp.region.ManageDetailViewRegionController',
       templateUrl: 'app/partials/region/manage-detail-view-region.html'

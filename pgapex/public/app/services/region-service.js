@@ -162,6 +162,45 @@
     return this.apiService.post('region/region/report-and-detailview/save', request);
   };
 
+  RegionService.prototype.saveReportAndFormRegion = function(viewSchema, viewName, uniqueId, reportRegionId,
+                                                        reportName, reportSequence, reportRegionTemplate,
+                                                        reportIsVisible, reportTemplate, reportShowHeader,
+                                                        reportItemsPerPage, reportPaginationQueryParameter,
+                                                        reportPageId, reportIncludeEntityCreateButton, reportCreateEntityButtonLabel,
+                                                        reportCreateEntityPageId, formPageId, reportColumns, pageTemplateDisplayPointId,
+                                                        subRegions, addReportColumnsFormName) {
+    var attributes = {
+      'viewSchema': viewSchema,
+      'viewName': viewName,
+      'uniqueId': uniqueId,
+      'reportRegionId': reportRegionId,
+      'reportName': reportName,
+      'reportSequence': reportSequence,
+      'reportRegionTemplate': reportRegionTemplate,
+      'reportIsVisible': reportIsVisible,
+      'reportTemplate': reportTemplate,
+      'reportShowHeader': reportShowHeader,
+      'reportItemsPerPage': reportItemsPerPage,
+      'reportPaginationQueryParameter': reportPaginationQueryParameter,
+      'reportPageId': reportPageId,
+      'reportColumns': reportColumns,
+      'pageTemplateDisplayPointId': pageTemplateDisplayPointId,
+      'subRegions': subRegions,
+      'addReportColumnsFormName': addReportColumnsFormName,
+      'reportIncludeEntityCreateButton': reportIncludeEntityCreateButton,
+      'reportCreateEntityButtonLabel': reportCreateEntityButtonLabel,
+      'reportCreateEntityPageId': reportCreateEntityPageId,
+      'formPageId': formPageId
+    };
+
+    console.log(attributes);
+    var request = this.apiService.createApiRequest()
+      .setAttributes(attributes)
+      .getRequest();
+
+    return this.apiService.post('region/region/report-and-form/save', request);
+  }
+
   RegionService.prototype.saveFormRegion = function (pageId, pageTemplateDisplayPointId, regionId, name, sequence, regionTemplate, isVisible,
                                                         formTemplate, buttonTemplate, buttonLabel, successMessage,
                                                         errorMessage, redirectUrl, functionSchema, functionName, formPreFill,
