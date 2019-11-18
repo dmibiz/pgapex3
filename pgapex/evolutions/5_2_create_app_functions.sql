@@ -1460,10 +1460,10 @@ BEGIN
   WHERE rr.region_id = i_region_id;
 
   IF v_unique_id IS NULL THEN
-    SELECT rt.report_begin, rt.report_end, rt.buttons_row_begin, rt.buttons_row_content, rt.buttons_row_end, rt.header_begin, rt.header_row_begin, rt.header_cell, rt.header_row_end, rt.header_end,
+    SELECT rt.report_begin, rt.report_end, rt.header_begin, rt.header_row_begin, rt.header_cell, rt.header_row_end, rt.header_end,
          rt.body_begin, rt.body_row_begin, rt.body_row_cell, rt.body_row_end, rt.body_end,
          rt.pagination_begin, rt.pagination_end, rt.previous_page, rt.next_page, rt.active_page, rt.inactive_page
-    INTO t_report_begin, t_report_end, t_buttons_row_begin, t_buttons_row_content, t_buttons_row_end, t_header_begin, t_header_row_begin, t_header_cell, t_header_row_end, t_header_end,
+    INTO t_report_begin, t_report_end, t_header_begin, t_header_row_begin, t_header_cell, t_header_row_end, t_header_end,
          t_body_begin, t_body_row_begin, t_body_row_cell, t_body_row_end, t_body_end,
          t_pagination_begin, t_pagination_end, t_previous_page, t_next_page, t_active_page, t_inactive_page
     FROM pgapex.report_region rr
