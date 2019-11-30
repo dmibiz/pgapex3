@@ -10,6 +10,8 @@ INSERT INTO pgapex.field_type (field_type_id) VALUES ('RADIO');
 INSERT INTO pgapex.field_type (field_type_id) VALUES ('CHECKBOX');
 INSERT INTO pgapex.field_type (field_type_id) VALUES ('DROP_DOWN');
 INSERT INTO pgapex.field_type (field_type_id) VALUES ('TEXTAREA');
+INSERT INTO pgapex.field_type (field_type_id) VALUES ('CALENDER');
+INSERT INTO pgapex.field_type (field_type_id) VALUES ('COMBO_BOX');
 
 INSERT INTO pgapex.navigation_type (navigation_type_id) VALUES ('MENU');
 INSERT INTO pgapex.navigation_type (navigation_type_id) VALUES ('BREADCRUMB');

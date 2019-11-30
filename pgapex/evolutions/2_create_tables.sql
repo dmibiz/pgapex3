@@ -211,6 +211,8 @@ CREATE TABLE pgapex.form_field (
 	input_template_ID INTEGER,
 	drop_down_template_ID INTEGER,
 	textarea_template_ID INTEGER,
+	combo_box_template_ID INTEGER,
+	calender_tamplate_ID INTEGER,
 	field_pre_fill_view_column_name VARCHAR ( 64 ),
 	label VARCHAR ( 255 ) NOT NULL,
 	sequence INTEGER NOT NULL,
@@ -225,16 +227,22 @@ CREATE TABLE pgapex.form_field (
 	CONSTRAINT uq_form_field_region_id_fun_par_ordinal_position UNIQUE (region_ID, function_parameter_ordinal_position),
 	CONSTRAINT chk_form_field_extarea_template_must_match_field_type CHECK ((textarea_template_id IS NOT NULL AND field_type_id = 'TEXTAREA') OR
 (textarea_template_id IS NULL AND field_type_id <> 'TEXTAREA')),
-	CONSTRAINT chk_form_field_only_one_template_can_be_chosen CHECK ((input_template_id IS NOT NULL AND textarea_template_id IS NULL AND drop_down_template_id IS NULL) OR
-(input_template_id IS NULL AND textarea_template_id IS NOT NULL AND drop_down_template_id IS NULL) OR
-(input_template_id IS NULL AND textarea_template_id IS NULL AND drop_down_template_id IS NOT NULL)),
+	CONSTRAINT chk_form_field_only_one_template_can_be_chosen CHECK ((input_template_id IS NOT NULL AND textarea_template_id IS NULL AND drop_down_template_id IS NULL AND combo_box_template_id IS NULL AND calender_template_id IS NULL) OR
+(input_template_id IS NULL AND textarea_template_id IS NOT NULL AND drop_down_template_id IS NULL AND combo_box_template_id IS NULL AND calender_template_id IS NULL) OR
+(input_template_id IS NULL AND textarea_template_id IS NULL AND drop_down_template_id IS NOT NULL AND combo_box_template_id IS NULL AND calender_template_id IS NULL) OR
+(input_template_id IS NULL AND textarea_template_id IS NULL AND drop_down_template_id IS NULL AND combo_box_template_id IS NOT NULL AND calender_template_id IS NULL) OR
+(input_template_id IS NULL AND textarea_template_id IS NULL AND drop_down_template_id IS NULL AND combo_box_template_id IS NULL AND calender_template_id IS NOT NULL)),
 	CONSTRAINT chk_form_field_input_template_must_match_field_type CHECK ((input_template_id IS NOT NULL AND field_type_id IN ('TEXT', 'PASSWORD', 'RADIO', 'CHECKBOX')) OR
 (input_template_id IS NULL AND field_type_id NOT IN ('TEXT', 'PASSWORD', 'RADIO', 'CHECKBOX'))),
 	CONSTRAINT chk_form_field_function_parameter_ordinal_position_is_gt_0 CHECK (function_parameter_ordinal_position > 0),
 	CONSTRAINT chk_form_field_drop_down_template_must_match_field_type CHECK ((drop_down_template_id IS NOT NULL AND field_type_id = 'DROP_DOWN') OR
 (drop_down_template_id IS NULL AND field_type_id <> 'DROP_DOWN')),
-	CONSTRAINT chk_form_field_list_of_values_requires_specific_field_type CHECK ((list_of_values_id IS NULL AND field_type_id NOT IN ('DROP_DOWN', 'RADIO')) OR
-(list_of_values_id IS NOT NULL AND field_type_id IN ('DROP_DOWN', 'RADIO'))),
+	CONSTRAINT chk_form_field_combo_box_template_must_match_field_type CHECK ((combo_box_template_id IS NOT NULL AND field_type_id = 'COMBO_BOX') OR
+(combo_box_template_id IS NULL AND field_type_id <> 'COMBO_BOX')),
+	CONSTRAINT chk_form_field_calender_template_must_match_field_type CHECK ((calender_template_id IS NOT NULL AND field_type_id = 'CALENDER') OR
+(calender_template_id IS NULL AND field_type_id <> 'CALENDER')),
+	CONSTRAINT chk_form_field_list_of_values_requires_specific_field_type CHECK ((list_of_values_id IS NULL AND field_type_id NOT IN ('DROP_DOWN', 'RADIO', 'COMBO_BOX')) OR
+(list_of_values_id IS NOT NULL AND field_type_id IN ('DROP_DOWN', 'RADIO', 'COMBO_BOX'))),
 	CONSTRAINT chk_form_field_sequence_must_be_not_negative CHECK (sequence >= 0)
 	);
 CREATE INDEX idx_form_field_field_type_id ON pgapex.form_field (field_type_ID );
@@ -658,6 +666,22 @@ CREATE TABLE pgapex.report_form_template (
 	CONSTRAINT pk_report_form_template PRIMARY KEY (template_ID)
   );
 
+CREATE TABLE pgapex.combo_box_template (
+	template_ID INTEGER NOT NULL,
+	combo_box_begin TEXT NOT NULL,
+	combo_box_end TEXT NOT NULL,
+	option_begin TEXT NOT NULL,
+	option_end TEXT NOT NULL,
+	CONSTRAINT pk_combo_box_template PRIMARY KEY (template_ID)
+	);
+
+CREATE TABLE pgapex.calender_template (
+	template_ID INTEGER NOT NULL,
+	calender_input TEXT NOT NULL,
+	calender_script TEXT NOT NULL,
+	CONSTRAINT pk_calender_template PRIMARY KEY (template_ID)
+	);
+
 ALTER TABLE pgapex.button_template ADD CONSTRAINT fk_button_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.page_item ADD CONSTRAINT fk_page_item_region_id FOREIGN KEY (region_ID) REFERENCES pgapex.report_region (region_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.page_item ADD CONSTRAINT fk_page_item_tabularform_id FOREIGN KEY (tabularform_region_ID) REFERENCES pgapex.tabularform_region (region_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
@@ -665,6 +689,9 @@ ALTER TABLE pgapex.page_item ADD CONSTRAINT fk_page_item_page_id FOREIGN KEY (pa
 ALTER TABLE pgapex.page_item ADD CONSTRAINT fk_page_item_form_field_id FOREIGN KEY (form_field_ID) REFERENCES pgapex.form_field (form_field_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.form_template ADD CONSTRAINT fk_form_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.drop_down_template ADD CONSTRAINT fk_drop_down_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE pgapex.combo_box_template ADD CONSTRAINT fk_combo_box_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE pgapex.calender_template ADD CONSTRAINT fk_calender_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE pgapex.link_button_template ADD CONSTRAINT fk_link_button_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.page_template ADD CONSTRAINT fk_page_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.page_template ADD CONSTRAINT fk_page_template_page_type_id FOREIGN KEY (page_type_ID) REFERENCES pgapex.page_type (page_type_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.input_template ADD CONSTRAINT fk_input_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;

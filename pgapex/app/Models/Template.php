@@ -105,4 +105,18 @@ class Template extends Model {
     $statement->execute();
     return $statement->fetchColumn();
   }
+
+  public function getComboBoxTemplates() {
+    $connection = $this->getDb()->getConnection();
+    $statement = $connection->prepare('SELECT pgapex.f_template_get_combo_box_templates()');
+    $statement->execute();
+    return $statement->fetchColumn();
+  }
+
+  public function getCalenderTemplates() {
+    $connection = $this->getDb()->getConnection();
+    $statement = $connection->prepare('SELECT pgapex.f_template_get_calender_templates()');
+    $statement->execute();
+    return $statement->fetchColumn();
+  }
 }

@@ -21,6 +21,9 @@ INSERT INTO pgapex.template (template_id, name) VALUES (20, 'Default detail view
 INSERT INTO pgapex.template (template_id, name) VALUES (21, 'Subregion template');
 INSERT INTO pgapex.template (template_id, name) VALUES (22, 'Link button template');
 INSERT INTO pgapex.template (template_id, name) VALUES (23, 'Report with form links template');
+INSERT INTO pgapex.template (template_id, name) VALUES (24, 'Calender template');
+INSERT INTO pgapex.template (template_id, name) VALUES (25, 'Combo box template');
+
 
 
 INSERT INTO pgapex.navigation_template (template_id, navigation_begin, navigation_end) VALUES (3, '<ul class="nav navbar-nav">', '</ul>');
@@ -100,12 +103,21 @@ INSERT INTO pgapex.page_template (template_id, page_type_id, header, body, foote
     <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/app/style.css">
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/resources/css/combobox.css">
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/resources/css/anytime.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>', '  <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="http://localhost:8000/resources/js/combobox.js"></script>
+    <script src="http://localhost:8000/resources/js/anytime.js"></script>
+    <script src="/resources/js/region.js"></script>
     <nav class="navbar navbar-inverse">
       <div class="container">
         <div class="navbar-header">
@@ -122,17 +134,11 @@ INSERT INTO pgapex.page_template (template_id, page_type_id, header, body, foote
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-
-
     <div class="container">
       #SUCCESS_MESSAGE#
       #ERROR_MESSAGE#
       #BODY#
     </div><!-- /.container -->
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="/resources/js/region.js"></script>
   </body>', '</html>', '<div class="alert alert-danger" role="alert">#MESSAGE#</div>', '<div class="alert alert-success" role="alert">#MESSAGE#</div>');
 
 INSERT INTO pgapex.region_template (template_id, template) VALUES (4, '<div class="panel panel-default">
@@ -225,3 +231,13 @@ VALUES (23, '<div><table class="table table-bordered">', '</table>#PAGINATION#</
 '<thead>', '<tr><th ></th>', '<th>#CELL_CONTENT#</th>', '</tr>', '</thead>',
 '<tbody>', '<tr>', '<td class="cell--fit-content"><a href="#PATH#?#UNIQUE_ID#=#UNIQUE_ID_VALUE#"><span class="glyphicon glyphicon-edit"></span></td>', '<td>#CELL_CONTENT#</td>', '</tr>', '</tbody>',
 '<nav><ul class="pagination">', '</ul></nav>', '<li><a href="#LINK#">&laquo;</a></li>', '<li><a href="#LINK#">&raquo;</a></li>', '<li class="active"><a href="#LINK#">#NUMBER#</a></li>', '<li><a href="#LINK#">#NUMBER#</a></li>');
+
+INSERT INTO pgapex.calender_template (template_ID, calender_input, calender_script)
+VALUES (24, '<input type="text" id="calenderInput" class="form-control" size="50" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#"/>', '<script>
+                                                                      AnyTime.picker( "calenderInput",
+                                                                          { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
+                                                                  </script>');
+
+INSERT INTO pgapex.combo_box_template (template_id, combo_box_begin, combo_box_end, option_begin, option_end)
+VALUES (25, '<select id="combobox" class="form-control" name="#NAME#">', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>');
+

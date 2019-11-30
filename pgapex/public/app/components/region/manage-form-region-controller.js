@@ -35,6 +35,8 @@
     this.$scope.checkboxInputTemplates = [];
     this.$scope.textareaTemplates = [];
     this.$scope.dropDownTemplates = [];
+    this.$scope.comboBoxTemplates = [];
+    this.$scope.calenderTemplates = [];
     this.$scope.viewsWithColumns = [];
     this.$scope.functionsWithParameters = [];
     this.$scope.region.formPreFillColumns = [];
@@ -56,6 +58,8 @@
       if (functionParameter.fieldType === 'RADIO') { return this.$scope.radioInputTemplates; }
       if (functionParameter.fieldType === 'TEXTAREA') { return this.$scope.textareaTemplates; }
       if (functionParameter.fieldType === 'DROP_DOWN') { return this.$scope.dropDownTemplates; }
+      if (functionParameter.fieldType === "COMBO_BOX") { return this.$scope.comboBoxTemplates; }
+      if (functionParameter.fieldType === "CALENDER") { return this.$scope.calenderTemplates; }
       return [];
     }.bind(this);
 
@@ -68,6 +72,8 @@
     this.initInputTemplates();
     this.initTextareaTemplates();
     this.initDropDownTemplates();
+    this.initComboBoxTemplates();
+    this.initCalenderTemplates();
     this.initViewsWithColumns();
 
     this.loadRegion();
@@ -121,6 +127,18 @@
   ManageFormRegionController.prototype.initDropDownTemplates = function() {
     this.templateService.getDropDownTemplates().then(function (response) {
       this.$scope.dropDownTemplates = response.getDataOrDefault([]);
+    }.bind(this));
+  };
+
+  ManageFormRegionController.prototype.initComboBoxTemplates = function() {
+    this.templateService.getComboBoxTemplates().then(function (response) {
+      this.$scope.comboBoxTemplates = response.getDataOrDefault([]);
+    }.bind(this));
+  };
+
+  ManageFormRegionController.prototype.initCalenderTemplates = function() {
+    this.templateService.getCalenderTemplates().then(function (response) {
+      this.$scope.calenderTemplates = response.getDataOrDefault([]);
     }.bind(this));
   };
 
@@ -203,6 +221,7 @@
   };
 
   ManageFormRegionController.prototype.saveRegion = function() {
+    console.log(this.$scope.region);
     this.regionService.saveFormRegion(
       this.getPageId(),
       this.getDisplayPoint(),

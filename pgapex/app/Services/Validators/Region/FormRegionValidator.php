@@ -125,7 +125,7 @@ class FormRegionValidator extends RegionValidator {
         $sequences[] = $formField['sequence'];
       }
 
-      if (!in_array($formField['fieldType'], ['TEXT', 'PASSWORD', 'RADIO', 'CHECKBOX', 'DROP_DOWN', 'TEXTAREA'])) {
+      if (!in_array($formField['fieldType'], ['TEXT', 'PASSWORD', 'RADIO', 'CHECKBOX', 'DROP_DOWN', 'TEXTAREA', 'COMBO_BOX', 'CALENDER'])) {
         $this->addError('region.fieldTypeIsMandatory', '/data/attributes/functionParameters/' . $i . '/fieldType');
       }
 
@@ -133,7 +133,7 @@ class FormRegionValidator extends RegionValidator {
         $this->addError('region.fieldTemplateIsMandatory', '/data/attributes/functionParameters/' . $i . '/fieldTemplate');
       }
 
-      if (in_array($formField['fieldType'], ['RADIO', 'DROP_DOWN'])) {
+      if (in_array($formField['fieldType'], ['RADIO', 'DROP_DOWN', 'COMBO_BOX'])) {
         $schemaName = $formField['listOfValuesSchema'];
         $viewName = $formField['listOfValuesView'];
         if ($schemaName === null || $viewName === null | trim($schemaName) === '' || trim($viewName) === '') {

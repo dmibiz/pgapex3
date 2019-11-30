@@ -85,6 +85,14 @@
     return this.apiService.get('template/tabularform-button-templates');
   };
 
+  TemplateService.prototype.getComboBoxTemplates = function () {
+    return this.apiService.get('template/combo-box-templates');
+  }
+
+  TemplateService.prototype.getCalenderTemplates = function() {
+    return this.apiService.get('template/calender-templates')
+  }
+
   function init() {
     module.service('templateService', ['apiService', TemplateService]);
   }

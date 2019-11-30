@@ -599,6 +599,46 @@ SET search_path = pgapex, public, pg_temp;
 
 ----------
 
+CREATE OR REPLACE FUNCTION pgapex.f_template_get_combo_box_templates()
+  RETURNS json AS $$
+SELECT COALESCE(JSON_AGG(a), '[]')
+  FROM (
+    SELECT
+      t.template_id AS id
+    , 'combo-box-template' AS type
+    , json_build_object(
+        'name', t.name
+    ) AS attributes
+    FROM pgapex.combo_box_template cbt
+    LEFT JOIN pgapex.template t ON cbt.template_id = t.template_id
+    ORDER BY t.name
+  ) a
+$$ LANGUAGE sql
+SECURITY DEFINER
+SET search_path = pgapex, public, pg_temp;
+
+----------
+
+CREATE OR REPLACE FUNCTION pgapex.f_template_get_calender_templates()
+  RETURNS json AS $$
+SELECT COALESCE(JSON_AGG(a), '[]')
+  FROM (
+    SELECT
+      t.template_id AS id
+    , 'calender-template' AS type
+    , json_build_object(
+        'name', t.name
+    ) AS attributes
+    FROM pgapex.calender_template ct
+    LEFT JOIN pgapex.template t ON ct.template_id = t.template_id
+    ORDER BY t.name
+  ) a
+$$ LANGUAGE sql
+SECURITY DEFINER
+SET search_path = pgapex, public, pg_temp;
+
+----------
+
 CREATE OR REPLACE FUNCTION pgapex.f_template_get_tabularform_button_templates()
   RETURNS json AS $$
 SELECT COALESCE(JSON_AGG(a), '[]')
@@ -2003,6 +2043,7 @@ BEGIN
   SELECT page_id INTO i_page_id FROM pgapex.region WHERE region_id = i_region_id;
 
   INSERT INTO pgapex.form_field (form_field_id, region_id, field_type_id, list_of_values_id, input_template_id, drop_down_template_id, textarea_template_id,
+                                 combo_box_template_id, calender_template_id,
                                  field_pre_fill_view_column_name, label, sequence, is_mandatory, is_visible, default_value, help_text,
                                  function_parameter_type, function_parameter_ordinal_position
   )
@@ -2019,6 +2060,16 @@ BEGIN
   ), (
     CASE
     WHEN v_field_type_id = 'TEXTAREA' THEN i_form_field_template_id
+    ELSE NULL
+    END
+  ), (
+    CASE
+    WHEN v_field_type_id = 'COMBO_BOX' THEN i_form_field_template_id
+    ELSE NULL
+    END
+  ), (
+    CASE
+    WHEN v_field_type_id = 'CALENDER' THEN i_form_field_template_id
     ELSE NULL
     END
   ),
@@ -2219,7 +2270,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_form_region(
             , 'functionParameters', (SELECT json_agg(ff_agg.ff_obj) FROM (
                                     SELECT json_build_object(
                                       'fieldType', ff.field_type_id
-                                    , 'fieldTemplate', COALESCE(ff.input_template_id, ff.drop_down_template_id, ff.textarea_template_id)
+                                    , 'fieldTemplate', COALESCE(ff.input_template_id, ff.drop_down_template_id, ff.textarea_template_id, ff.combo_box_template_id, ff.calender_template_id)
                                     , 'label', ff.label
                                     , 'inputName', pi.name
                                     , 'sequence', ff.sequence

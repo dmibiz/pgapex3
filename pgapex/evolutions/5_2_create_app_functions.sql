@@ -1747,13 +1747,17 @@ BEGIN
       ff.field_type_id, ff.label, ff.is_mandatory, ff.is_visible, ff.default_value, ff.help_text, ff.field_pre_fill_view_column_name,
       pi.name AS form_element_name, lov.schema_name, lov.view_name, lov.label_view_column_name, lov.value_view_column_name,
       it.template AS input_template, tt.template AS textarea_template,
-      ddt.drop_down_begin, ddt.drop_down_end, ddt.option_begin, ddt.option_end
+      ddt.drop_down_begin, ddt.drop_down_end, ddt.option_begin, ddt.option_end,
+      cbt.combo_box_begin, cbt.combo_box_end, cbt.option_begin AS combo_box_option_begin, cbt.option_end AS combo_box_option_end,
+      ct.calender_input, ct.calender_script
     FROM pgapex.form_field ff
       LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
       LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
       LEFT JOIN pgapex.input_template it ON it.template_id = ff.input_template_id
       LEFT JOIN pgapex.drop_down_template ddt ON ddt.template_id = ff.drop_down_template_id
       LEFT JOIN pgapex.textarea_template tt ON tt.template_id = ff.textarea_template_id
+      LEFT JOIN pgapex.combo_box_template cbt ON cbt.template_id = ff.combo_box_template_id
+      LEFT JOIN pgapex.calender_template ct ON ct.template_id = ff.calender_template_id
     WHERE ff.region_id = i_region_id
     ORDER BY ff.sequence ASC
   )
@@ -1822,6 +1826,29 @@ BEGIN
 
         t_form_element := t_form_element || t_options;
         t_form_element := t_form_element || r_form_row.drop_down_end;
+      ELSIF r_form_row.field_type_id = 'COMBO_BOX' THEN
+        t_form_element := r_form_row.combo_box_begin;
+        v_query := 'SELECT json_build_object(''value'', ' || r_form_row.value_view_column_name || ', ''label'', ' || r_form_row.label_view_column_name || ') ' ||
+                   ' FROM '  || r_form_row.schema_name || '.' || r_form_row.view_name;
+        t_options := '';
+        FOR j_option IN (SELECT res_options FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_query, FALSE) AS ( res_options JSON ))
+        LOOP
+          t_option := r_form_row.combo_box_option_begin;
+          t_option := replace(t_option, '#VALUE#', pgapex.f_app_html_special_chars(j_option->>'value'));
+          IF j_option->>'value' = r_form_row.default_value THEN
+            t_option := replace(t_option, '#SELECTED#', ' selected="selected" ');
+          END IF;
+          t_option := replace(t_option, '#SELECTED#', '');
+          t_option := t_option || pgapex.f_app_html_special_chars(j_option->>'label') || r_form_row.combo_box_option_end;
+          t_options := t_options || t_option;
+        END LOOP;
+
+        t_form_element := t_form_element || t_options;
+        t_form_element := t_form_element || r_form_row.combo_box_end;
+      ELSIF r_form_row.field_type_id = 'CALENDER' THEN
+        t_form_element := r_form_row.calender_input;
+        t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
+        t_form_element := t_form_element || r_form_row.calender_script;
       END IF;
     ELSE
       t_current_row_begin_template := '';

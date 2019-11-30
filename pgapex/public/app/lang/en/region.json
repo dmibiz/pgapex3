@@ -86,6 +86,8 @@
     "fieldTypeCheckbox": "Checkbox",
     "fieldTypeDropDown": "Drop down",
     "fieldTypeTextarea": "Textarea",
+    "fieldTypeComboBox": "Combo box",
+    "fieldTypeCalender": "Calender",
     "createFormRegion": "Create form region",
     "editFormRegion": "Edit form region",
     "functionParameters": "Function parameters",

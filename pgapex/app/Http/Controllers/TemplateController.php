@@ -87,4 +87,14 @@ class TemplateController extends Controller {
     return $response->setApiDataAsJson($this->getTemplateModel()->getInputTemplates($args['inputType']))
       ->getApiResponse();
   }
+
+  public function getComboBoxTemplates(Request $request, Response $response) {
+    return $response->setApiDataAsJson($this->getTemplateModel()->getComboBoxTemplates())
+      ->getApiResponse();
+  }
+
+  public function getCalenderTemplates(Request $request, Response $response) {
+    return $response->setApiDataAsJson($this->getTemplateModel()->getCalenderTemplates())
+      ->getApiResponse();
+  }
 }

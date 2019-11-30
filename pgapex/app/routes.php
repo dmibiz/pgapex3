@@ -45,6 +45,8 @@ $app->group('/api', function () {
     $this->get('/template/drop-down-templates', '\App\Http\Controllers\TemplateController:getDropDownTemplates');
     $this->get('/template/tabularform-button-templates', '\App\Http\Controllers\TemplateController:getTabularFormButtonTemplates');
     $this->get('/template/input-templates/{inputType}', '\App\Http\Controllers\TemplateController:getInputTemplates');
+    $this->get('/template/combo-box-templates', '\App\Http\Controllers\TemplateController:getComboBoxTemplates');
+    $this->get('/template/calender-templates', '\App\Http\Controllers\TemplateController:getCalenderTemplates');
 
     $this->get('/page/pages/{applicationId}', '\App\Http\Controllers\PageController:getPages');
     $this->post('/page/page/save', '\App\Http\Controllers\PageController:savePage');

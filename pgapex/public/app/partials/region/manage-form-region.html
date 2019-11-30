@@ -145,6 +145,8 @@
                 <option value="CHECKBOX">{{'region.fieldTypeCheckbox'|translate}}</option>
                 <option value="DROP_DOWN">{{'region.fieldTypeDropDown'|translate}}</option>
                 <option value="TEXTAREA">{{'region.fieldTypeTextarea'|translate}}</option>
+                <option value="COMBO_BOX">{{'region.fieldTypeComboBox'|translate}}</option>
+                <option value="CALENDER">{{'region.fieldTypeCalender'|translate}}</option>
               </select>
             </div>
             <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.fieldTemplate, 'functionParameters/' + $index + '/fieldTemplate')}">
@@ -156,16 +158,16 @@
             </div>
             <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesView, 'functionParameters/' + $index + '/listOfValuesView')}">
               <select id="listOfValuesView" name="listOfValuesView" ng-model="functionParameter.listOfValuesView" class="form-control"
-                      ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO'"
-                      ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO'"
+                      ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
+                      ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
                       ng-options="viewWithColumns as (viewWithColumns.attributes.schema + '.' + viewWithColumns.attributes.name) for viewWithColumns in viewsWithColumns track by trackDatabaseObject(viewWithColumns)">
                 <option value="" disabled>-- {{'region.listOfValuesView'|translate}} * --</option>
               </select>
             </div>
             <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesValue, 'functionParameters/' + $index + '/listOfValuesValue')}">
               <select id="listOfValuesValue" name="listOfValuesValue" ng-model="functionParameter.listOfValuesValue" class="form-control"
-                      ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO'"
-                      ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO'"
+                      ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
+                      ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
                       ng-disabled="!functionParameter.listOfValuesView"
                       ng-options="column as column.attributes.name for column in functionParameter.listOfValuesView.attributes.columns track by column.attributes.name">
                 <option value="" disabled>-- {{'region.columnForValue'|translate}} * --</option>
@@ -173,8 +175,8 @@
             </div>
             <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesLabel, 'functionParameters/' + $index + '/listOfValuesLabel')}">
               <select id="listOfValuesLabel" name="listOfValuesLabel" ng-model="functionParameter.listOfValuesLabel" class="form-control"
-                      ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO'"
-                      ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO'"
+                      ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
+                      ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
                       ng-disabled="!functionParameter.listOfValuesView"
                       ng-options="column as column.attributes.name for column in functionParameter.listOfValuesView.attributes.columns track by column.attributes.name">
                 <option value="" disabled>-- {{'region.columnForLabel'|translate}} * --</option>
