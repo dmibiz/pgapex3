@@ -303,8 +303,16 @@
                        columns="region.detailViewColumns" last-sequence="lastSequenceOfDetailViewColumns"></add-column-link>
 
       <!-- CREATE SUBREGION -->
-      <add-sub-region mode="mode" sub-regions="region.subRegions" application-id="detailViewAppId" form-error="formError"
-                      detail-view-region-id="region.detailViewRegionId" last-sequence="lastSequenceOfSubRegions"></add-sub-region>
+      <add-sub-region
+        mode="mode"
+        sub-regions="region.subRegions" 
+        application-id="detailViewAppId" 
+        form-error="formError"
+        detail-view-region-id="region.detailViewRegionId" 
+        last-sequence="lastSequenceOfSubRegions"
+        parent-region="'DETAIL_VIEW'"
+      >
+      </add-sub-region>
 
     </div>
 

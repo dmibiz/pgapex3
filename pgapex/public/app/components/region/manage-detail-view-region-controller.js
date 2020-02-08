@@ -47,6 +47,7 @@
     this.initReportLinkTemplates();
     this.initDetailViewTemplates();
     this.initAvailablePages();
+    console.log(this.$scope.region);
   };
 
   ManageDetailViewRegionController.prototype.getApplicationId = function() {
@@ -329,7 +330,6 @@
     if (!this.isEditPage()) { return; }
     this.regionService.getRegion(this.getRegionId()).then(function (response) {
       var region = response.getDataOrDefault({'attributes': {}});
-      console.log(region);
       region.view = {'attributes': {'schema': region.viewSchema, 'name': region.viewName}};
       this.$scope.region = region;
 

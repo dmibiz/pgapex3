@@ -1,0 +1,168 @@
+<div class="row">
+    <div class="col-xs-10">
+      <h3>{{title|translate}}
+        <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.info('region.buttonsHelpText')"></span>
+      </h3>
+    </div>
+    <div class="col-xs-2 text-right">
+      <button type="button" title="{{attributeTitle|translate}}" ng-click="addButton()"
+              class="btn btn-sm btn-primary">
+        <span class="glyphicon glyphicon-plus"></span>
+      </button>
+    </div>
+  </div>
+  
+  <div class="row form-group hidden-xs hidden-sm">
+    <div class="col-md-2">{{'region.buttonTemplate'|translate}}</div>
+    <div class="col-md-1">{{'region.sequence'|translate}}</div>
+    <div class="col-md-3">{{'region.buttonLabel'|translate}}</div>
+    <div class="col-md-5">{{'region.function'|translate}}</div>
+  </div>
+  
+  <div class="alert alert-info" ng-show="buttons.length < 1">
+    {{'region.atLeastOneButtonMustBeAdded'|translate}}
+  </div>
+  
+  <div class="form-group form-group-striped add-button" ng-repeat="button in buttons">
+    <ng-form name="addButtonForm">
+      <div class="row add-button__item">
+        <div class="col-md-2">
+          <select class="form-control"
+                  ng-class="{'has-error': formError.showErrors(addButtonForm.buttonTemplate, 'addButton/' + $index + '/buttonTemplate')}"
+                  name="buttonTemplate" ng-model="button.buttonTemplateId" required
+                  ng-options="buttonTemplate.id as buttonTemplate.attributes.name for buttonTemplate in buttonTemplates">
+            <option value="" disabled>-- {{'region.buttonTemplate'|translate}} * --</option>
+          </select>
+        </div>
+        <div class="col-md-1">
+          <input
+              ng-class="{'has-error': formError.showErrors(addButtonForm.sequence, 'addButton/' + $index + '/sequence')}"
+              required ng-model="button.sequence" name="sequence" type="number" min="0" class="form-control"
+              placeholder="{{'region.sequence'|translate}} *">
+        </div>
+        <div class="col-md-3">
+          <input ng-class="{'has-error': formError.showErrors(addButtonForm.label, 'addButton/' + $index + '/label')}"
+                 required ng-model="button.label" name="label" type="text" class="form-control"
+                 placeholder="{{'region.label'|translate}} *">
+        </div>
+        <div class="col-md-5">
+          <select
+              ng-class="{'has-error': formError.showErrors(addButtonForm.function, 'addButton/' + $index + '/function')}"
+              id="function" name="function" ng-model="button.function" class="form-control" required ng-change="test()"
+              ng-options="function as function.attributes.displayText for function in functions track by trackFunction(function)">
+            <option value="" disabled>-- {{'region.function'|translate}} * --</option>
+          </select>
+        </div>
+        <div class="col-md-1 text-right">
+          <a title="{{'region.deleteTabularFormButton'|translate}}" ng-click="deleteButton($index)"
+             class="btn btn-sm btn-danger">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+          </a>
+        </div>
+      </div>
+      <div class="row add-button__item">
+        <div class="col-md-5">
+          <input
+              ng-class="{'has-error': formError.showErrors(addButtonForm.successMessage, 'addButton/' + $index + '/successMessage')}"
+              required ng-model="button.successMessage" name="successMessage" type="text" class="form-control"
+              placeholder="{{'region.successMessage'|translate}} *">
+        </div>
+        <div class="col-md-5">
+          <input
+              ng-class="{'has-error': formError.showErrors(addButtonForm.errorMessage, 'addButton/' + $index + '/errorMessage')}"
+              required ng-model="button.errorMessage" name="errorMessage" type="text" class="form-control"
+              placeholder="{{'region.errorMessage'|translate}} *">
+        </div>
+      </div>
+  
+      <div class="row has-error" ng-show="
+          formError.showErrors(addButtonForm.buttonTemplate, 'addButton/' + $index + '/buttonTemplate') ||
+          formError.showErrors(addButtonForm.sequence, 'addButton/' + $index + '/sequence') ||
+          formError.showErrors(addButtonForm.label, 'addButton/' + $index + '/label') ||
+          formError.showErrors(addButtonForm.function, 'addButton/' + $index + '/function') ||
+          formError.showErrors(addButtonForm.successMessage, 'addButton/' + $index + '/successMessage') ||
+          formError.showErrors(addButtonForm.errorMessage, 'addButton/' + $index + '/errorMessage')
+         ">
+        <div class="col-sm-12">
+          <span ng-show="addButtonForm.buttonTemplate.$touched && addButtonForm.buttonTemplate.$error.required"
+                class="help-block">{{'region.buttonTemplateIsMandatory'|translate}}</span>
+          <span ng-show="addButtonForm.sequence.$touched && addButtonForm.sequence.$error.required" class="help-block">{{'region.sequenceIsMandatory'|translate}}</span>
+          <span ng-show="addButtonForm.label.$touched && addButtonForm.label.$error.required" class="help-block">{{'region.labelIsMandatory'|translate}}</span>
+          <span ng-show="addButtonForm.function.$touched && addButtonForm.function.$error.required" class="help-block">{{'region.functionIsMandatory'|translate}}</span>
+          <span ng-show="addButtonForm.successMessage.$touched && addButtonForm.successMessage.$error.required"
+                class="help-block">{{'region.successMessageIsMandatory'|translate}}</span>
+          <span ng-show="addButtonForm.errorMessage.$touched && addButtonForm.errorMessage.$error.required"
+                class="help-block">{{'region.errorMessageIsMandatory'|translate}}</span>
+  
+          <span ng-repeat="error in formError.getErrors('addButton/' + $index + '/buttonTemplate')" class="help-block">{{error|translate}}</span>
+          <span ng-repeat="error in formError.getErrors('addButton/' + $index + '/sequence')" class="help-block">{{error|translate}}</span>
+          <span ng-repeat="error in formError.getErrors('addButton/' + $index + '/label')" class="help-block">{{error|translate}}</span>
+          <span ng-repeat="error in formError.getErrors('addButton/' + $index + '/function')" class="help-block">{{error|translate}}</span>
+          <span ng-repeat="error in formError.getErrors('addButton/' + $index + '/successMessage')" class="help-block">{{error|translate}}</span>
+          <span ng-repeat="error in formError.getErrors('addButton/' + $index + '/errorMessage')" class="help-block">{{error|translate}}</span>
+        </div>
+      </div>
+
+      <div ng-show="button.function.attributes.name">
+        <h3>{{'region.functionParameters'|translate}}</h3>
+        <div class="form-group form-group-striped" ng-repeat="functionParameter in button.function.attributes.parameters">
+          <ng-form name="functionParameterForm">
+            <div class="row">
+              <div class="col-md-3">
+                {{functionParameter.attributes.name}}
+                <span class="label label-default">{{functionParameter.attributes.argumentType}}</span>
+              </div>
+              <div class="col-md-3" ng-class="{'has-error': formError.showErrors(functionParameterForm.fieldTemplate, 'functionParameters/' + $index + '/fieldTemplate')}">
+                <select id="viewColumnForParameterValue" name="viewColumnForParameterValue" ng-model="functionParameter.viewColumnForValue" class="form-control" required
+                        ng-options="viewColumn.attributes.name as viewColumn.attributes.name for viewColumn in viewColumns"
+                >
+                  <option value="" disabled>-- {{'region.viewColumn'|translate}} * --</option>
+                </select>
+              </div>
+            </div>
+  
+            <div class="row form-group has-error" ng-show="
+              formError.showErrors(functionParameterForm.inputName, 'functionParameters/' + $index + '/inputName') ||
+              formError.showErrors(functionParameterForm.label, 'functionParameters/' + $index + '/label') ||
+              formError.showErrors(functionParameterForm.sequence, 'functionParameters/' + $index + '/sequence') ||
+              formError.showErrors(functionParameterForm.isMandatory, 'functionParameters/' + $index + '/isMandatory') ||
+              formError.showErrors(functionParameterForm.isVisible, 'functionParameters/' + $index + '/isVisible') ||
+              formError.showErrors(functionParameterForm.defaultValue, 'functionParameters/' + $index + '/defaultValue') ||
+              formError.showErrors(functionParameterForm.fieldType, 'functionParameters/' + $index + '/fieldType') ||
+              formError.showErrors(functionParameterForm.fieldTemplate, 'functionParameters/' + $index + '/fieldTemplate') ||
+              formError.showErrors(functionParameterForm.listOfValuesView, 'functionParameters/' + $index + '/listOfValuesView') ||
+              formError.showErrors(functionParameterForm.listOfValuesValue, 'functionParameters/' + $index + '/listOfValuesValue') ||
+              formError.showErrors(functionParameterForm.listOfValuesLabel, 'functionParameters/' + $index + '/listOfValuesLabel') ||
+              formError.showErrors(functionParameterForm.preFillColumn, 'functionParameters/' + $index + '/preFillColumn') ||
+              formError.showErrors(functionParameterForm.helpText, 'functionParameters/' + $index + '/helpText')
+            ">
+              <div class="col-sm-12">
+                <span ng-show="functionParameterForm.inputName.$touched && functionParameterForm.inputName.$error.required" class="help-block">{{'region.inputNameIsMandatory'|translate}}</span>
+                <span ng-show="functionParameterForm.label.$touched && functionParameterForm.label.$error.required" class="help-block">{{'region.labelIsMandatory'|translate}}</span>
+                <span ng-show="functionParameterForm.sequence.$touched && functionParameterForm.sequence.$error.required" class="help-block">{{'region.sequenceIsMandatory'|translate}}</span>
+                <span ng-show="functionParameterForm.fieldType.$touched && functionParameterForm.fieldType.$error.required" class="help-block">{{'region.fieldTypeIsMandatory'|translate}}</span>
+                <span ng-show="functionParameterForm.fieldTemplate.$touched && functionParameterForm.fieldTemplate.$error.required" class="help-block">{{'region.fieldTemplateIsMandatory'|translate}}</span>
+                <span ng-show="functionParameterForm.listOfValuesView.$touched && functionParameterForm.listOfValuesView.$error.required" class="help-block">{{'region.listOfValuesViewIsMandatory'|translate}}</span>
+                <span ng-show="functionParameterForm.listOfValuesValue.$touched && functionParameterForm.listOfValuesValue.$error.required" class="help-block">{{'region.listOfValuesValueIsMandatory'|translate}}</span>
+                <span ng-show="functionParameterForm.listOfValuesLabel.$touched && functionParameterForm.listOfValuesLabel.$error.required" class="help-block">{{'region.listOfValuesLabelIsMandatory'|translate}}</span>
+  
+                <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/inputName')" class="help-block">{{error|translate}}</span>
+                <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/label')" class="help-block">{{error|translate}}</span>
+                <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/sequence')" class="help-block">{{error|translate}}</span>
+                <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/isMandatory')" class="help-block">{{error|translate}}</span>
+                <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/isVisible')" class="help-block">{{error|translate}}</span>
+                <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/defaultValue')" class="help-block">{{error|translate}}</span>
+                <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/fieldType')" class="help-block">{{error|translate}}</span>
+                <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/fieldTemplate')" class="help-block">{{error|translate}}</span>
+                <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/listOfValuesView')" class="help-block">{{error|translate}}</span>
+                <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/listOfValuesValue')" class="help-block">{{error|translate}}</span>
+                <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/listOfValuesLabel')" class="help-block">{{error|translate}}</span>
+                <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/preFillColumn')" class="help-block">{{error|translate}}</span>
+                <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/helpText')" class="help-block">{{error|translate}}</span>
+              </div>
+            </div>
+          </ng-form>
+        </div>
+      </div>
+    </ng-form>
+  </div>

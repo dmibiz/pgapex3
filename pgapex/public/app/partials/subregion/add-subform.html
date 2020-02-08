@@ -1,41 +1,47 @@
-<div ng-include="'app/partials/page-navigation/main.html'"></div>
-<div ng-include="'app/partials/page-navigation/application-builder.html'"></div>
-
-<div class="container">
-  <h2 ng-show="mode === 'create'">{{'region.createFormRegion'|translate}}</h2>
-  <h2 ng-show="mode === 'edit'">{{'region.editFormRegion'|translate}}</h2>
-  <form name="manageRegionForm" class="form-horizontal" ng-submit="saveRegion()" novalidate>
-    <div ng-include="'app/partials/region/_manage-region-common.html'"></div>
-    <div class="form-group" ng-class="{'has-error': formError.showErrors(manageRegionForm.formTemplate, 'formTemplate')}">
-      <label for="formTemplate" class="col-sm-3 control-label">{{'region.formTemplate'|translate}} *</label>
-      <div class="col-sm-8">
-        <select id="formTemplate" name="formTemplate" ng-model="region.formTemplate" class="form-control" required
-                ng-options="formTemplate.id as formTemplate.attributes.name for formTemplate in formTemplates">
-          <option value="" disabled>-- {{'region.formTemplate'|translate}} * --</option>
-        </select>
-        <div ng-show="formError.showErrors(manageRegionForm.formTemplate, 'formTemplate')">
-          <span ng-show="manageRegionForm.formTemplate.$error.required" class="help-block">{{'region.formTemplateIsMandatory'|translate}}</span>
-          <span ng-repeat="error in formError.getErrors('formTemplate')" class="help-block">{{error|translate}}</span>
+<ng-form name="subFormForm">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-3" ng-class="{'has-error': formError.showErrors(subFormForm.name, 'subform/' + index + '/name')}">
+          <input required type="text" class="form-control" name="name" ng-model="subForm.name"
+                 placeholder="{{'region.name'|translate}} *">
+        </div>
+        <div class="col-md-3" ng-class="{'has-error': formError.showErrors(subFormForm.sequence, 'subform/' + index + '/sequence')}">
+          <input required type="number" min="0" class="form-control" name="sequence" ng-model="subForm.sequence"
+                 placeholder="{{'region.sequence'|translate}} *">
+        </div>
+        <div class="col-md-3"
+             ng-class="{'has-error': formError.showErrors(subFormForm.paginationQueryParameter, 'subform/' + index + '/paginationQueryParameter')}">
+          <input required type="text" class="form-control" name="paginationQueryParameter"
+                 ng-model="subForm.paginationQueryParameter"
+                 placeholder="{{'region.paginationQueryParameter'|translate}} *">
+        </div>
+        <div class="col-md-3" ng-class="{'has-error': formError.showErrors(subFormForm.itemsPerPage, 'subform/' + index + '/itemsPerPage')}">
+          <input required type="number" class="form-control" name="itemsPerPage" ng-model="subForm.itemsPerPage"
+                 placeholder="{{'region.itemsPerPage'|translate}} *">
         </div>
       </div>
     </div>
-    <div class="form-group" ng-class="{'has-error': formError.showErrors(manageRegionForm.buttonTemplate, 'buttonTemplate')}">
-      <label for="buttonTemplate" class="col-sm-3 control-label">{{'region.buttonTemplate'|translate}} *</label>
-      <div class="col-sm-8">
-        <select id="buttonTemplate" name="buttonTemplate" ng-model="region.buttonTemplate" class="form-control" required
-                ng-options="buttonTemplate.id as buttonTemplate.attributes.name for buttonTemplate in buttonTemplates">
-          <option value="" disabled>-- {{'region.buttonTemplate'|translate}} * --</option>
-        </select>
-        <div ng-show="formError.showErrors(manageRegionForm.buttonTemplate, 'buttonTemplate')">
-          <span ng-show="manageRegionForm.buttonTemplate.$error.required" class="help-block">{{'region.buttonTemplateIsMandatory'|translate}}</span>
-          <span ng-repeat="error in formError.getErrors('buttonTemplate')" class="help-block">{{error|translate}}</span>
+    <!-- <div class="form-group">
+      <div class="row">
+        <div class="col-md-6" ng-class="{'has-error': formError.showErrors(subFormForm.view, 'subform/' + index + '/view')}">
+          <select name="view" ng-model="subForm.view" class="form-control" ng-change="changeViewColumns()"
+                  required
+                  ng-options="view as view.attributes.schema + '.' + view.attributes.name for view in viewsWithColumns track by trackView(view)">
+            <option value="">-- {{'region.view'|translate}} * --</option>
+          </select>
+        </div>
+        <div class="col-md-6" ng-class="{'has-error': formError.showErrors(subFormForm.linkedColumn, 'subform/' + index + '/linkedColumn')}">
+          <select name="linkedColumn" ng-model="subForm.linkedColumn" class="form-control" required
+                  ng-options="viewColumn.attributes.name as viewColumn.attributes.name for viewColumn in viewColumns">
+            <option value="">-- {{'region.linkedColumn'|translate}} * --</option>
+          </select>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="form-group" ng-class="{'has-error': formError.showErrors(manageRegionForm.buttonLabel, 'buttonLabel')}">
-      <label for="buttonLabel" class="col-sm-3 control-label">{{'region.buttonLabel'|translate}} *</label>
+      <label for="subFormButtonLabel" class="col-sm-3 control-label">{{'region.buttonLabel'|translate}} *</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" name="buttonLabel" ng-model="region.buttonLabel" id="buttonLabel" placeholder="{{'region.buttonLabel'|translate}}" required>
+        <input type="text" class="form-control" name="subFormButtonLabel" ng-model="subForm.buttonLabel" id="subFormButtonLabel" placeholder="{{'region.buttonLabel'|translate}}" required>
         <div ng-show="formError.showErrors(manageRegionForm.buttonLabel, 'buttonLabel')">
           <span ng-show="manageRegionForm.buttonLabel.$error.required" class="help-block">{{'region.buttonLabelIsMandatory'|translate}}</span>
           <span ng-repeat="error in formError.getErrors('buttonLabel')" class="help-block">{{error|translate}}</span>
@@ -43,64 +49,37 @@
       </div>
     </div>
     <div class="form-group" ng-class="{'has-error': formError.showErrors(manageRegionForm.successMessage, 'successMessage')}">
-      <label for="successMessage" class="col-sm-3 control-label">{{'region.successMessage'|translate}}</label>
+      <label for="subFormSuccessMessage" class="col-sm-3 control-label">{{'region.successMessage'|translate}}</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" name="successMessage" ng-model="region.successMessage" id="successMessage" placeholder="{{'region.successMessage'|translate}}">
+        <input type="text" class="form-control" name="subFormSuccessMessage" ng-model="subForm.successMessage" id="subFormSuccessMessage" placeholder="{{'region.successMessage'|translate}}">
         <div ng-show="formError.showErrors(manageRegionForm.successMessage, 'successMessage')">
           <span ng-repeat="error in formError.getErrors('successMessage')" class="help-block">{{error|translate}}</span>
         </div>
       </div>
     </div>
     <div class="form-group" ng-class="{'has-error': formError.showErrors(manageRegionForm.errorMessage, 'errorMessage')}">
-      <label for="errorMessage" class="col-sm-3 control-label">{{'region.errorMessage'|translate}}</label>
+      <label for="subFormErrorMessage" class="col-sm-3 control-label">{{'region.errorMessage'|translate}}</label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" name="errorMessage" ng-model="region.errorMessage" id="errorMessage" placeholder="{{'region.errorMessage'|translate}}">
+        <input type="text" class="form-control" name="subFormErrorMessage" ng-model="subForm.errorMessage" id="subFormErrorMessage" placeholder="{{'region.errorMessage'|translate}}">
         <div ng-show="formError.showErrors(manageRegionForm.errorMessage, 'errorMessage')">
           <span ng-repeat="error in formError.getErrors('errorMessage')" class="help-block">{{error|translate}}</span>
         </div>
       </div>
     </div>
-    <div class="form-group" ng-class="{'has-error': formError.showErrors(manageRegionForm.redirectUrl, 'redirectUrl')}">
-      <label for="redirectUrl" class="col-sm-3 control-label">{{'region.redirectUrl'|translate}}</label>
-      <div class="col-sm-8">
-        <input type="text" class="form-control" name="redirectUrl" ng-model="region.redirectUrl" id="redirectUrl" placeholder="{{'region.redirectUrl'|translate}}">
-        <div ng-show="formError.showErrors(manageRegionForm.redirectUrl, 'redirectUrl')">
-          <span ng-repeat="error in formError.getErrors('redirectUrl')" class="help-block">{{error|translate}}</span>
-        </div>
-      </div>
-      <div class="col-sm-1">
-        <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.info('region.redirectUrlHelpText')"></span>
-      </div>
-    </div>
-    <div class="form-group" ng-class="{'has-error': formError.showErrors(manageRegionForm.function, 'function')}">
-      <label for="function" class="col-sm-3 control-label">{{'region.function'|translate}} *</label>
-      <div class="col-sm-8">
-        <select id="function" name="function" ng-model="region.function" ng-change="changeFunctionParameters()" class="form-control" required
+    <h3>{{'region.function'|translate}}</h3>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-6" ng-class="{'has-error': formError.showErrors(subFormForm.function, 'subform/' + index + '/function')}">
+          <select id="function" name="function" ng-model="subForm.function" ng-change="changeSubFormFunctionParameters()" class="form-control" required
                 ng-options="function as function.attributes.displayText for function in functionsWithParameters track by trackDatabaseObject(function)">
           <option value="" disabled>-- {{'region.function'|translate}} * --</option>
         </select>
-        <div ng-show="formError.showErrors(manageRegionForm.function, 'function')">
-          <span ng-show="manageRegionForm.function.$error.required" class="help-block">{{'region.functionIsMandatory'|translate}}</span>
-          <span ng-repeat="error in formError.getErrors('function')" class="help-block">{{error|translate}}</span>
         </div>
       </div>
     </div>
-    <div class="form-group" ng-class="{'has-error': formError.showErrors(manageRegionForm.formPreFill, 'formPreFill')}">
-      <label for="formPreFill" class="col-sm-3 control-label">{{'region.preFillForm'|translate}}</label>
-      <div class="col-sm-8" class="checkbox">
-        <input id="formPreFill" name="formPreFill" ng-model="region.formPreFill" type="checkbox">
-        <div ng-show="formError.showErrors(manageRegionForm.formPreFill, 'formPreFill')">
-          <span ng-repeat="error in formError.getErrors('formPreFill')" class="help-block">{{error|translate}}</span>
-        </div>
-      </div>
-      <div class="col-sm-1">
-        <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.info('region.preFillFormHelpText')"></span>
-      </div>
-    </div>
-
-    <div ng-show="region.function.attributes.name">
+    <div ng-show="subForm.function.attributes.name">
       <h3>{{'region.functionParameters'|translate}}</h3>
-      <div class="form-group form-group-striped" ng-repeat="functionParameter in region.functionParameters">
+      <div class="form-group form-group-striped" ng-repeat="functionParameter in subForm.functionParameters">
         <ng-form name="functionParameterForm">
           <div class="row">
             <div class="col-md-2">
@@ -182,9 +161,9 @@
                 <option value="" disabled>-- {{'region.columnForLabel'|translate}} * --</option>
               </select>
             </div>
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.preFillColumn, 'functionParameters/' + $index + '/preFillColumn')}">
-              <select id="preFillColumn" name="preFillColumn" ng-model="functionParameter.preFillColumn" class="form-control" ng-show="region.formPreFill && region.formPreFillView"
-                      ng-options="formPreFillColumn.column.attributes.name as formPreFillColumn.column.attributes.name for formPreFillColumn in region.formPreFillColumns">
+            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.preFillColumn, 'functionParameters/' + $index + '/subFormPreFillColumn')}">
+              <select id="subFormPreFillColumn" name="subFormPreFillColumn" ng-model="functionParameter.preFillColumn" class="form-control" ng-show="subFormPreFillColumns"
+                      ng-options="subFormPreFillColumn.column.attributes.name as subFormPreFillColumn.column.attributes.name for subFormPreFillColumn in subFormPreFillColumns">
                 <option value="" disabled>-- {{'region.preFillColumn'|translate}} --</option>
               </select>
             </div>
@@ -233,62 +212,38 @@
         </ng-form>
       </div>
     </div>
-
-    <div ng-show="region.formPreFill">
-      <h3>{{'region.preFillForm'|translate}} <small>{{'region.firstReturnedValueIsUsed'|translate}}</small></h3>
-      <div class="alert alert-info">
-        {{'region.atLeastOneColumnConditionMustBeAdded'|translate}}
-      </div>
-      <div class="form-group" ng-class="{'has-error': formError.showErrors(manageRegionForm.formPreFillView, 'formPreFillView')}">
-        <label for="formPreFillView" class="col-sm-3 control-label">{{'region.view'|translate}} *</label>
-        <div class="col-sm-9">
-          <select id="formPreFillView" name="formPreFillView" ng-model="region.formPreFillView" ng-change="changeFormPreFillColumns()" class="form-control" ng-required="region.formPreFill"
-                  ng-options="viewWithColumns as (viewWithColumns.attributes.schema + '.' + viewWithColumns.attributes.name) for viewWithColumns in viewsWithColumns track by trackDatabaseObject(viewWithColumns)">
-            <option value="" disabled>-- {{'region.view'|translate}} * --</option>
-          </select>
-          <div ng-show="formError.showErrors(manageRegionForm.formPreFillView, 'formPreFillView')">
-            <span ng-show="manageRegionForm.formPreFillView.$error.required" class="help-block">{{'region.viewIsMandatory'|translate}}</span>
-            <span ng-repeat="error in formError.getErrors('formPreFillView')" class="help-block">{{error|translate}}</span>
-          </div>
-        </div>
-      </div>
-      <div class="form-group form-group-striped" ng-repeat="formPreFillColumn in region.formPreFillColumns">
-        <label for="prefillFormViewColumn{{$index}}" class="col-sm-3 control-label">{{formPreFillColumn.column.attributes.name}}</label>
-        <div class="col-sm-9">
-          <select id="prefillFormViewColumn{{$index}}" class="form-control"
-                  ng-model="formPreFillColumn.value"
-                  ng-options="functionParameter.inputName as functionParameter.inputName for functionParameter in region.functionParameters | filter: {inputName: ''} track by (functionParameter.inputName || functionParameter)"
-            >
-            <option value=""></option>
-          </select>
-        </div>
-      </div>
-      <div class="row form-group has-error" ng-show="formError.showErrors(null, 'formPreFillColumns')">
-        <div class="col-sm-12">
-          <span ng-repeat="error in formError.getErrors('formPreFillColumns')" class="help-block">{{error|translate}}</span>
-        </div>
-      </div>
+    
+    <div ng-show="subFormForm.name.$touched && subFormForm.name.$error.required" class="row has-error">
+      {{'region.nameIsMandatory'|translate}}
     </div>
-
-    <add-sub-region
-      mode="mode"
-      sub-regions="region.subRegions"
-      application-id="applicationId" 
-      form-error="formError" 
-      last-sequence="lastSequenceOfSubRegions" 
-      form-pre-fill-columns="region.formPreFillColumns"
-      functions="functionsWithParameters"
-      parent-region="'FORM'"
-    >
-    </add-sub-region>
-
-    <div class="form-group">
-      <div class="col-sm-offset-3 col-sm-9">
-        <button type="submit" class="btn btn-primary" ng-disabled="manageRegionForm.$invalid || (region.formPreFill && !atLeastOneFormPreFillColumnHasValue())">
-          <span ng-show="mode === 'create'">{{'region.createFormRegion'|translate}}</span>
-          <span ng-show="mode === 'edit'">{{'region.editFormRegion'|translate}}</span>
-        </button>
-      </div>
+    <div ng-show="subFormForm.sequence.$touched && subFormForm.sequence.$error.required" class="row has-error">
+      {{'region.sequenceIsMandatory'|translate}}
     </div>
-  </form>
-</div>
+    <div
+        ng-show="subFormForm.paginationQueryParameter.$touched && subFormForm.paginationQueryParameter.$error.required"
+        class="row has-error">
+      {{'region.paginationQueryParameter'|translate}}
+    </div>
+    <div ng-show="subFormForm.itemsPerPage.$touched && subFormForm.itemsPerPage.$error.required"
+         class="row has-error">
+      {{'region.itemsPerPageIsMandatory'|translate}}
+    </div>
+    <div ng-show="subFormForm.view.$touched && subFormForm.view.$error.required" class="row has-error">
+      {{'region.viewIsMandatory'|translate}}
+    </div>
+    <div ng-show="subFormForm.linkedColumn.$touched && subFormForm.linkedColumn.$error.required"
+         class="row has-error">
+      {{'region.linkedColumnIsMandatory'|translate}}
+    </div>
+  
+    <span ng-repeat="error in formError.getErrors('subform/' + index + '/name')" class="help-block has-error">{{error|translate}}</span>
+    <span ng-repeat="error in formError.getErrors('subform/' + index + '/sequence')" class="help-block has-error">{{error|translate}}</span>
+    <span ng-repeat="error in formError.getErrors('subform/' + index + '/paginationQueryParameter')" class="help-block has-error">{{error|translate}}</span>
+    <span ng-repeat="error in formError.getErrors('subform/' + index + '/itemsPerPage')" class="help-block has-error">{{error|translate}}</span>
+    <span ng-repeat="error in formError.getErrors('subform/' + index + '/view')" class="help-block has-error">{{error|translate}}</span>
+    <span ng-repeat="error in formError.getErrors('subform/' + index + '/linkedColumn')" class="help-block has-error">{{error|translate}}</span>
+  
+    <!-- <add-column-link title="region.reportColumns" attribute-title="region.addReportColumn" name="{{'subform/' + index}}"
+                     view-columns="viewColumns"  form-error="formError" columns="subForm.columns" last-sequence="lastSequenceOfColumns"></add-column-link> -->
+  </ng-form>
+  

@@ -102,7 +102,7 @@ INSERT INTO pgapex.page_template (template_id, page_type_id, header, body, foote
 
     <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/app/style.css">
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/app/style.css">
     <link rel="stylesheet" type="text/css" href="http://localhost:8000/resources/css/combobox.css">
     <link rel="stylesheet" type="text/css" href="http://localhost:8000/resources/css/anytime.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -117,6 +117,7 @@ INSERT INTO pgapex.page_template (template_id, page_type_id, header, body, foote
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="http://localhost:8000/resources/js/combobox.js"></script>
     <script src="http://localhost:8000/resources/js/anytime.js"></script>
+    <script src="http://localhost:8000/resources/js/formregion.js"></script>
     <script src="/resources/js/region.js"></script>
     <nav class="navbar navbar-inverse">
       <div class="container">
@@ -240,4 +241,20 @@ VALUES (24, '<input type="text" id="calenderInput" class="form-control" size="50
 
 INSERT INTO pgapex.combo_box_template (template_id, combo_box_begin, combo_box_end, option_begin, option_end)
 VALUES (25, '<select id="combobox" class="form-control" name="#NAME#">', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>');
+
+INSERT INTO pgapex.tabular_subform_template (template_ID, tabular_subform_begin, tabular_subform_end, form_begin, buttons_row_begin,
+buttons_row_content, buttons_row_end, table_begin, table_header_begin, table_header_row_begin, table_header_checkbox,
+table_header_cell, table_header_row_end, table_header_end, table_body_begin, table_body_row_begin,
+table_body_row_checkbox, table_body_row_cell, table_body_row_end, table_body_end, table_end, form_end, pagination_begin,
+pagination_end, previous_page, next_page, active_page, inactive_page)
+VALUES (26, '<div>', '#PAGINATION#</div></div>', '<form method="POST" name="custom" action><input type="hidden" name="PGAPEX_TABULAR_SUBFORM" value="#TABULAR_SUBFORM_FUNCTION_ID#">',
+'<div class="form-group pull-right">', '#SUBMIT_BUTTON#',
+'</div>', '<div class="form-group"><table class="table table-bordered">', '<thead>', '</tr>',
+'<th class="cell--fit-content"><input type="checkbox" onclick="checkAll(this)"></th>', '<th>#CELL_CONTENT#</th>', '</tr>', '</thead>',
+'<tbody>', '<tr>', '<td class="cell--fit-content"><input type="checkbox" name="#FUNCTION_PARAMETERS#[]" value="#FUNCTION_PARAMETERS_VALUE#"></td>',
+'<td>#CELL_CONTENT#</td>', '</td>', '</tbody>', '</table>', '</form>', '<nav><ul class="pagination">', '</ul></nav>',
+'<li><a href="#LINK#">&laquo;</a></li>', '<li><a href="#LINK#">&raquo;</a></li>',
+'<li class="active"><a href="#LINK#">#NUMBER#</a></li>', '<li><a href="#LINK#">#NUMBER#</a></li>');
+
+
 

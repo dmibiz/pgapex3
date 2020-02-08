@@ -24,6 +24,7 @@
       'sequence': 1,
       'functionParameters': [],
       'formPreFillColumns': [],
+      'subRegions': [],
       'function': {'attributes': {'parameters': []}}
     };
     this.$scope.regionTemplates = [];
@@ -40,6 +41,7 @@
     this.$scope.viewsWithColumns = [];
     this.$scope.functionsWithParameters = [];
     this.$scope.region.formPreFillColumns = [];
+    this.$scope.applicationId = this.getApplicationId();
     
     this.$scope.changeFunctionParameters = this.changeFunctionParameters.bind(this);
     this.$scope.changeFormPreFillColumns = this.changeFormPreFillColumns.bind(this);
@@ -75,13 +77,13 @@
     this.initComboBoxTemplates();
     this.initCalenderTemplates();
     this.initViewsWithColumns();
-
     this.loadRegion();
   };
 
   ManageFormRegionController.prototype.initViewsWithColumns = function() {
     this.databaseService.getViewsWithColumns(this.getApplicationId()).then(function (response) {
       this.$scope.viewsWithColumns = response.getDataOrDefault([]);
+
     }.bind(this));
   };
 
@@ -221,7 +223,6 @@
   };
 
   ManageFormRegionController.prototype.saveRegion = function() {
-    console.log(this.$scope.region);
     this.regionService.saveFormRegion(
       this.getPageId(),
       this.getDisplayPoint(),
@@ -240,12 +241,39 @@
       this.$scope.region.function.attributes.name,
       this.$scope.region.formPreFill || false,
       this.getFormFields(),
-      this.getPreFill()
+      this.getPreFill(),
+      this.getSubRegions()
     ).then(this.handleSaveResponse.bind(this));
   };
 
   ManageFormRegionController.prototype.getFormFields = function() {
     return this.$scope.region.functionParameters.map(function (functionParameter) {
+      return {
+        "type": "form-field",
+        "attributes": {
+          "fieldType": functionParameter.fieldType,
+          "fieldTemplate": parseInt(functionParameter.fieldTemplate),
+          "label": functionParameter.label,
+          "inputName": functionParameter.inputName,
+          "sequence": parseInt(functionParameter.sequence),
+          "isMandatory": functionParameter.isMandatory || false,
+          "isVisible": functionParameter.isVisible || false,
+          "defaultValue": functionParameter.defaultValue || null,
+          "helpText": functionParameter.helpText || null,
+          "functionParameterType": functionParameter.attributes.argumentType,
+          "functionParameterOrdinalPosition": functionParameter.attributes.ordinalPosition,
+          "preFillColumn": functionParameter.preFillColumn || null,
+          "listOfValuesSchema": (functionParameter.listOfValuesView) ? functionParameter.listOfValuesView.attributes.schema : null,
+          "listOfValuesView": (functionParameter.listOfValuesView) ? functionParameter.listOfValuesView.attributes.name : null,
+          "listOfValuesValue": (functionParameter.listOfValuesValue) ? functionParameter.listOfValuesValue.attributes.name : null,
+          "listOfValuesLabel": (functionParameter.listOfValuesLabel) ? functionParameter.listOfValuesLabel.attributes.name : null
+        }
+      };
+    });
+  };
+
+  ManageFormRegionController.prototype.getFormFieldsForSubform = function(subFormFunctionParameters) {
+    return subFormFunctionParameters.map(function (functionParameter) {
       return {
         "type": "form-field",
         "attributes": {
@@ -303,7 +331,65 @@
     if (!this.isEditPage()) { return; }
     this.regionService.getRegion(this.getRegionId()).then(function (response) {
       this.$scope.region = response.getDataOrDefault({'attributes': {}}).attributes;
+      console.log(this.$scope.region);
     }.bind(this));
+  };
+
+  ManageFormRegionController.prototype.getApplicationId = function() {
+    return this.$routeParams.applicationId ? parseInt(this.$routeParams.applicationId) : null;
+  };
+
+  ManageFormRegionController.prototype.getSubRegions = function() {
+    return this.$scope.region.subRegions.map((subRegion) => {
+      if (subRegion.type === 'SUBFORM') {
+        return {
+          'type': subRegion.type,
+          'attributes': {
+            'subRegionId': subRegion.subRegionId || null,
+            'subRegionTemplateId': 21,
+            'name': subRegion.name,
+            'sequence': subRegion.sequence,
+            'isVisible': true,
+            'paginationQueryParameter': subRegion.paginationQueryParameter,
+            'parentRegionId': subRegion.parentRegionId || null,
+            'formTemplateId': 7,
+            'formSubmitButtonTemplateId': 9,
+            'viewSchema': subRegion.view.attributes.schema,
+            'viewName': subRegion.view.attributes.name,
+            'itemsPerPage': subRegion.itemsPerPage,
+            'showHeader': true,
+            'linkedColumn': subRegion.functionParameters,
+            'addSubregionFormName': 'subform/' + subRegion.index,
+            'functionParameters': this.getFormFieldsForSubform(subRegion.functionParameters),
+            'function': subRegion.function,
+            'buttonLabel': subRegion.buttonLabel,
+            'successMessage': subRegion.successMessage,
+            'errorMessage': subRegion.errorMessage
+          }
+        };
+      } else if (subRegion.type === 'TABULAR_SUBFORM') {
+        return {
+          'type': subRegion.type,
+          'attributes': {
+            'subRegionId': subRegion.subRegionId || null,
+            'subRegionTemplateId': 21,
+            'name': subRegion.name,
+            'sequence': subRegion.sequence,
+            'isVisible': true,
+            'paginationQueryParameter': subRegion.paginationQueryParameter,
+            'parentRegionId': subRegion.parentRegionId || null,
+            'tabularFormTemplateId': 26,
+            'itemsPerPage': subRegion.itemsPerPage,
+            'buttons': subRegion.buttons,
+            'view': subRegion.view,
+            'linkedColumns': subRegion.linkedColumns,
+            'formColumns': subRegion.formColumns
+          }
+        }
+      } else {
+        return null;
+      }
+    });
   };
 
   function init() {

@@ -7,7 +7,6 @@
     this.databaseService = databaseService;
     this.regionService = regionService;
     this.$scope.helper = helperService;
-
     this.init();
   }
 

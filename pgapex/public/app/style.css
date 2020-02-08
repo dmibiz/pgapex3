@@ -125,3 +125,8 @@ a.toggle {
 .dl-horizontal dt {
   white-space: unset;
 }
+
+.subregion form {
+  margin-top: 20px;
+  margin-right: 25px;
+}

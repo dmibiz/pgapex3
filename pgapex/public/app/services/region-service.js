@@ -204,7 +204,7 @@
   RegionService.prototype.saveFormRegion = function (pageId, pageTemplateDisplayPointId, regionId, name, sequence, regionTemplate, isVisible,
                                                         formTemplate, buttonTemplate, buttonLabel, successMessage,
                                                         errorMessage, redirectUrl, functionSchema, functionName, formPreFill,
-                                                        formFields, preFill) {
+                                                        formFields, preFill, subRegions) {
     var attributes = {
       "pageId": pageId,
       "pageTemplateDisplayPointId": pageTemplateDisplayPointId,
@@ -223,7 +223,8 @@
       "functionName": functionName,
       "formPreFill": formPreFill,
       "formFields": formFields,
-      "preFill": preFill
+      "preFill": preFill,
+      "subRegions": subRegions
     };
     var request = this.apiService.createApiRequest()
       .setAttributes(attributes)

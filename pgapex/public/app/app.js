@@ -44,7 +44,12 @@
     .module('pgApexApp', modules)
     .config(['$routeProvider', '$locationProvider', '$httpProvider', routeProviderConfig])
     .config(['$translateProvider', '$translatePartialLoaderProvider', translateProviderConfig])
-    .config(['cfpLoadingBarProvider', cfpLoadingBarProviderConfig]);
+    .config(['cfpLoadingBarProvider', cfpLoadingBarProviderConfig])
+    .filter('preFillColumnsWithValues', function() {
+      return function(formPreFillColumns) {
+        return formPreFillColumns.filter(preFillColumn => preFillColumn.value);
+      }
+    });
   }
 
   function init() {

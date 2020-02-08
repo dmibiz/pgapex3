@@ -10,7 +10,10 @@
         formError: '=',
         applicationId: '=',
         detailViewRegionId: '=',
-        lastSequence: '='
+        lastSequence: '=',
+        formPreFillColumns: '=',
+        functions: '=',
+        parentRegion: '='
       },
       controller: 'pgApexApp.region.AddSubRegionController',
       templateUrl: 'app/partials/subregion/add-subregion.html',

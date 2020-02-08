@@ -362,63 +362,6 @@ class Region extends Model {
         }
       }
 
-      /*$subReport = $connection->prepare('SELECT pgapex.f_subregion_delete_subregion(:parentRegionId)');
-      $subReport->bindValue(':parentRegionId', $detailViewRegionId, PDO::PARAM_INT);
-      $subReport->execute();
-
-      if (count($request->getApiAttribute('subRegions')) > 0) {
-        foreach ($request->getApiAttribute('subRegions') as $subRegion) {
-          if ($subRegion['type'] === 'SUBREPORT') {
-            $subReportStatement = $connection->prepare('SELECT pgapex.f_region_save_report_subregion(:subRegionId, :subRegionTemplateId, :name, :sequence, :isVisible, :queryParameter, :parentRegionId, :reportTemplateId,:viewSchema, :viewName, :itemsPerPage, :showHeader, :uniqueId)');
-
-            $subReportStatement->bindValue(':subRegionId',          $subRegion['attributes']['subRegionId'],               PDO::PARAM_INT);
-            $subReportStatement->bindValue(':subRegionTemplateId',  $subRegion['attributes']['subRegionTemplateId'],       PDO::PARAM_INT);
-            $subReportStatement->bindValue(':name',                 $subRegion['attributes']['name'],                      PDO::PARAM_STR);
-            $subReportStatement->bindValue(':sequence',             $subRegion['attributes']['sequence'],                  PDO::PARAM_INT);
-            $subReportStatement->bindValue(':isVisible',            $subRegion['attributes']['isVisible'],                 PDO::PARAM_BOOL);
-            $subReportStatement->bindValue(':queryParameter',       $subRegion['attributes']['paginationQueryParameter'],  PDO::PARAM_STR);
-            $subReportStatement->bindValue(':parentRegionId',       $detailViewRegionId,                                   PDO::PARAM_INT);
-            $subReportStatement->bindValue(':reportTemplateId',     $subRegion['attributes']['reportTemplateId'],          PDO::PARAM_INT);
-            $subReportStatement->bindValue(':viewSchema',           $subRegion['attributes']['viewSchema'],                PDO::PARAM_STR);
-            $subReportStatement->bindValue(':viewName',             $subRegion['attributes']['viewName'],                  PDO::PARAM_STR);
-            $subReportStatement->bindValue(':itemsPerPage',         $subRegion['attributes']['itemsPerPage'],              PDO::PARAM_INT);
-            $subReportStatement->bindValue(':showHeader',           $subRegion['attributes']['showHeader'],                PDO::PARAM_BOOL);
-            $subReportStatement->bindValue(':uniqueId',             $subRegion['attributes']['linkedColumn'],              PDO::PARAM_STR);
-            $subReportStatement->execute();
-            $subReportSubRegionId = $subReportStatement->fetchColumn();
-
-            $subReportStatement = $connection->prepare('SELECT pgapex.f_subregion_delete_report_subregion_columns(:subRegionId)');
-            $subReportStatement->bindValue(':subRegionId', $subReportSubRegionId, PDO::PARAM_INT);
-            $subReportStatement->execute();
-
-            $subReportColumnStatement = $connection->prepare('SELECT pgapex.f_subregion_create_report_subregion_column(:subRegionId, :viewColumnName, :heading, :sequence, :isTextEscaped)');
-            $subReportLinkStatement = $connection->prepare('SELECT pgapex.f_subregion_create_report_subregion_link(:subRegionId, :heading, :sequence, :isTextEscaped, :url, :linkText, :attributes)');
-
-            foreach ($subRegion['attributes']['columns'] as $subReportColumn) {
-              if ($subReportColumn['attributes']['type'] === 'COLUMN') {
-                $subReportColumnStatement->bindValue(':subRegionId',    $subReportSubRegionId,                           PDO::PARAM_INT);
-                $subReportColumnStatement->bindValue(':viewColumnName', $subReportColumn['attributes']['column'],        PDO::PARAM_STR);
-                $subReportColumnStatement->bindValue(':heading',        $subReportColumn['attributes']['heading'],       PDO::PARAM_STR);
-                $subReportColumnStatement->bindValue(':sequence',       $subReportColumn['attributes']['sequence'],      PDO::PARAM_INT);
-                $subReportColumnStatement->bindValue(':isTextEscaped',  $subReportColumn['attributes']['isTextEscaped'], PDO::PARAM_BOOL);
-                $subReportColumnStatement->execute();
-              } elseif ($subReportColumn['attributes']['type'] === 'LINK') {
-                $subReportLinkStatement->bindValue(':subRegionId',    $subReportSubRegionId,                            PDO::PARAM_INT);
-                $subReportLinkStatement->bindValue(':heading',        $subReportColumn['attributes']['heading'],        PDO::PARAM_STR);
-                $subReportLinkStatement->bindValue(':sequence',       $subReportColumn['attributes']['sequence'],       PDO::PARAM_INT);
-                $subReportLinkStatement->bindValue(':isTextEscaped',  $subReportColumn['attributes']['isTextEscaped'],  PDO::PARAM_BOOL);
-                $subReportLinkStatement->bindValue(':url',            $subReportColumn['attributes']['linkUrl'],        PDO::PARAM_BOOL);
-                $subReportLinkStatement->bindValue(':linkText',       $subReportColumn['attributes']['linkText'],       PDO::PARAM_BOOL);
-                $subReportLinkStatement->bindValue(':attributes',     $subReportColumn['attributes']['linkAttributes'], PDO::PARAM_BOOL);
-                $subReportLinkStatement->execute();
-              } else {
-                throw new Exception('Unknown column type: ' . $subReportColumn['attributes']['type']);
-              }
-            }
-          }
-        }
-      }*/
-
       $connection->commit();
       return true;
     } catch (Exception $e) {
@@ -513,6 +456,169 @@ class Region extends Model {
           }
         }
       }
+
+      $subForm = $connection->prepare('SELECT pgapex.f_subregion_delete_subregion(:parentRegionId)');
+      $subForm->bindValue(':parentRegionId', $formRegionId, PDO::PARAM_INT);
+      $subForm->execute();
+      if (count($request->getApiAttribute('subRegions')) > 0) {
+        foreach ($request->getApiAttribute('subRegions') as $subRegion) {
+          if ($subRegion['type'] === 'SUBFORM') {
+            if ($subRegion['attributes']['subRegionId'] !== null) {
+              $subFormFieldDeleteStatement = $connection->prepare('SELECT pgapex.f_region_delete_subform_field(:regionId)');
+              $subFormFieldDeleteStatement->bindValue(':regionId', $subRegion['attributes']['subRegionId'], PDO::PARAM_INT);
+              $subFormFieldDeleteStatement->execute();
+            }
+
+            $subFormStatement = $connection->prepare('SELECT pgapex.f_region_save_form_subregion(:subRegionId, :subRegionTemplateId, :name, :sequence, :isVisible, :queryParameter, :parentRegionId, :formTemplateId, :functionName, :submitButtonTemplateId, :schemaName, :buttonLabel, :successMessage, :errorMessage)');
+            
+            $subFormStatement->bindValue(':subRegionId',                  $subRegion['attributes']['subRegionId'],                          PDO::PARAM_INT);
+            $subFormStatement->bindValue(':subRegionTemplateId',          $subRegion['attributes']['subRegionTemplateId'],                  PDO::PARAM_INT);
+            $subFormStatement->bindValue(':name',                         $subRegion['attributes']['name'],                                 PDO::PARAM_STR);
+            $subFormStatement->bindValue(':sequence',                     $subRegion['attributes']['sequence'],                             PDO::PARAM_INT);
+            $subFormStatement->bindValue(':isVisible',                    $subRegion['attributes']['isVisible'],                            PDO::PARAM_BOOL);
+            $subFormStatement->bindValue(':queryParameter',               $subRegion['attributes']['paginationQueryParameter'],             PDO::PARAM_STR);
+            $subFormStatement->bindValue(':parentRegionId',               $formRegionId,                                                    PDO::PARAM_INT);
+            $subFormStatement->bindValue(':formTemplateId',               $subRegion['attributes']['formTemplateId'],                       PDO::PARAM_INT);
+            $subFormStatement->bindValue(':functionName',                 $subRegion['attributes']['function']['attributes']['name'],       PDO::PARAM_STR);
+            $subFormStatement->bindValue(':submitButtonTemplateId',       $subRegion['attributes']['formSubmitButtonTemplateId'],           PDO::PARAM_INT);
+            $subFormStatement->bindValue(':schemaName',                   $subRegion['attributes']['function']['attributes']['schema'],     PDO::PARAM_STR);
+            $subFormStatement->bindValue(':buttonLabel',                  $subRegion['attributes']['buttonLabel'],                          PDO::PARAM_STR);
+            $subFormStatement->bindValue(':successMessage',               $subRegion['attributes']['successMessage'],                       PDO::PARAM_STR);
+            $subFormStatement->bindValue(':errorMessage',                 $subRegion['attributes']['errorMessage'],                         PDO::PARAM_STR);
+            $subFormStatement->execute();
+            $subFormSubRegionId = $subFormStatement->fetchColumn();
+
+            $subFormFieldStatement = $connection->prepare('SELECT pgapex.f_region_save_subform_field(:subregionId, :fieldType, :listOfValuesId, :formFieldTemplateId, '
+                                               . ':fieldPreFillViewColumnName, :formElementName, :label, :sequence, :isMandatory, :isVisible, :defaultValue, :helpText, '
+                                               . ':functionParameterType, :functionParameterOrdinalPosition)');
+
+            foreach ($subRegion['attributes']['functionParameters'] as $subFormField) {
+              $subFormListOfValuesId = null;
+              if ($subFormField['attributes']['listOfValuesView'] !== null) {
+                $subFormListOfValuesStatement->bindValue(':valueColumn', $subFormField['attributes']['listOfValuesValue'],  PDO::PARAM_STR);
+                $subFormListOfValuesStatement->bindValue(':labelColumn', $subFormField['attributes']['listOfValuesLabel'],  PDO::PARAM_STR);
+                $subFormListOfValuesStatement->bindValue(':viewName',    $subFormField['attributes']['listOfValuesView'],   PDO::PARAM_STR);
+                $subFormListOfValuesStatement->bindValue(':schemaName',  $subFormField['attributes']['listOfValuesSchema'], PDO::PARAM_STR);
+                $subFormListOfValuesStatement->execute();
+                $subFormListOfValuesId = $subFormListOfValuesStatement->fetchColumn();
+              }
+              $subFormFieldStatement->bindValue(':subregionId',                      $subFormSubRegionId,                                              PDO::PARAM_INT);
+              $subFormFieldStatement->bindValue(':fieldType',                        $subFormField['attributes']['fieldType'],                         PDO::PARAM_STR);
+              $subFormFieldStatement->bindValue(':listOfValuesId',                   $subFormListOfValuesId,                                           PDO::PARAM_INT);
+              $subFormFieldStatement->bindValue(':formFieldTemplateId',              $subFormField['attributes']['fieldTemplate'],                     PDO::PARAM_INT);
+              $subFormFieldStatement->bindValue(':fieldPreFillViewColumnName',       $subFormField['attributes']['preFillColumn'],                     PDO::PARAM_STR);
+              $subFormFieldStatement->bindValue(':formElementName',                  $subFormField['attributes']['inputName'],                         PDO::PARAM_STR);
+              $subFormFieldStatement->bindValue(':label',                            $subFormField['attributes']['label'],                             PDO::PARAM_STR);
+              $subFormFieldStatement->bindValue(':sequence',                         $subFormField['attributes']['sequence'],                          PDO::PARAM_INT);
+              $subFormFieldStatement->bindValue(':isMandatory',                      $subFormField['attributes']['isMandatory'],                       PDO::PARAM_BOOL);
+              $subFormFieldStatement->bindValue(':isVisible',                        $subFormField['attributes']['isVisible'],                         PDO::PARAM_BOOL);
+              $subFormFieldStatement->bindValue(':defaultValue',                     $subFormField['attributes']['defaultValue'],                      PDO::PARAM_STR);
+              $subFormFieldStatement->bindValue(':helpText',                         $subFormField['attributes']['helpText'],                          PDO::PARAM_STR);
+              $subFormFieldStatement->bindValue(':functionParameterType',            $subFormField['attributes']['functionParameterType'],             PDO::PARAM_STR);
+              $subFormFieldStatement->bindValue(':functionParameterOrdinalPosition', $subFormField['attributes']['functionParameterOrdinalPosition'],  PDO::PARAM_STR);
+              $subFormFieldStatement->execute();
+            }
+          } elseif ($subRegion['type'] === 'TABULAR_SUBFORM') {
+            if ($subRegion['attributes']['subRegionId'] != null) {
+              $tabularSubFormLinkedColumnsDeleteStatement = $connection->prepare('SELECT pgapex.f_region_delete_tabular_subform_linked_columns(:subRegionId)');
+              $tabularSubFormLinkedColumnsDeleteStatement->bindValue(':subRegionId', $subRegion['attributes']['subRegionId'], PDO::PARAM_INT);
+              $tabularSubFormLinkedColumnsDeleteStatement->execute();
+
+              $tabularSubFormFunctionArgumentsDeleteStatement = $connection->prepare('SELECT pgapex.f_region_delete_tabular_subform_function_argument(:subRegionId)');
+              $tabularSubFormFunctionArgumentsDeleteStatement->bindValue(':subRegionId', $subRegion['attributes']['subRegionId'], PDO::PARAM_INT);
+              $tabularSubFormFunctionArgumentsDeleteStatement->execute();
+
+              $tabularSubFormFunctionsDeleteStatement = $connection->prepare('SELECT pgapex.f_region_delete_tabular_subform_functions(:subRegionId)');
+              $tabularSubFormFunctionsDeleteStatement->bindValue(':subRegionId', $subRegion['attributes']['subRegionId'], PDO::PARAM_INT);
+              $tabularSubFormFunctionsDeleteStatement->execute();
+            }
+              
+              $tabularSubFormStatement = $connection->prepare('SELECT pgapex.f_region_save_tabularform_subregion(:subRegionId, :subRegionTemplateId, :name, :sequence, :isVisible, :queryParameter,
+                                                                                                                 :parentRegionId, :tabularFormTemplateId, :schemaName, :viewName, :itemsPerPage)');
+              
+              $tabularSubFormStatement->bindValue(':subRegionId',           $subRegion['attributes']['subRegionId'],                  PDO::PARAM_INT);
+              $tabularSubFormStatement->bindValue(':subRegionTemplateId',   $subRegion['attributes']['subRegionTemplateId'],          PDO::PARAM_INT);
+              $tabularSubFormStatement->bindValue(':name',                  $subRegion['attributes']['name'],                         PDO::PARAM_STR);
+              $tabularSubFormStatement->bindValue(':sequence',              $subRegion['attributes']['sequence'],                     PDO::PARAM_INT);
+              $tabularSubFormStatement->bindValue(':isVisible',             $subRegion['attributes']['isVisible'],                    PDO::PARAM_BOOL);
+              $tabularSubFormStatement->bindValue(':queryParameter',        $subRegion['attributes']['paginationQueryParameter'],     PDO::PARAM_STR);
+              $tabularSubFormStatement->bindValue(':parentRegionId',        $formRegionId,                                            PDO::PARAM_INT);
+              $tabularSubFormStatement->bindValue(':tabularFormTemplateId', $subRegion['attributes']['tabularFormTemplateId'],        PDO::PARAM_INT);
+              $tabularSubFormStatement->bindValue(':schemaName',            $subRegion['attributes']['view']['attributes']['schema'], PDO::PARAM_STR);
+              $tabularSubFormStatement->bindValue(':viewName',              $subRegion['attributes']['view']['attributes']['name'],   PDO::PARAM_STR);
+              $tabularSubFormStatement->bindValue(':itemsPerPage',          $subRegion['attributes']['itemsPerPage'],                  PDO::PARAM_INT);
+              $tabularSubFormStatement->execute();
+              $tabularSubFormSubRegionId = $tabularSubFormStatement->fetchColumn();
+              
+              $tabularSubFormLinkedColumnStatement = $connection->prepare('SELECT pgapex.f_region_save_tabular_subform_linked_column(:subRegionId, :parentFormPreFillColumnName, :tabularSubFormViewColumnName)');
+              
+              foreach($subRegion['attributes']['linkedColumns'] as $parentFormPreFillColumn => $tabularSubFormViewColumnName) {
+                $tabularSubFormLinkedColumnStatement->bindValue(':subRegionId',                  $tabularSubFormSubRegionId, PDO::PARAM_INT);
+                $tabularSubFormLinkedColumnStatement->bindValue(':parentFormPreFillColumnName',  $parentFormPreFillColumn, PDO::PARAM_STR);
+                $tabularSubFormLinkedColumnStatement->bindValue(':tabularSubFormViewColumnName', $tabularSubFormViewColumnName, PDO::PARAM_STR);
+                $tabularSubFormLinkedColumnStatement->execute();
+              }
+              
+              $tabularSubFormFunctionStatement = $connection->prepare('SELECT pgapex.f_region_save_tabular_subform_function(:subRegionId, :buttonTemplateId, :schemaName,
+                                                                                                                     :functionName, :buttonLabel, :sequence, :successMessage, :errorMessage)');
+              
+              $tabularSubFormFunctionArgumentStatement = $connection->prepare('SELECT pgapex.f_region_save_tabular_subform_function_argument(:tabularSubFormFunctionId, :subRegionId, :functionParameterType,
+                                                                                                                                      :functionParameterOrdinalPosition, :tabularSubFormViewColumnName)');
+
+              foreach ($subRegion['attributes']['buttons'] as $button) {
+                $tabularSubFormFunctionStatement->bindValue(':subRegionId',      $tabularSubFormSubRegionId,                  PDO::PARAM_INT);
+                $tabularSubFormFunctionStatement->bindValue(':buttonTemplateId', $button['buttonTemplateId'],                 PDO::PARAM_INT);
+                $tabularSubFormFunctionStatement->bindValue(':schemaName',       $button['function']['attributes']['schema'], PDO::PARAM_STR);
+                $tabularSubFormFunctionStatement->bindValue(':functionName',     $button['function']['attributes']['name'],   PDO::PARAM_STR);
+                $tabularSubFormFunctionStatement->bindValue(':buttonLabel',      $button['label'],                            PDO::PARAM_STR);
+                $tabularSubFormFunctionStatement->bindValue(':sequence',         $button['sequence'],                         PDO::PARAM_INT);
+                $tabularSubFormFunctionStatement->bindValue(':successMessage',   $button['successMessage'],                   PDO::PARAM_STR);
+                $tabularSubFormFunctionStatement->bindValue(':errorMessage',     $button['errorMessage'],                     PDO::PARAM_STR);
+                $tabularSubFormFunctionStatement->execute();
+                $tabularSubFormFunctionId = $tabularSubFormFunctionStatement->fetchColumn();
+
+                foreach ($button['function']['attributes']['parameters'] as $functionParameter) {
+                  $tabularSubFormFunctionArgumentStatement->bindValue(':tabularSubFormFunctionId',         $tabularSubFormFunctionId,                           PDO::PARAM_INT);
+                  $tabularSubFormFunctionArgumentStatement->bindValue(':subRegionId',                      $tabularSubFormSubRegionId,                          PDO::PARAM_INT);
+                  $tabularSubFormFunctionArgumentStatement->bindValue(':functionParameterType',            $functionParameter['attributes']['argumentType'],    PDO::PARAM_STR);
+                  $tabularSubFormFunctionArgumentStatement->bindValue(':functionParameterOrdinalPosition', $functionParameter['attributes']['ordinalPosition'], PDO::PARAM_INT);
+                  $tabularSubFormFunctionArgumentStatement->bindValue(':tabularSubFormViewColumnName',     $functionParameter['viewColumnForValue'],            PDO::PARAM_STR);
+                  $tabularSubFormFunctionArgumentStatement->execute();
+                }
+              }
+
+              $tabularSubFormColumnsDeleteStatement = $connection->prepare('SELECT pgapex.f_region_delete_tabularform_subregion_columns(:subRegionId)');
+              $tabularSubFormColumnsDeleteStatement->bindValue(':subRegionId', $tabularSubFormSubRegionId, PDO::PARAM_INT);
+              $tabularSubFormColumnsDeleteStatement->execute();
+
+              $columnStatement = $connection->prepare('SELECT pgapex.f_region_create_tabularform_subregion_column(:subRegionId, :viewColumnName, '
+                . ':heading, :sequence, :isTextEscaped)');
+              $linkStatement = $connection->prepare('SELECT pgapex.f_region_create_tabularform_subregion_link(:subRegionId, :heading,'
+                . ':sequence, :isTextEscaped, :url, :linkText, :attributes)');
+              foreach ($subRegion['attributes']['formColumns'] as $tabularSubFormColumn) {
+                if ($tabularSubFormColumn['attributes']['type'] === 'COLUMN') {
+                  $columnStatement->bindValue(':subRegionId',    $tabularSubFormSubRegionId,                           PDO::PARAM_INT);
+                  $columnStatement->bindValue(':viewColumnName', $tabularSubFormColumn['attributes']['column'],        PDO::PARAM_STR);
+                  $columnStatement->bindValue(':heading',        $tabularSubFormColumn['attributes']['heading'],       PDO::PARAM_STR);
+                  $columnStatement->bindValue(':sequence',       $tabularSubFormColumn['attributes']['sequence'],      PDO::PARAM_INT);
+                  $columnStatement->bindValue(':isTextEscaped',  $tabularSubFormColumn['attributes']['isTextEscaped'], PDO::PARAM_BOOL);
+                  $columnStatement->execute();
+                } elseif ($tabularSubFormColumn['attributes']['type'] === 'LINK') {
+                  $linkStatement->bindValue(':subRegionId',    $tabularSubFormSubRegionId,                            PDO::PARAM_INT);
+                  $linkStatement->bindValue(':heading',        $tabularSubFormColumn['attributes']['heading'],        PDO::PARAM_STR);
+                  $linkStatement->bindValue(':sequence',       $tabularSubFormColumn['attributes']['sequence'],       PDO::PARAM_INT);
+                  $linkStatement->bindValue(':isTextEscaped',  $tabularSubFormColumn['attributes']['isTextEscaped'],  PDO::PARAM_BOOL);
+                  $linkStatement->bindValue(':url',            $tabularSubFormColumn['attributes']['linkUrl'],        PDO::PARAM_BOOL);
+                  $linkStatement->bindValue(':linkText',       $tabularSubFormColumn['attributes']['linkText'],       PDO::PARAM_BOOL);
+                  $linkStatement->bindValue(':attributes',     $tabularSubFormColumn['attributes']['linkAttributes'], PDO::PARAM_BOOL);
+                  $linkStatement->execute();
+                } else {
+                  throw new Exception('Unknown column type: ' . $tabularSubFormColumn['attributes']['type']);
+                }
+              }
+            }
+          }
+        }
 
       $connection->commit();
       return true;

@@ -176,6 +176,9 @@
     "reportAndForm": "Report and Form",
     "createReportAndFormRegion": "Create report and form",
     "editReportAndFormRegion": "Edit report and form",
-    "createFormForReportRegion": "Set form page"
+    "createFormForReportRegion": "Set form page",
+    "subForm": "Subform",
+    "tabularSubForm": "Tabular subform",
+    "linkedColumns": "Linked columns"
   }
 }

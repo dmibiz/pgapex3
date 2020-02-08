@@ -14,19 +14,64 @@
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
       </button>
       <ul class="dropdown-menu">
-        <li><a href="" ng-click="addSubRegion('SUBREPORT')">{{'region.subReport'|translate}}</a></li>
+        <li ng-if="parentRegion == 'DETAIL_VIEW'"><a href="" ng-click="addSubRegion('SUBREPORT')">{{'region.subReport'|translate}}</a></li>
+        <li ng-if="parentRegion == 'FORM'"><a href="" ng-click="addSubRegion('SUBFORM')">{{'region.subForm'|translate}}</a></li>
+        <li ng-if="parentRegion == 'FORM'"><a href="" ng-click="addSubRegion('TABULAR_SUBFORM')">{{'region.tabularSubForm'|translate}}</a></li>
       </ul>
     </div>
   </div>
 </div>
 
 <div ng-repeat="subRegion in subRegions">
-  <div ng-show="subRegion.type === 'SUBREPORT'">
+  <div ng-if="subRegion.type === 'SUBREPORT'">
     <div class="panel panel-default subregion-form__panel">
+      <div class="panel-heading">
+        <h3>Subreport</h3>
+      </div>
       <div class="panel-body">
         <div class="row subregion-form__row">
           <div class="col-md-11">
             <add-sub-report views-with-columns="viewsWithColumns" sub-report="subRegion" form-error="formError" mode="mode" index="$index"></add-sub-report>
+          </div>
+          <div class="col-md-1 text-right">
+            <a title="{{'region.deleteSubRegion'|translate}}" ng-click="deleteSubRegion($index)"
+               class="btn btn-sm btn-danger">
+              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div ng-if="subRegion.type === 'SUBFORM'">
+    <div class="panel panel-default subregion-form__panel">
+      <div class="panel-heading">
+        <h3>Subform</h3>
+      </div>
+      <div class="panel-body">
+        <div class="row subregion-form__row">
+          <div class="col-md-11">
+            <add-sub-form views-with-columns="viewsWithColumns" sub-form="subRegion" form-error="formError" mode="mode" index="$index" sub-form-pre-fill-columns="formPreFillColumns"></add-sub-form>
+          </div>
+          <div class="col-md-1 text-right">
+            <a title="{{'region.deleteSubRegion'|translate}}" ng-click="deleteSubRegion($index)"
+               class="btn btn-sm btn-danger">
+              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div ng-if="subRegion.type === 'TABULAR_SUBFORM'">
+    <div class="panel panel-default subregion-form__panel">
+      <div class="panel-heading">
+        <h3>Tabular subform</h3>
+      </div>
+      <div class="panel-body">
+        <div class="row subregion-form__row">
+          <div class="col-md-11">
+            <add-tabular-sub-form views-with-columns="viewsWithColumns" tabular-sub-form="subRegion" form-error="formError" mode="mode" index="$index" pre-fill-columns="formPreFillColumns" functions="functions"></add-tabular-sub-form>
           </div>
           <div class="col-md-1 text-right">
             <a title="{{'region.deleteSubRegion'|translate}}" ng-click="deleteSubRegion($index)"
