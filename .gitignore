@@ -1,4 +1,5 @@
 .vagrant
+.idea
 /node_modules
 /document/pgapex.md~
 /test-reports
