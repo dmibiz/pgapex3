@@ -49,14 +49,16 @@
       </div>
     </div>
     <div class="form-group" ng-repeat="preFillColumn in preFillColumns | preFillColumnsWithValues">
+      <div class="col-md-2">
+        <label for="{{ 'linkedColumn' + $index + index }}" class="control-label">{{ preFillColumn.value }}</label>
+      </div>
       <div class="col-md-6" ng-class="{'has-error': formError.showErrors(tabularSubForm.linkedColumn, 'tabular-subform/' + index + '/linkedColumn')}">
-        <select name="linkedColumn" ng-model="tabularSubForm.linkedColumns[preFillColumn.column.attributes.name]" class="form-control" ng-change="setLinkedColumns()" required
+        <select id="{{ 'linkedColumn' + $index + index }}" name="{{ 'linkedColumn' + $index + index }}" ng-model="tabularSubForm.linkedColumns[preFillColumn.column.attributes.name]" class="form-control" ng-change="setLinkedColumns()" required
                 ng-options="viewColumn.attributes.name as viewColumn.attributes.name for viewColumn in viewColumns">
-          <option value="">-- {{'region.linkedColumn'|translate}} * --</option>
+        <option value="">-- {{'region.linkedColumn'|translate}} * --</option>
         </select>
       </div>
     </div>
-
     <div ng-show="tabularSubForm.includeLinkedPage
     ">
       <div class="row">
@@ -65,7 +67,9 @@
         </div>
       </div>
       <div class="form-group" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.tabularSubformLinkedPageUniqueId, 'tabularSubformLinkedPageUniqueId')}">
-        <label for="tabularSubformLinkedPageUniqueId" class="col-md-2 control-label">{{'region.uniqueId'|translate}} *</label>
+        <div class="col-md-2">
+          <label for="tabularSubformLinkedPageUniqueId" class="control-label">{{'region.uniqueId'|translate}} *</label>
+        </div>
         <div class="col-md-6">
           <select id="tabularSubformLinkedPageUniqueId" name="tabularSubformLinkedPageUniqueId" ng-model="tabularSubForm.linkedPageUniqueId" class="form-control"
                   ng-required="tabularSubForm.includeLinkedPage"
@@ -79,7 +83,9 @@
       </div>
       <div class="form-group"
           ng-class="{'has-error': formError.showErrors(tabularSubFormForm.tabularSubFormLinkedPageId, 'tabularSubFormLinkedPageId')}">
-        <label for="formPageId" class="col-md-2 control-label">{{'region.page'|translate}} *</label>
+        <div class="col-md-2">
+          <label for="formPageId" class="control-label">{{'region.page'|translate}} *</label>
+        </div>
         <div class="col-md-6">
           <select id="tabularSubFormLinkedPageId" name="tabularSubFormLinkedPageId" ng-model="tabularSubForm.linkedPageId" class="form-control"
                   ng-required="tabularSubForm.includeLinkedPage" ng-options="page.id as page.attributes.title + ' (id: ' + page.id + ')' for page in pages">
