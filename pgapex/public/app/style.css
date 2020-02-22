@@ -146,3 +146,7 @@ a.toggle {
 .subregion .form-group.pull-right button:last-child {
   margin-right: 20px;
 }
+
+.calenderFormatInfoTable code {
+  margin-right: 20px;
+}

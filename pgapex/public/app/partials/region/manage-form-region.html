@@ -185,10 +185,14 @@
                 <option value="" disabled>-- {{'region.columnForLabel'|translate}} * --</option>
               </select>
             </div>
-            <div class="col-md-2"
-                 ng-class="{'has-error': formError.showErrors(functionParameterForm.calenderFormat, 'functionParameters/' + $index + '/calenderFormat')}"
-                 ng-show="functionParameter.fieldType === 'CALENDER'">
-              <input ng-model="functionParameter.calenderFormat" name="calenderFormat" type="text" class="form-control" placeholder="{{'region.calenderFormat'|translate}}">
+            <div ng-show="functionParameter.fieldType === 'CALENDER'">
+              <div class="col-md-2"
+                  ng-class="{'has-error': formError.showErrors(functionParameterForm.calenderFormat, 'functionParameters/' + $index + '/calenderFormat')}">
+                <input ng-model="functionParameter.calenderFormat" name="calenderFormat" type="text" class="form-control" placeholder="{{'region.calenderFormat'|translate}}">
+              </div>
+              <div class="col-sm-1">
+                <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.calenderFormatInfo()"></span>
+              </div>
             </div>
             <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.preFillColumn, 'functionParameters/' + $index + '/preFillColumn')}">
               <select id="preFillColumn" name="preFillColumn" ng-model="functionParameter.preFillColumn" class="form-control" ng-show="region.formPreFill && region.formPreFillView"

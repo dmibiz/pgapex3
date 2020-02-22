@@ -2,12 +2,13 @@
 (function (window) {
   var module = window.angular.module('pgApexApp.page');
 
-  function AddSubFormController($scope, $routeParams, databaseService, formErrorService, templateService) {
+  function AddSubFormController($scope, $routeParams, databaseService, formErrorService, templateService, helperService) {
     this.$scope = $scope;
     this.$routeParams = $routeParams;
     this.databaseService = databaseService;
     this.formErrorService = formErrorService;
     this.templateService = templateService;
+    this.$scope.helper = helperService;
 
     /*$scope.$watch('subForm.columns', function (items) {
       $scope.subFormForm.$setValidity('columnsArrayLength', items.length > 0);
@@ -121,10 +122,6 @@
     functionWithParameters.attributes.displayText = displayText;
   };
 
-  function init() {
-    module.controller('pgApexApp.region.AddSubFormController', ['$scope', '$routeParams', 'databaseService', 'formErrorService', 'templateService', AddSubFormController]);
-  }
-
   AddSubFormController.prototype.getApplicationId = function() {
     return this.$routeParams.applicationId ? this.$routeParams.applicationId : null;
   };
@@ -203,6 +200,10 @@
       };
     });
   };
+
+  function init() {
+    module.controller('pgApexApp.region.AddSubFormController', ['$scope', '$routeParams', 'databaseService', 'formErrorService', 'templateService', 'helperService', AddSubFormController]);
+  }
 
   init();
 })(window);

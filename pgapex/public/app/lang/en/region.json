@@ -164,7 +164,7 @@
     "preFillFormHelpText": "If you want form to be pre filled with data then check it, select view where you get this data and add at least one condition that is used to select correct row from that view. Condition must be url parameter. Eg. if you create link to this page and add '?param_name=param_value' then add param_name to condition input. Then param_value will be used to create query from the view.",
     "paginationQueryParameterHelpText": "URL parameter that is used for pagination. It may contain characters a-z A-Z and _.",
     "columnsHelpText": "Report/Tabular Form/Detail View must contain at least one column. Escaped columns do not parse HTML. Sequence must be unique among columns. Link URL may contain special variables &APPLICATION_ROOT& and &APPLICATION_ID&. Link URL and text may contain special variables %column_name% that will be replaced with value of column 'column_name'. For example, if you want to add URL that refers to page 'my_form' in current application and passes on query parameter 'p' with value from column 'id', then you must insert: &APPLICATION_ROOT&/app/&APPLICATION_ID&/my_form?p=%id%",
-    "redirectUrlHelpText": "Redirect URL may contain special variables &APPLICATION_ROOT& and &APPLICATION_ID&. For example, if you want to add URL that redirects to page 'my_page' in current application, then you must insert: &APPLICATION_ROOT&/app/&APPLICATION_ID&/my_page",
+    "redirectUrlHelpText": "Redirect URL may contain special variables &APPLICATION_ROOT& and &APPLICATION_ID&. For example, if you want to add URL that redirects to page 'my_page' in current application, then you must insert: &APPLICATION_ROOT&/app/&APPLICATION_ID&/my_page where 'my_page' is page alias",
     "tabularFormUniqueIdHelpText": "Unique ID of the table column, which is equal to the first parameter of the function.",
     "buttonsHelpText": "Button, when clicked, launches the database function created by the developer. The function can contain up to 2 parameters: the first parameter is the unique ID of the table column (previously defined) and the second is the system variable APP_USER that equals the username",
     "detailViewUniqueIdHelpText": "Unique ID of the table column, that connects the report and the detail view.",
@@ -184,6 +184,7 @@
     "width": "Width",
     "height": "Height",
     "includeLinkToPage": "Include link to another page",
-    "setLinkedPage": "Set linked page"
+    "setLinkedPage": "Set linked page",
+    "calenderFormatInfoTableDescription": "The following format specifiers are recognized:"
   }
 }

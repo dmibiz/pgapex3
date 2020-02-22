@@ -1,0 +1,151 @@
+<div class="modal-body">
+    <h4>{{ 'region.calenderFormatInfoTableDescription' | translate }}</h4>
+    <table class="calenderFormatInfoTable">
+        <tbody>
+            <tr>
+                <td><code>%a</code></td>
+                <td>Abbreviated weekday name (<samp>Sun</samp>...<samp>Sat</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%B</code></td>
+                <td>Abbreviation for Before Common Era (if year&lt;1)*</td>
+            </tr>
+            <tr>
+                <td><code>%b</code></td>
+                <td>Abbreviated month name (<samp>Jan</samp>...<samp>Dec</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%C</code></td>
+                <td>Abbreviation for Common Era (if year&gt;=1)*</td>
+            </tr>
+            <tr>
+                <td><code>%c</code></td>
+                <td>Month, numeric (<samp>1</samp>..<samp>12</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%D</code></td>
+                <td>Day of the month with English suffix (<samp>1st</samp>, <samp>2nd</samp>, ...)</td>
+            </tr>
+            <tr>
+                <td><code>%d</code></td>
+                <td>Day of the month, numeric (<samp>00</samp>...<samp>31</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%E</code></td>
+                <td>Era abbreviation*</td>
+            </tr>
+            <tr>
+                <td><code>%e</code></td>
+                <td>Day of the month, numeric (<samp>0</samp>...<samp>31</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%H</code></td>
+                <td>Hour (<samp>00</samp>...<samp>23</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%h</code></td>
+                <td>Hour (<samp>01</samp>...<samp>12</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%I</code></td>
+                <td>Hour (<samp>01</samp>...<samp>12</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%i</code></td>
+                <td>Minutes, numeric (<samp>00</samp>...<samp>59</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%k</code></td>
+                <td>Hour (<samp>0</samp>...<samp>23</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%l</code></td>
+                <td>Hour (<samp>1</samp>...<samp>12</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%M</code></td>
+                <td>Month name (<samp>January</samp>...<samp>December</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%m</code></td>
+                <td>Month, numeric (<samp>01</samp>...<samp>12</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%p</code></td>
+                <td><samp>AM</samp> or <samp>PM</samp></td>
+            </tr>
+            <tr>
+                <td><code>%r</code></td>
+                <td>Time, 12-hour (<samp>hh:mm:ss</samp> followed by <samp>AM</samp> or <samp>PM</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%S</code></td>
+                <td>Seconds (<samp>00</samp>...<samp>59</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%s</code></td>
+                <td>Seconds (<samp>00</samp>...<samp>59</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%T</code></td>
+                <td>Time, 24-hour (<samp>hh:mm:ss</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%W</code></td>
+                <td>Weekday name (<samp>Sunday</samp>...<samp>Saturday</samp>)</td>
+            </tr>
+            <tr>
+                <td><code>%w</code></td>
+                <td>Day of the week (<samp>0</samp>=Sunday...<samp>6</samp>=Saturday)</td>
+            </tr>
+            <tr>
+                <td><code>%Y</code></td>
+                <td>Year, numeric, four digits (possibly signed)</td>
+            </tr>
+            <tr>
+                <td><code>%y</code></td>
+                <td>Year, numeric, two digits (possibly signed)</td>
+            </tr>
+            <tr>
+                <td><code>%Z</code></td>
+                <td>Year, numeric, four digits (no sign)*</td>
+            </tr>
+            <tr>
+                <td><code>%z</code></td>
+                <td>Year, numeric, variable length (no sign)*</td>
+            </tr>
+            <tr>
+                <td><code>%#</code></td>
+                <td>Signed UTC offset in minutes* </td>
+            </tr>
+            <tr>
+                <td><code>%+</code></td>
+                <td>Signed UTC offset in <code>%h%i</code> format* </td>
+            </tr>
+            <tr>
+                <td><code>%-</code></td>
+                <td>Signed UTC offset in <code>%l%i</code> format* </td>
+            </tr>
+            <tr>
+                <td><code>%:</code></td>
+                <td>Signed UTC offset in <code>%h:%i</code> format* </td>
+            </tr>
+            <tr>
+                <td><code>%;</code></td>
+                <td>Signed UTC offset in <code>%l:%i</code> format* </td>
+            </tr>
+            <tr>
+                <td><code>%@</code></td>
+                <td>UTC offset time zone <a href="https://www.ama3.com/anytime/#AnyTime.utcLabel" target="_blank">label</a>* </td>
+            </tr>
+            <tr>
+                <td><code>%%</code></td>
+                <td>A literal <samp>%</samp> character</td>
+            </tr>
+        </tbody>
+    </table>
+    <h5>{{ 'general.forExample' | translate }}: <span style="font-weight: bold">%Y-%m-%d %T</span></h5>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="ok()">{{'general.close'|translate}}</button>
+</div>
