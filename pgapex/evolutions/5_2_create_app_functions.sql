@@ -863,6 +863,9 @@ DECLARE
   v_redirect_url      VARCHAR;
   t_function_call     TEXT;
   i_function_response INT;
+  i_form_pre_fill_id  INT;
+  t_pre_fill_url_params TEXT[];
+  t_url_query_string TEXT;
 BEGIN
   IF (SELECT NOT EXISTS(SELECT 1
                         FROM pgapex.region r
@@ -871,8 +874,8 @@ BEGIN
     PERFORM pgapex.f_app_add_error_message('Region does not exist');
   END IF;
 
-  SELECT schema_name, function_name, success_message, error_message, redirect_url
-  INTO v_schema_name, v_function_name, v_success_message, v_error_message, v_redirect_url
+  SELECT schema_name, function_name, success_message, error_message, redirect_url, form_pre_fill_id
+  INTO v_schema_name, v_function_name, v_success_message, v_error_message, v_redirect_url, i_form_pre_fill_id
   FROM pgapex.form_region WHERE region_id = i_region_id;
 
   t_function_call := 'SELECT 1 FROM ' || v_schema_name || '.' || v_function_name || ' ( ';
@@ -894,6 +897,18 @@ BEGIN
     END IF;
     IF v_redirect_url IS NOT NULL THEN
       PERFORM pgapex.f_app_set_header('location', pgapex.f_app_replace_system_variables(v_redirect_url));
+    ELSIF i_form_pre_fill_id IS NOT NULL THEN
+      SELECT ARRAY( SELECT pi.name
+      FROM pgapex.fetch_row_condition frc
+      RIGHT JOIN pgapex.page_item pi ON pi.page_item_id = frc.url_parameter_id
+      WHERE frc.form_pre_fill_id = i_form_pre_fill_id) INTO t_pre_fill_url_params;
+
+      t_url_query_string := '?';
+      t_url_query_string := t_url_query_string || (SELECT string_agg(key || '=' || value, '&')
+                                                  FROM json_each_text(j_post_params::JSON)
+                                                  WHERE key IN (SELECT UNNEST(t_pre_fill_url_params)));
+
+      PERFORM pgapex.f_app_set_header('location', t_url_query_string);
     END IF;
   EXCEPTION
     WHEN OTHERS THEN
@@ -991,14 +1006,11 @@ BEGIN
     FROM pgapex.tabular_subform_function tsff
     WHERE tsff.subregion_id = i_subregion_id AND tsff.tabular_subform_function_id = i_function_id;
 
-  /*SELECT ARRAY(SELECT quote_literal(argument) FROM json_array_elements_text((j_post_params->>'#FUNCTION_PARAMETERS#')) AS argument)
-  INTO t_function_params;*/
-t_function_id := quote_literal(i_function_id);
-t_function_params := replace(j_post_params->>'#FUNCTION_PARAMETERS#', '''', '"');
-t_function_params := replace(t_function_params, '"{', '{');
-t_function_params := replace(t_function_params, '}"', '}');
+  t_function_id := quote_literal(i_function_id);
+  t_function_params := replace(j_post_params->>'#FUNCTION_PARAMETERS#', '''', '"');
+  t_function_params := replace(t_function_params, '"{', '{');
+  t_function_params := replace(t_function_params, '}"', '}');
 
-/*INSERT INTO public.debug (test_value) VALUES (t_function_params::JSON);*/
   BEGIN
     FOR j_function_param IN SELECT value FROM json_array_elements(t_function_params::json) WHERE value->i_function_id::text IS NOT NULL
     LOOP
@@ -1009,7 +1021,6 @@ t_function_params := replace(t_function_params, '}"', '}');
                                 ORDER BY cast(value->'ordinal_position' AS TEXT) ASC
                         ) a);
       t_function_call := t_function_call || ');';
-      INSERT INTO public.debug (test_value) VALUES (t_function_call);
       SELECT res_func INTO i_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func int );
     END LOOP;
 
@@ -1346,6 +1357,29 @@ BEGIN
   WHERE p.page_id = i_form_page_id;
 
   t_url := '../' || i_application_id::text || '/' || i_form_page_id::text;
+  
+  RETURN t_url;
+END
+$$ LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pgapex, public, pg_temp;
+
+----------
+
+CREATE OR REPLACE FUNCTION pgapex.f_app_get_page_path(
+  i_page_id INT
+)
+  RETURNS TEXT AS $$
+DECLARE
+  i_application_id INT;
+  t_url            TEXT;
+BEGIN
+  SELECT p.application_id
+  INTO i_application_id
+  FROM pgapex.page p
+  WHERE p.page_id = i_page_id;
+
+  t_url := '../' || i_application_id::text || '/' || i_page_id::text;
   
   RETURN t_url;
 END
@@ -1856,22 +1890,24 @@ BEGIN
     RIGHT JOIN pgapex.page_item pi ON pi.page_item_id = frc.url_parameter_id
     WHERE frc.form_pre_fill_id = i_form_pre_fill_id) INTO t_pre_fill_url_params;
 
-    IF (j_get_params ?& t_pre_fill_url_params) = FALSE THEN
+    /*IF (j_get_params ?& t_pre_fill_url_params) = FALSE THEN
       PERFORM pgapex.f_app_add_error_message('All url params must exist to prefetch form data: ' || array_to_string(t_pre_fill_url_params, ', '));
       RETURN '';
+    END IF;*/
+
+    IF (j_get_params ?& t_pre_fill_url_params) <> FALSE THEN
+      SELECT string_agg(params.param, ' AND ') INTO v_query
+      FROM ( SELECT (frc.view_column_name || '=' || quote_nullable(url_params.value)) param
+            FROM pgapex.fetch_row_condition frc
+            LEFT JOIN pgapex.page_item pi ON pi.page_item_id = frc.url_parameter_id
+            LEFT JOIN (SELECT key, value FROM json_each_text(j_get_params::json)) url_params ON url_params.key = pi.name
+            WHERE frc.form_pre_fill_id = i_form_pre_fill_id
+          ) params;
+
+      v_query := 'SELECT to_json(a) FROM ' || v_pre_fill_schema || '.' || v_pre_fill_view || ' a WHERE ' || v_query || ' LIMIT 1';
+      SELECT res_pre_fetch_values INTO j_pre_fetched_values FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_query, FALSE) AS ( res_pre_fetch_values JSONB );
     END IF;
-
-    SELECT string_agg(params.param, ' AND ') INTO v_query
-    FROM ( SELECT (frc.view_column_name || '=' || quote_nullable(url_params.value)) param
-           FROM pgapex.fetch_row_condition frc
-           LEFT JOIN pgapex.page_item pi ON pi.page_item_id = frc.url_parameter_id
-           LEFT JOIN (SELECT key, value FROM json_each_text(j_get_params::json)) url_params ON url_params.key = pi.name
-           WHERE frc.form_pre_fill_id = i_form_pre_fill_id
-         ) params;
-
-    v_query := 'SELECT to_json(a) FROM ' || v_pre_fill_schema || '.' || v_pre_fill_view || ' a WHERE ' || v_query || ' LIMIT 1';
-    SELECT res_pre_fetch_values INTO j_pre_fetched_values FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_query, FALSE) AS ( res_pre_fetch_values JSONB );
-
+  
   END IF;
 
   t_button_template := replace(replace(t_button_template, '#NAME#', 'PGAPEX_BUTTON'), '#LABEL#', v_button_label);
@@ -1886,7 +1922,7 @@ BEGIN
       it.template AS input_template, tt.template AS textarea_template,
       ddt.drop_down_begin, ddt.drop_down_end, ddt.option_begin, ddt.option_end,
       cbt.combo_box_begin, cbt.combo_box_end, cbt.option_begin AS combo_box_option_begin, cbt.option_end AS combo_box_option_end,
-      ct.calender_input, ct.calender_script
+      ct.calender_input, ct.calender_script, cf.calender_format, ffs.width, ffs.width_unit, ffs.height, ffs.height_unit
     FROM pgapex.form_field ff
       LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
       LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
@@ -1895,6 +1931,8 @@ BEGIN
       LEFT JOIN pgapex.textarea_template tt ON tt.template_id = ff.textarea_template_id
       LEFT JOIN pgapex.combo_box_template cbt ON cbt.template_id = ff.combo_box_template_id
       LEFT JOIN pgapex.calender_template ct ON ct.template_id = ff.calender_template_id
+      LEFT JOIN pgapex.calender_format cf ON cf.form_field_id = ff.form_field_id
+      LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
     WHERE ff.region_id = i_region_id
     ORDER BY ff.sequence ASC
   )
@@ -1943,6 +1981,7 @@ BEGIN
       ELSIF r_form_row.field_type_id = 'TEXTAREA' THEN
         t_form_element := r_form_row.textarea_template;
         t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
+        t_form_element := replace(t_form_element, '#HEIGHT_PROPERTY#', coalesce('height: ' || r_form_row.height || r_form_row.height_unit, ''));
 
       ELSIF r_form_row.field_type_id = 'DROP_DOWN' THEN
         t_form_element := r_form_row.drop_down_begin;
@@ -1986,6 +2025,7 @@ BEGIN
         t_form_element := r_form_row.calender_input;
         t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
         t_form_element := t_form_element || r_form_row.calender_script;
+        t_form_element := replace(t_form_element, '#CALENDER_FORMAT#', quote_literal(r_form_row.calender_format));
       END IF;
     ELSE
       t_current_row_begin_template := '';
@@ -1997,6 +2037,8 @@ BEGIN
 
     t_form_element := replace(t_form_element, '#NAME#',      pgapex.f_app_html_special_chars(r_form_row.form_element_name));
     t_form_element := replace(t_form_element, '#ROW_LABEL#', pgapex.f_app_html_special_chars(r_form_row.label));
+    t_form_element := replace(t_form_element, '#WIDTH#', coalesce(r_form_row.width::TEXT, '100'));
+    t_form_element := replace(t_form_element, '#WIDTH_UNIT#', coalesce(r_form_row.width_unit::TEXT, '%'));
 
     t_current_row_template := replace(t_current_row_template, '#FORM_ELEMENT#', t_form_element);
     t_current_row_template := replace(t_current_row_template, '#HELP_TEXT#',    pgapex.f_app_html_special_chars(coalesce(r_form_row.help_text, '')));
@@ -2067,18 +2109,20 @@ BEGIN
     RIGHT JOIN pgapex.page_item pi ON pi.page_item_id = frc.url_parameter_id
     WHERE frc.form_pre_fill_id = i_form_pre_fill_id) INTO t_pre_fill_url_params;
 
-    IF (j_get_params ?& t_pre_fill_url_params) = FALSE THEN
+    /*IF (j_get_params ?& t_pre_fill_url_params) = FALSE THEN
       PERFORM pgapex.f_app_add_error_message('All url params must exist to prefetch form data: ' || array_to_string(t_pre_fill_url_params, ', '));
       RETURN '';
-    END IF;
+    END IF;*/
 
-    SELECT string_agg(params.param, ' AND ') INTO v_query
-    FROM ( SELECT (frc.view_column_name || '=' || quote_nullable(url_params.value)) param
-           FROM pgapex.fetch_row_condition frc
-           LEFT JOIN pgapex.page_item pi ON pi.page_item_id = frc.url_parameter_id
-           LEFT JOIN (SELECT key, value FROM json_each_text(j_get_params::json)) url_params ON url_params.key = pi.name
-           WHERE frc.form_pre_fill_id = i_form_pre_fill_id
-         ) params;
+    IF (j_get_params ?& t_pre_fill_url_params) <> FALSE THEN
+      SELECT string_agg(params.param, ' AND ') INTO v_query
+      FROM ( SELECT (frc.view_column_name || '=' || quote_nullable(url_params.value)) param
+            FROM pgapex.fetch_row_condition frc
+            LEFT JOIN pgapex.page_item pi ON pi.page_item_id = frc.url_parameter_id
+            LEFT JOIN (SELECT key, value FROM json_each_text(j_get_params::json)) url_params ON url_params.key = pi.name
+            WHERE frc.form_pre_fill_id = i_form_pre_fill_id
+          ) params;
+    END IF;
 
     v_query := 'SELECT to_json(a) FROM ' || v_pre_fill_schema || '.' || v_pre_fill_view || ' a WHERE ' || v_query || ' LIMIT 1';
     SELECT res_pre_fetch_values INTO j_pre_fetched_values FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_query, FALSE) AS ( res_pre_fetch_values JSONB );
@@ -2097,7 +2141,7 @@ BEGIN
       it.template AS input_template, tt.template AS textarea_template,
       ddt.drop_down_begin, ddt.drop_down_end, ddt.option_begin, ddt.option_end,
       cbt.combo_box_begin, cbt.combo_box_end, cbt.option_begin AS combo_box_option_begin, cbt.option_end AS combo_box_option_end,
-      ct.calender_input, ct.calender_script
+      ct.calender_input, ct.calender_script, cf.calender_format, ffs.width, ffs.width_unit, ffs.height, ffs.height_unit
     FROM pgapex.form_field ff
       LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
       LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
@@ -2106,6 +2150,8 @@ BEGIN
       LEFT JOIN pgapex.textarea_template tt ON tt.template_id = ff.textarea_template_id
       LEFT JOIN pgapex.combo_box_template cbt ON cbt.template_id = ff.combo_box_template_id
       LEFT JOIN pgapex.calender_template ct ON ct.template_id = ff.calender_template_id
+      LEFT JOIN pgapex.calender_format cf ON cf.form_field_id = ff.form_field_id
+      LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
     WHERE ff.subregion_id = i_subregion_id
     ORDER BY ff.sequence ASC
   )
@@ -2154,6 +2200,7 @@ BEGIN
       ELSIF r_form_row.field_type_id = 'TEXTAREA' THEN
         t_form_element := r_form_row.textarea_template;
         t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
+        t_form_element := replace(t_form_element, '#HEIGHT_PROPERTY#', coalesce('height: ' || r_form_row.height || r_form_row.height_unit, ''));
 
       ELSIF r_form_row.field_type_id = 'DROP_DOWN' THEN
         t_form_element := r_form_row.drop_down_begin;
@@ -2197,6 +2244,7 @@ BEGIN
         t_form_element := r_form_row.calender_input;
         t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
         t_form_element := t_form_element || r_form_row.calender_script;
+        t_form_element := replace(t_form_element, '#CALENDER_FORMAT#', quote_literal(r_form_row.calender_format));
       END IF;
     ELSE
       t_current_row_begin_template := '';
@@ -2208,6 +2256,8 @@ BEGIN
 
     t_form_element := replace(t_form_element, '#NAME#',      pgapex.f_app_html_special_chars(r_form_row.form_element_name));
     t_form_element := replace(t_form_element, '#ROW_LABEL#', pgapex.f_app_html_special_chars(r_form_row.label));
+    t_form_element := replace(t_form_element, '#WIDTH#', coalesce(r_form_row.width::TEXT, '100'));
+    t_form_element := replace(t_form_element, '#WIDTH_UNIT#', coalesce(r_form_row.width_unit::TEXT, '%'));
 
     t_current_row_template := replace(t_current_row_template, '#FORM_ELEMENT#', t_form_element);
     t_current_row_template := replace(t_current_row_template, '#HELP_TEXT#',    pgapex.f_app_html_special_chars(coalesce(r_form_row.help_text, '')));
@@ -2218,62 +2268,6 @@ BEGIN
   t_region_template := t_region_template || replace(t_form_end_template, '#SUBMIT_BUTTON#', t_button_template);
 
   RETURN t_region_template;
-END
-$$ LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = pgapex, public, pg_temp;
-
-----------
-
-CREATE OR REPLACE FUNCTION pgapex.f_app_get_tabular_subform_region(
-    i_subregion_id            INT
-  , v_parent_region_unique_id VARCHAR
-  , v_argument                VARCHAR
-  , v_pagination_query_param  VARCHAR
-  , j_get_params              JSONB
-)
-  RETURNS TEXT AS $$
-DECLARE
-  t_region_template        TEXT;
-  v_schema_name            VARCHAR;
-  v_view_name              VARCHAR;
-  i_items_per_page         INT;
-  b_show_header            BOOLEAN;
-  v_unique_id              VARCHAR;
-  i_current_page           INT      := 1;
-  i_row_count              INT;
-  i_page_count             INT;
-  i_offset                 INT      := 0;
-  j_rows                   JSON;
-  v_additional_parameters  VARCHAR;
-  v_query                  VARCHAR;
-BEGIN
-  SELECT rr.schema_name, rr.view_name, rr.items_per_page, rr.show_header, rr.unique_id
-  INTO v_schema_name, v_view_name, i_items_per_page, b_show_header, v_unique_id
-  FROM pgapex.report_region rr
-  WHERE rr.subregion_id = i_subregion_id;
-
-  IF j_get_params IS NOT NULL AND j_get_params ? v_pagination_query_param THEN
-    i_current_page := (j_get_params->>v_pagination_query_param)::INT;
-  END IF;
-
-  i_row_count := pgapex.f_app_get_row_count_by_param(v_schema_name, v_view_name, v_unique_id, v_argument);
-  i_page_count := ceil(i_row_count::float/i_items_per_page::float);
-
-  IF (i_page_count < i_current_page) OR (i_current_page < 1) THEN
-    i_current_page := 1;
-  END IF;
-
-  i_offset := (i_current_page - 1) * i_items_per_page;
-
-  v_query := 'SELECT json_agg(a) FROM (SELECT * FROM ' || v_schema_name || '.' || v_view_name
-  || ' WHERE ' || v_unique_id || '=' || quote_literal(v_argument) || ' LIMIT ' || i_items_per_page || ' OFFSET ' || i_offset || ') AS a';
-
-  SELECT res_rows INTO j_rows FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_query, FALSE) AS ( res_rows JSON );
-
-  v_additional_parameters := v_parent_region_unique_id || '=' || v_argument || '&';
-
-  RETURN pgapex.f_app_get_report_subregion_with_template(i_subregion_id, j_rows, v_additional_parameters, v_pagination_query_param, i_page_count, i_current_page, b_show_header);
 END
 $$ LANGUAGE plpgsql
 SECURITY DEFINER
@@ -2792,61 +2786,70 @@ CREATE OR REPLACE FUNCTION pgapex.f_app_get_tabularform_subregion_with_template(
 )
   RETURNS TEXT AS $$
 DECLARE
-  t_response                TEXT;
-  t_pagination              TEXT     := '';
-  v_url_prefix              VARCHAR;
-  t_tabularform_begin       TEXT;
-  t_tabularform_end         TEXT;
-  t_form_begin              TEXT;
-  t_buttons_row_begin       TEXT;
-  t_buttons_row_content     TEXT;
-  t_buttons_row_end         TEXT;
-  t_table_begin             TEXT;
-  t_table_header_begin      TEXT;
-  t_table_header_row_begin  TEXT;
-  t_table_header_checkbox   TEXT;
-  t_table_header_cell       TEXT;
-  t_table_header_row_end    TEXT;
-  t_table_header_end        TEXT;
-  t_table_body_begin        TEXT;
-  t_table_body_row_begin    TEXT;
-  t_table_body_row_checkbox TEXT;
-  t_table_body_row_cell     TEXT;
-  t_table_body_row_end      TEXT;
-  t_table_body_end          TEXT;
-  t_table_end               TEXT;
-  t_form_end                TEXT;
-  t_pagination_begin        TEXT;
-  t_pagination_end          TEXT;
-  t_previous_page           TEXT;
-  t_next_page               TEXT;
-  t_active_page             TEXT;
-  t_inactive_page           TEXT;
-  t_unique_id               TEXT;
-  r_tabularform_column      pgapex.t_tabularform_column_with_link;
-  r_tabularform_columns     pgapex.t_tabularform_column_with_link[];
-  r_tabularform_button      pgapex.t_tabular_subform_button;
-  r_tabularform_buttons     pgapex.t_tabular_subform_button[];
-  t_button                  TEXT;
-  t_body_checkbox           TEXT;
-  j_row                     JSON;
-  r_column                  RECORD;
-  t_cell_content            TEXT;
-  t_input_value             JSON;
-  t_input_value_text        TEXT;
+  t_response                  TEXT;
+  t_pagination                TEXT     := '';
+  v_url_prefix                VARCHAR;
+  t_tabularform_begin         TEXT;
+  t_tabularform_end           TEXT;
+  t_form_begin                TEXT;
+  t_buttons_row_begin         TEXT;
+  t_buttons_row_content       TEXT;
+  t_buttons_row_end           TEXT;
+  t_table_begin               TEXT;
+  t_table_header_begin        TEXT;
+  t_table_header_row_begin    TEXT;
+  t_table_header_checkbox     TEXT;
+  t_table_header_page_link    TEXT := '';
+  t_table_header_cell         TEXT;
+  t_table_header_row_end      TEXT;
+  t_table_header_end          TEXT;
+  t_table_body_begin          TEXT;
+  t_table_body_row_begin      TEXT;
+  t_table_body_row_checkbox   TEXT;
+  t_table_body_row_page_link  TEXT;
+  t_table_body_row_cell       TEXT;
+  t_table_body_row_end        TEXT;
+  t_table_body_end            TEXT;
+  t_table_end                 TEXT;
+  t_form_end                  TEXT;
+  t_pagination_begin          TEXT;
+  t_pagination_end            TEXT;
+  t_previous_page             TEXT;
+  t_next_page                 TEXT;
+  t_active_page               TEXT;
+  t_inactive_page             TEXT;
+  t_unique_id                 TEXT;
+  r_tabularform_column        pgapex.t_tabularform_column_with_link;
+  r_tabularform_columns       pgapex.t_tabularform_column_with_link[];
+  r_tabularform_button        pgapex.t_tabular_subform_button;
+  r_tabularform_buttons       pgapex.t_tabular_subform_button[];
+  t_button                    TEXT;
+  t_body_checkbox             TEXT;
+  t_body_page_link            TEXT := ''; 
+  j_row                       JSON;
+  r_column                    RECORD;
+  t_cell_content              TEXT;
+  t_input_value               JSON;
+  t_input_value_text          TEXT;
+  b_include_linked_page       BOOLEAN;
+  i_linked_page_id            INT;
+  v_linked_page_unique_id     TEXT;
 BEGIN
   SELECT tsft.tabular_subform_begin, tsft.tabular_subform_end, tsft.form_begin, tsft.buttons_row_begin, tsft.buttons_row_content,
          tsft.buttons_row_end, tsft.table_begin, tsft.table_header_begin, tsft.table_header_row_begin,
          tsft.table_header_checkbox, tsft.table_header_cell, tsft.table_header_row_end, tsft.table_header_end,
-         tsft.table_body_begin, tsft.table_body_row_begin, tsft.table_body_row_checkbox, tsft.table_body_row_cell,
+         tsft.table_body_begin, tsft.table_body_row_begin, tsft.table_body_row_checkbox, tsft.table_body_row_page_link, tsft.table_body_row_cell,
          tsft.table_body_row_end, tsft.table_body_end, tsft.table_end, tsft.form_end, tsft.pagination_begin,
-         tsft.pagination_end, tsft.previous_page, tsft.next_page, tsft.active_page, tsft.inactive_page
+         tsft.pagination_end, tsft.previous_page, tsft.next_page, tsft.active_page, tsft.inactive_page,
+         tfsr.include_linked_page, tfsr.linked_page_id, tfsr.linked_page_unique_id
   INTO t_tabularform_begin, t_tabularform_end, t_form_begin, t_buttons_row_begin, t_buttons_row_content,
          t_buttons_row_end, t_table_begin, t_table_header_begin, t_table_header_row_begin,
          t_table_header_checkbox, t_table_header_cell, t_table_header_row_end, t_table_header_end,
-         t_table_body_begin, t_table_body_row_begin, t_table_body_row_checkbox, t_table_body_row_cell,
+         t_table_body_begin, t_table_body_row_begin, t_table_body_row_checkbox, t_table_body_row_page_link, t_table_body_row_cell,
          t_table_body_row_end, t_table_body_end, t_table_end, t_form_end, t_pagination_begin,
-         t_pagination_end, t_previous_page, t_next_page, t_active_page, t_inactive_page
+         t_pagination_end, t_previous_page, t_next_page, t_active_page, t_inactive_page,
+         b_include_linked_page, i_linked_page_id, v_linked_page_unique_id
+         
   FROM pgapex.tabularform_subregion tfsr
   LEFT JOIN pgapex.tabular_subform_template tsft ON tsft.template_id = tfsr.template_id
   WHERE tfsr.subregion_id = i_subregion_id;
@@ -2881,7 +2884,11 @@ BEGIN
 
   t_response := t_response || t_buttons_row_end || t_table_begin;
 
-  t_response := t_response || t_table_header_begin || t_table_header_row_begin || t_table_header_checkbox;
+  IF b_include_linked_page THEN
+    t_table_header_page_link := '<th class="cell--fit-content"></th>';
+  END IF;
+
+  t_response := t_response || t_table_header_begin || t_table_header_row_begin || t_table_header_checkbox || t_table_header_page_link;
 
   FOREACH r_tabularform_column IN ARRAY r_tabularform_columns
   LOOP
@@ -2896,6 +2903,13 @@ BEGIN
     FOR j_row IN SELECT * FROM json_array_elements(j_data)
     LOOP
       t_body_checkbox := t_table_body_row_checkbox;
+
+      IF b_include_linked_page THEN
+        t_body_page_link := t_table_body_row_page_link;
+        t_body_page_link := replace(t_body_page_link, '#PATH#', pgapex.f_app_get_page_path(i_linked_page_id));
+        t_body_page_link := replace(t_body_page_link, '#UNIQUE_ID#', v_linked_page_unique_id);
+        t_body_page_link := replace(t_body_page_link, '#UNIQUE_ID_VALUE#', j_row->>v_linked_page_unique_id);
+      END IF;
 
       SELECT json_build_object(
           tsff.tabular_subform_function_id, (SELECT json_agg(
@@ -2915,7 +2929,8 @@ BEGIN
       t_input_value_text := replace(t_input_value::text, '"', '''');
       t_body_checkbox := replace(t_body_checkbox, '#FUNCTION_PARAMETERS_VALUE#', t_input_value_text);
 
-      t_response := t_response || t_table_body_row_begin || t_body_checkbox;
+
+      t_response := t_response || t_table_body_row_begin || t_body_checkbox || t_body_page_link;
         FOREACH r_tabularform_column IN ARRAY r_tabularform_columns
         LOOP
           IF r_tabularform_column.view_column_name IS NOT NULL THEN
@@ -2944,7 +2959,7 @@ BEGIN
 
   v_url_prefix := pgapex.f_app_get_setting('application_root') || '/app/' || pgapex.f_app_get_setting('application_id') || '/' || pgapex.f_app_get_setting('page_id') || '?' || v_pagination_query_param || '=';
 
-  IF i_page_count > 1 THEN
+  /*IF i_page_count > 1 THEN
     t_pagination := t_pagination_begin;
 
     IF i_current_page > 1 THEN
@@ -2965,7 +2980,7 @@ BEGIN
     END IF;
 
     t_pagination := t_pagination || t_pagination_end;
-  END IF;
+  END IF;*/
 
   RETURN replace(t_response, '#PAGINATION#', t_pagination);
 END

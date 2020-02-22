@@ -11,7 +11,8 @@
         mode: '=',
         index: '=',
         preFillColumns: '=',
-        functions: '='
+        functions: '=',
+        pages: '='
       },
       controller: 'pgApexApp.region.AddTabularSubFormController',
       templateUrl: 'app/partials/subregion/add-tabular-subform.html',

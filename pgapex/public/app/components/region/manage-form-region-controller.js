@@ -4,7 +4,7 @@
   var module = angular.module('pgApexApp.page');
 
   function ManageFormRegionController($scope, $location, $routeParams, regionService,
-                                        templateService, databaseService, formErrorService, helperService) {
+                                        templateService, databaseService, formErrorService, helperService, pageService) {
     this.$scope = $scope;
     this.$scope.helper = helperService;
     this.$location = $location;
@@ -13,6 +13,7 @@
     this.templateService = templateService;
     this.databaseService = databaseService;
     this.formErrorService = formErrorService;
+    this.pageService = pageService;
 
     this.init();
   }
@@ -77,6 +78,7 @@
     this.initComboBoxTemplates();
     this.initCalenderTemplates();
     this.initViewsWithColumns();
+    this.initAvailablePages();
     this.loadRegion();
   };
 
@@ -240,14 +242,14 @@
       this.$scope.region.function.attributes.schema,
       this.$scope.region.function.attributes.name,
       this.$scope.region.formPreFill || false,
-      this.getFormFields(),
+      this.getFormFields(this.$scope.region.functionParameters),
       this.getPreFill(),
       this.getSubRegions()
     ).then(this.handleSaveResponse.bind(this));
   };
 
-  ManageFormRegionController.prototype.getFormFields = function() {
-    return this.$scope.region.functionParameters.map(function (functionParameter) {
+  ManageFormRegionController.prototype.getFormFields = function(functionParameters) {
+    return functionParameters.map(function (functionParameter) {
       return {
         "type": "form-field",
         "attributes": {
@@ -266,33 +268,12 @@
           "listOfValuesSchema": (functionParameter.listOfValuesView) ? functionParameter.listOfValuesView.attributes.schema : null,
           "listOfValuesView": (functionParameter.listOfValuesView) ? functionParameter.listOfValuesView.attributes.name : null,
           "listOfValuesValue": (functionParameter.listOfValuesValue) ? functionParameter.listOfValuesValue.attributes.name : null,
-          "listOfValuesLabel": (functionParameter.listOfValuesLabel) ? functionParameter.listOfValuesLabel.attributes.name : null
-        }
-      };
-    });
-  };
-
-  ManageFormRegionController.prototype.getFormFieldsForSubform = function(subFormFunctionParameters) {
-    return subFormFunctionParameters.map(function (functionParameter) {
-      return {
-        "type": "form-field",
-        "attributes": {
-          "fieldType": functionParameter.fieldType,
-          "fieldTemplate": parseInt(functionParameter.fieldTemplate),
-          "label": functionParameter.label,
-          "inputName": functionParameter.inputName,
-          "sequence": parseInt(functionParameter.sequence),
-          "isMandatory": functionParameter.isMandatory || false,
-          "isVisible": functionParameter.isVisible || false,
-          "defaultValue": functionParameter.defaultValue || null,
-          "helpText": functionParameter.helpText || null,
-          "functionParameterType": functionParameter.attributes.argumentType,
-          "functionParameterOrdinalPosition": functionParameter.attributes.ordinalPosition,
-          "preFillColumn": functionParameter.preFillColumn || null,
-          "listOfValuesSchema": (functionParameter.listOfValuesView) ? functionParameter.listOfValuesView.attributes.schema : null,
-          "listOfValuesView": (functionParameter.listOfValuesView) ? functionParameter.listOfValuesView.attributes.name : null,
-          "listOfValuesValue": (functionParameter.listOfValuesValue) ? functionParameter.listOfValuesValue.attributes.name : null,
-          "listOfValuesLabel": (functionParameter.listOfValuesLabel) ? functionParameter.listOfValuesLabel.attributes.name : null
+          "listOfValuesLabel": (functionParameter.listOfValuesLabel) ? functionParameter.listOfValuesLabel.attributes.name : null,
+          "calenderFormat": functionParameter.calenderFormat || null,
+          "width": functionParameter.width || null,
+          "widthUnit": functionParameter.widthUnit || null,
+          "height": functionParameter.height || null,
+          "heightUnit": functionParameter.heightUnit || null
         }
       };
     });
@@ -360,7 +341,7 @@
             'showHeader': true,
             'linkedColumn': subRegion.functionParameters,
             'addSubregionFormName': 'subform/' + subRegion.index,
-            'functionParameters': this.getFormFieldsForSubform(subRegion.functionParameters),
+            'functionParameters': this.getFormFields(subRegion.functionParameters),
             'function': subRegion.function,
             'buttonLabel': subRegion.buttonLabel,
             'successMessage': subRegion.successMessage,
@@ -383,7 +364,10 @@
             'buttons': subRegion.buttons,
             'view': subRegion.view,
             'linkedColumns': subRegion.linkedColumns,
-            'formColumns': subRegion.formColumns
+            'formColumns': subRegion.formColumns,
+            'includeLinkedPage': subRegion.includeLinkedPage,
+            'linkedPageId': subRegion.linkedPageId || null,
+            'linkedPageUniqueId': subRegion.linkedPageUniqueId || null
           }
         }
       } else {
@@ -392,10 +376,16 @@
     });
   };
 
+  ManageFormRegionController.prototype.initAvailablePages = function() {
+    this.pageService.getPages(this.$scope.applicationId).then(function (response) {
+      this.$scope.pages = response.getDataOrDefault([]);
+    }.bind(this));
+  };
+
   function init() {
     module.controller('pgApexApp.region.ManageFormRegionController',
       ['$scope', '$location', '$routeParams', 'regionService',
-      'templateService', 'databaseService', 'formErrorService', 'helperService', ManageFormRegionController]);
+      'templateService', 'databaseService', 'formErrorService', 'helperService', 'pageService', ManageFormRegionController]);
   }
 
   init();

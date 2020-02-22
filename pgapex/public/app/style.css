@@ -130,3 +130,7 @@ a.toggle {
   margin-top: 20px;
   margin-right: 25px;
 }
+
+.form-group-striped {
+  padding: 15px;
+}

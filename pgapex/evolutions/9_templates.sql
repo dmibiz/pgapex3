@@ -168,7 +168,7 @@ VALUES(7, '<form class="form-horizontal" method="POST" action="">', '#SUBMIT_BUT
 '<div class="form-group">', '</div>', '<label class="col-sm-2 control-label" title="#HELP_TEXT#">#LABEL# *</label><div class="col-sm-10">#FORM_ELEMENT#</div>');
 
 INSERT INTO pgapex.drop_down_template (template_id, drop_down_begin, drop_down_end, option_begin, option_end)
-VALUES (8, '<select class="form-control" name="#NAME#">', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>');
+VALUES (8, '<select class="form-control" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#">', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>');
 
 INSERT INTO pgapex.button_template (template_id, template) VALUES (9, '<div class="form-group">
   <div class="col-sm-offset-2 col-sm-10">
@@ -176,10 +176,10 @@ INSERT INTO pgapex.button_template (template_id, template) VALUES (9, '<div clas
   </div>
 </div>');
 
-INSERT INTO pgapex.textarea_template (template_id, template) VALUES (10, '<textarea class="form-control" placeholder="#ROW_LABEL#" name="#NAME#">#VALUE#</textarea>');
+INSERT INTO pgapex.textarea_template (template_id, template) VALUES (10, '<textarea class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#;#HEIGHT_PROPERTY#">#VALUE#</textarea>');
 
-INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (11, 'TEXT', '<input type="text" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#">');
-INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (12, 'PASSWORD', '<input type="password" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#">');
+INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (11, 'TEXT', '<input type="text" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#">');
+INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (12, 'PASSWORD', '<input type="password" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#">');
 INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (13, 'RADIO', '<div><input type="radio" name="#NAME#" value="#VALUE#"#CHECKED#> #INPUT_LABEL#</div>');
 INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (14, 'CHECKBOX', '<input type="checkbox" class="checkbox" name="#NAME#" value="#VALUE#"#CHECKED#>');
 
@@ -234,25 +234,25 @@ VALUES (23, '<div><table class="table table-bordered">', '</table>#PAGINATION#</
 '<nav><ul class="pagination">', '</ul></nav>', '<li><a href="#LINK#">&laquo;</a></li>', '<li><a href="#LINK#">&raquo;</a></li>', '<li class="active"><a href="#LINK#">#NUMBER#</a></li>', '<li><a href="#LINK#">#NUMBER#</a></li>');
 
 INSERT INTO pgapex.calender_template (template_ID, calender_input, calender_script)
-VALUES (24, '<input type="text" id="calenderInput" class="form-control" size="50" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#"/>', '<script>
+VALUES (24, '<input type="text" id="calenderInput" class="form-control" size="50" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#"/>', '<script>
                                                                       AnyTime.picker( "calenderInput",
-                                                                          { format: "%Y-%m-%d %H:%i:%s", firstDOW: 1 } );
+                                                                          { format: #CALENDER_FORMAT#, firstDOW: 1 } );
                                                                   </script>');
 
 INSERT INTO pgapex.combo_box_template (template_id, combo_box_begin, combo_box_end, option_begin, option_end)
-VALUES (25, '<select id="combobox" class="form-control" name="#NAME#">', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>');
+VALUES (25, '<select id="combobox" class="form-control" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#">', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>');
 
 INSERT INTO pgapex.tabular_subform_template (template_ID, tabular_subform_begin, tabular_subform_end, form_begin, buttons_row_begin,
 buttons_row_content, buttons_row_end, table_begin, table_header_begin, table_header_row_begin, table_header_checkbox,
 table_header_cell, table_header_row_end, table_header_end, table_body_begin, table_body_row_begin,
-table_body_row_checkbox, table_body_row_cell, table_body_row_end, table_body_end, table_end, form_end, pagination_begin,
+table_body_row_checkbox, table_body_row_page_link, table_body_row_cell, table_body_row_end, table_body_end, table_end, form_end, pagination_begin,
 pagination_end, previous_page, next_page, active_page, inactive_page)
 VALUES (26, '<div>', '#PAGINATION#</div></div>', '<form method="POST" name="custom" action><input type="hidden" name="PGAPEX_TABULAR_SUBFORM" value="#TABULAR_SUBFORM_FUNCTION_ID#">',
 '<div class="form-group pull-right">', '#SUBMIT_BUTTON#',
 '</div>', '<div class="form-group"><table class="table table-bordered">', '<thead>', '</tr>',
 '<th class="cell--fit-content"><input type="checkbox" onclick="checkAll(this)"></th>', '<th>#CELL_CONTENT#</th>', '</tr>', '</thead>',
 '<tbody>', '<tr>', '<td class="cell--fit-content"><input type="checkbox" name="#FUNCTION_PARAMETERS#[]" value="#FUNCTION_PARAMETERS_VALUE#"></td>',
-'<td>#CELL_CONTENT#</td>', '</td>', '</tbody>', '</table>', '</form>', '<nav><ul class="pagination">', '</ul></nav>',
+'<td class="cell--fit-content"><a href="#PATH#?#UNIQUE_ID#=#UNIQUE_ID_VALUE#"><span class="glyphicon glyphicon-edit"></td>','<td>#CELL_CONTENT#</td>', '</td>', '</tbody>', '</table>', '</form>', '<nav><ul class="pagination">', '</ul></nav>',
 '<li><a href="#LINK#">&laquo;</a></li>', '<li><a href="#LINK#">&raquo;</a></li>',
 '<li class="active"><a href="#LINK#">#NUMBER#</a></li>', '<li><a href="#LINK#">#NUMBER#</a></li>');
 

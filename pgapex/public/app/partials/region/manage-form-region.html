@@ -156,37 +156,73 @@
                 <option value="" disabled>-- {{'region.fieldTemplate'|translate}} * --</option>
               </select>
             </div>
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesView, 'functionParameters/' + $index + '/listOfValuesView')}">
+            <div class="col-md-2"
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesView, 'functionParameters/' + $index + '/listOfValuesView')}"
+                 ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'">
               <select id="listOfValuesView" name="listOfValuesView" ng-model="functionParameter.listOfValuesView" class="form-control"
                       ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
-                      ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
                       ng-options="viewWithColumns as (viewWithColumns.attributes.schema + '.' + viewWithColumns.attributes.name) for viewWithColumns in viewsWithColumns track by trackDatabaseObject(viewWithColumns)">
                 <option value="" disabled>-- {{'region.listOfValuesView'|translate}} * --</option>
               </select>
             </div>
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesValue, 'functionParameters/' + $index + '/listOfValuesValue')}">
+            <div class="col-md-2"
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesValue, 'functionParameters/' + $index + '/listOfValuesValue')}"
+                 ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'">
               <select id="listOfValuesValue" name="listOfValuesValue" ng-model="functionParameter.listOfValuesValue" class="form-control"
                       ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
-                      ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
                       ng-disabled="!functionParameter.listOfValuesView"
                       ng-options="column as column.attributes.name for column in functionParameter.listOfValuesView.attributes.columns track by column.attributes.name">
                 <option value="" disabled>-- {{'region.columnForValue'|translate}} * --</option>
               </select>
             </div>
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesLabel, 'functionParameters/' + $index + '/listOfValuesLabel')}">
+            <div class="col-md-2"
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesLabel, 'functionParameters/' + $index + '/listOfValuesLabel')}"
+                 ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'">
               <select id="listOfValuesLabel" name="listOfValuesLabel" ng-model="functionParameter.listOfValuesLabel" class="form-control"
                       ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
-                      ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
                       ng-disabled="!functionParameter.listOfValuesView"
                       ng-options="column as column.attributes.name for column in functionParameter.listOfValuesView.attributes.columns track by column.attributes.name">
                 <option value="" disabled>-- {{'region.columnForLabel'|translate}} * --</option>
               </select>
+            </div>
+            <div class="col-md-2"
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.calenderFormat, 'functionParameters/' + $index + '/calenderFormat')}"
+                 ng-show="functionParameter.fieldType === 'CALENDER'">
+              <input ng-model="functionParameter.calenderFormat" name="calenderFormat" type="text" class="form-control" placeholder="{{'region.calenderFormat'|translate}}">
             </div>
             <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.preFillColumn, 'functionParameters/' + $index + '/preFillColumn')}">
               <select id="preFillColumn" name="preFillColumn" ng-model="functionParameter.preFillColumn" class="form-control" ng-show="region.formPreFill && region.formPreFillView"
                       ng-options="formPreFillColumn.column.attributes.name as formPreFillColumn.column.attributes.name for formPreFillColumn in region.formPreFillColumns">
                 <option value="" disabled>-- {{'region.preFillColumn'|translate}} --</option>
               </select>
+            </div>
+          </div>
+          <div class="row" style="margin-top: 15px">
+            <div class="col-md-2"
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidth, 'functionParameters/' + $index + '/inputWidth')}"
+                 ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
+              <input ng-model="functionParameter.width" name="inputWidth" type="number" min="1" class="form-control" placeholder="{{'region.width'|translate}}">
+            </div>
+            <div class="col-md-1"
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidthUnit, 'functionParameters/' + $index + '/inputWidthUnit')}"
+                 ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
+                  <select id="inputWidthUnit" name="inputWidthUnit" ng-model="functionParameter.widthUnit" class="form-control">
+                    <option value="px">px</option>
+                    <option value="%">%</option>
+                  </select>
+            </div>
+            <div class="col-md-2"
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.inputHeight, 'functionParameters/' + $index + '/inputHeight')}"
+                 ng-show="functionParameter.fieldType === 'TEXTAREA'">
+              <input ng-model="functionParameter.height" name="inputHeight" type="number" min="1" class="form-control" placeholder="{{'region.height'|translate}}">
+            </div>
+            <div class="col-md-1"
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.inputHeightUnit, 'inputHeightUnit/' + $index + '/inputHeightUnit')}"
+                 ng-show="functionParameter.fieldType === 'TEXTAREA'">
+                  <select id="inputHeightUnit" name="inputHeightUnit" ng-model="functionParameter.heightUnit" class="form-control">
+                    <option value="px">px</option>
+                    <option value="%">%</option>
+                  </select>
             </div>
           </div>
 
@@ -278,7 +314,8 @@
       last-sequence="lastSequenceOfSubRegions" 
       form-pre-fill-columns="region.formPreFillColumns"
       functions="functionsWithParameters"
-      parent-region="'FORM'"
+      parent-region="'FORM'",
+      pages="pages"
     >
     </add-sub-region>
 

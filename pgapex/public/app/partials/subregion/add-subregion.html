@@ -71,7 +71,16 @@
       <div class="panel-body">
         <div class="row subregion-form__row">
           <div class="col-md-11">
-            <add-tabular-sub-form views-with-columns="viewsWithColumns" tabular-sub-form="subRegion" form-error="formError" mode="mode" index="$index" pre-fill-columns="formPreFillColumns" functions="functions"></add-tabular-sub-form>
+            <add-tabular-sub-form 
+              views-with-columns="viewsWithColumns" 
+              tabular-sub-form="subRegion"
+              form-error="formError" 
+              mode="mode" 
+              index="$index" 
+              pre-fill-columns="formPreFillColumns" 
+              functions="functions"
+              pages="pages">
+            </add-tabular-sub-form>
           </div>
           <div class="col-md-1 text-right">
             <a title="{{'region.deleteSubRegion'|translate}}" ng-click="deleteSubRegion($index)"

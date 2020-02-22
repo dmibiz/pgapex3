@@ -179,6 +179,11 @@
     "createFormForReportRegion": "Set form page",
     "subForm": "Subform",
     "tabularSubForm": "Tabular subform",
-    "linkedColumns": "Linked columns"
+    "linkedColumns": "Linked columns",
+    "calenderFormat": "Calender format",
+    "width": "Width",
+    "height": "Height",
+    "includeLinkToPage": "Include link to another page",
+    "setLinkedPage": "Set linked page"
   }
 }

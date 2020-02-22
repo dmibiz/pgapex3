@@ -2049,7 +2049,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_save_form_field(
   , v_function_parameter_type             pgapex.form_field.function_parameter_type%TYPE
   , v_function_parameter_ordinal_position pgapex.form_field.function_parameter_ordinal_position%TYPE
 )
-RETURNS void AS $$
+RETURNS int AS $$
 DECLARE
   i_new_form_field_id INT;
   i_page_id INT;
@@ -2092,6 +2092,7 @@ BEGIN
   v_function_parameter_type, v_function_parameter_ordinal_position);
 
   INSERT INTO pgapex.page_item (page_id, form_field_id, name) VALUES (i_page_id, i_new_form_field_id, v_form_element_name);
+  RETURN i_new_form_field_id;
 END
 $$ LANGUAGE plpgsql
 SECURITY DEFINER
@@ -2115,15 +2116,12 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_save_subform_field(
   , v_function_parameter_type             pgapex.form_field.function_parameter_type%TYPE
   , v_function_parameter_ordinal_position pgapex.form_field.function_parameter_ordinal_position%TYPE
 )
-RETURNS void AS $$
+RETURNS int AS $$
 DECLARE
   i_new_form_field_id INT;
   i_page_id INT;
 BEGIN
   SELECT nextval('pgapex.form_field_form_field_id_seq') INTO i_new_form_field_id;
-  /*SELECT page_id INTO i_page_id FROM pgapex.region WHERE region_id = (
-    SELECT parent_region_id FROM pgapex.subregion WHERE subregion_id = i_subregion_id
-  );*/
 
   SELECT r.page_id INTO i_page_id FROM pgapex.region r
   LEFT JOIN pgapex.subregion sr ON sr.parent_region_id = r.region_id
@@ -2164,6 +2162,8 @@ BEGIN
   v_function_parameter_type, v_function_parameter_ordinal_position);
 
   INSERT INTO pgapex.page_item (page_id, form_field_id, name) VALUES (i_page_id, i_new_form_field_id, v_form_element_name);
+
+  RETURN i_new_form_field_id;
 END
 $$ LANGUAGE plpgsql
 SECURITY DEFINER
@@ -2185,6 +2185,20 @@ BEGIN
   INSERT INTO pgapex.list_of_values (list_of_values_id, value_view_column_name, label_view_column_name, view_name, schema_name)
   VALUES (i_new_list_of_values_id, v_value_view_column_name, v_label_view_column_name, v_view_name, v_schema_name);
   RETURN i_new_list_of_values_id;
+END
+$$ LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pgapex, public, pg_temp;
+
+----------
+
+CREATE OR REPLACE FUNCTION pgapex.f_region_save_calender_format(
+  i_form_field_id pgapex.calender_format.form_field_id%TYPE,
+  v_calender_format pgapex.calender_format.calender_format%TYPE
+)
+  RETURNS void AS $$
+BEGIN
+  INSERT INTO pgapex.calender_format (form_field_id, calender_format) VALUES (i_form_field_id, v_calender_format);
 END
 $$ LANGUAGE plpgsql
 SECURITY DEFINER
@@ -2277,6 +2291,9 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_save_tabularform_subregion(
   , v_schema_name                    pgapex.tabularform_subregion.schema_name%TYPE
   , v_view_name                      pgapex.tabularform_subregion.view_name%TYPE
   , i_items_per_page                 pgapex.tabularform_subregion.items_per_page%TYPE
+  , b_include_linked_page            pgapex.tabularform_subregion.include_linked_page%TYPE
+  , i_linked_page_id                 pgapex.tabularform_subregion.linked_page_id%TYPE
+  , v_linked_page_unique_id          pgapex.tabularform_subregion.linked_page_unique_id%TYPE
 )
   RETURNS int AS $$
 DECLARE
@@ -2287,8 +2304,8 @@ BEGIN
   INSERT INTO pgapex.subregion (subregion_id, template_id, name, is_visible, query_parameter, parent_region_id, sequence)
   VALUES (i_new_subregion_id, i_subregion_template_id, v_name, b_is_visible, v_query_parameter, i_parent_region_id, i_sequence);
 
-  INSERT INTO pgapex.tabularform_subregion (subregion_id, template_id, schema_name, view_name, items_per_page)
-  VALUES (i_new_subregion_id, i_tabularform_template_id, v_schema_name, v_view_name, i_items_per_page);
+  INSERT INTO pgapex.tabularform_subregion (subregion_id, template_id, schema_name, view_name, items_per_page, include_linked_page, linked_page_id, linked_page_unique_id)
+  VALUES (i_new_subregion_id, i_tabularform_template_id, v_schema_name, v_view_name, i_items_per_page, b_include_linked_page, i_linked_page_id, v_linked_page_unique_id);
 
   RETURN i_new_subregion_id;
 END
@@ -2650,10 +2667,17 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_form_region(
                                           'name', lov.label_view_column_name
                                         )
                                       )
+                                    , 'calenderFormat', cf.calender_format
+                                    , 'width', COALESCE(ffs.width, 100)
+                                    , 'widthUnit', COALESCE(ffs.width_unit, '%')
+                                    , 'height', ffs.height
+                                    , 'heightUnit', COALESCE(ffs.height_unit, 'px')
                                     ) ff_obj
                                     FROM pgapex.form_field ff
                                     LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
+                                    LEFT JOIN pgapex.calender_format cf ON cf.form_field_id = ff.form_field_id
+                                    LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.parameter par ON (par.database_name = a.database_name AND par.schema_name = fr.schema_name AND par.function_name = fr.function_name AND par.parameter_type = ff.function_parameter_type AND par.ordinal_position = ff.function_parameter_ordinal_position)
                                     WHERE ff.region_id = r.region_id
                                     ORDER BY ff.function_parameter_ordinal_position) ff_agg
@@ -2847,7 +2871,6 @@ BEGIN
       'parentRegionId', sr.parent_region_id,
       'name', sr.name,
       'sequence', sr.sequence,
-      /*'paginationQueryParameter', sr.query_parameter,*/
       'formTemplate', fr.template_id,
       'formSubmitButtonTemplate', fr.button_template_id,
       'schema', fr.schema_name,
@@ -2900,10 +2923,17 @@ BEGIN
                                           'name', lov.label_view_column_name
                                         )
                                       )
+                                    , 'calenderFormat', cf.calender_format
+                                    , 'width', COALESCE(ffs.width, 100)
+                                    , 'widthUnit', COALESCE(ffs.width_unit, '%')
+                                    , 'height', ffs.height
+                                    , 'heightUnit', COALESCE(ffs.height_unit, 'px')
                                     ) ff_obj
                                     FROM pgapex.form_field ff
                                     LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
+                                    LEFT JOIN pgapex.calender_format cf ON cf.form_field_id = ff.form_field_id
+                                    LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.parameter par ON (par.database_name = app.database_name AND par.schema_name = fr.schema_name AND par.function_name = fr.function_name AND par.parameter_type = ff.function_parameter_type AND par.ordinal_position = ff.function_parameter_ordinal_position)
                                     WHERE ff.subregion_id = sr.subregion_id
                                     ORDER BY ff.function_parameter_ordinal_position) ff_agg
@@ -2954,6 +2984,9 @@ BEGIN
       'paginationQueryParameter', sr.query_parameter,
       'viewName', tsr.view_name,
       'viewSchema', tsr.schema_name,
+      'includeLinkedPage', tsr.include_linked_page,
+      'linkedPageId', tsr.linked_page_id,
+      'linkedPageUniqueId', tsr.linked_page_unique_id,
       'buttons', (SELECT json_agg(
           json_build_object(
             'sequence', tsf.sequence,
@@ -3377,5 +3410,23 @@ RETURNS boolean AS $$
         END)
   );
 $$ LANGUAGE sql
+SECURITY DEFINER
+SET search_path = pgapex, public, pg_temp;
+
+----------
+
+CREATE OR REPLACE FUNCTION pgapex.f_region_save_form_field_size(
+    i_form_field_id pgapex.form_field_size.form_field_id%TYPE
+  , d_width         pgapex.form_field_size.width%TYPE
+  , v_width_unit    pgapex.form_field_size.width_unit%TYPE
+  , d_height        pgapex.form_field_size.height%TYPE
+  , v_height_unit   pgapex.form_field_size.height_unit%TYPE
+)
+RETURNS void AS $$
+BEGIN
+  INSERT INTO pgapex.form_field_size(form_field_id, width, width_unit, height, height_unit)
+  VALUES (i_form_field_id, d_width, v_width_unit, d_height, v_height_unit);
+END
+$$ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = pgapex, public, pg_temp;

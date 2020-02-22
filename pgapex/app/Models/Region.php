@@ -416,6 +416,9 @@ class Region extends Model {
       $formFieldStatement = $connection->prepare('SELECT pgapex.f_region_save_form_field(:regionId, :fieldType, :listOfValuesId, :formFieldTemplateId, '
                                                . ':fieldPreFillViewColumnName, :formElementName, :label, :sequence, :isMandatory, :isVisible, :defaultValue, :helpText, '
                                                . ':functionParameterType, :functionParameterOrdinalPosition)');
+      $formFieldSizeStatement = $connection->prepare('SELECT pgapex.f_region_save_form_field_size(:formFieldId, :width, :widthUnit, :height, :heightUnit)');
+      $calenderFormatStatement = $connection->prepare('SELECT pgapex.f_region_save_calender_format(:formFieldId, :calenderFormat)');
+
       foreach ($request->getApiAttribute('formFields') as $formField) {
         $listOfValuesId = null;
         if ($formField['attributes']['listOfValuesView'] !== null) {
@@ -426,6 +429,7 @@ class Region extends Model {
           $listOfValuesStatement->execute();
           $listOfValuesId = $listOfValuesStatement->fetchColumn();
         }
+        
 
         $formFieldStatement->bindValue(':regionId',                         $formRegionId,                                                 PDO::PARAM_INT);
         $formFieldStatement->bindValue(':fieldType',                        $formField['attributes']['fieldType'],                         PDO::PARAM_STR);
@@ -442,6 +446,29 @@ class Region extends Model {
         $formFieldStatement->bindValue(':functionParameterType',            $formField['attributes']['functionParameterType'],             PDO::PARAM_STR);
         $formFieldStatement->bindValue(':functionParameterOrdinalPosition', $formField['attributes']['functionParameterOrdinalPosition'],  PDO::PARAM_STR);
         $formFieldStatement->execute();
+        $formFieldId = $formFieldStatement->fetchColumn();
+
+        if ($formField['attributes']['fieldType'] != 'CHECKBOX' && $formField['attributes']['fieldType'] != 'RADIO') {
+          $formFieldSizeStatement->bindValue(':formFieldId', $formFieldId,                          PDO::PARAM_INT);
+          $formFieldSizeStatement->bindValue(':width',       $formField['attributes']['width'],     PDO::PARAM_STR);
+          $formFieldSizeStatement->bindValue(':widthUnit',   $formField['attributes']['widthUnit'], PDO::PARAM_STR);
+          $formFieldHeight = null;
+          $formFieldHeightUnit = null;
+          if ($formField['attributes']['fieldType'] == 'TEXTAREA' && $formField['attributes']['height']) {
+            $formFieldHeight = $formField['attributes']['height'];
+            $formFieldHeightUnit = $formField['attributes']['heightUnit'];
+          }
+          $formFieldSizeStatement->bindValue(':height',     $formFieldHeight,     PDO::PARAM_STR);
+          $formFieldSizeStatement->bindValue(':heightUnit', $formFieldHeightUnit, PDO::PARAM_STR);
+          $formFieldSizeStatement->execute();
+        }
+
+
+        if ($formField['attributes']['calenderFormat'] !== null) {
+          $calenderFormatStatement->bindValue(':formFieldId',    $formFieldId,                               PDO::PARAM_INT);
+          $calenderFormatStatement->bindValue(':calenderFormat', $formField['attributes']['calenderFormat'], PDO::PARAM_STR);
+          $calenderFormatStatement->execute();
+        }
       }
 
       if ($request->getApiAttribute('formPreFill') === true && $request->getApiAttribute('preFill') !== null) {
@@ -487,7 +514,10 @@ class Region extends Model {
             $subFormStatement->bindValue(':errorMessage',                 $subRegion['attributes']['errorMessage'],                         PDO::PARAM_STR);
             $subFormStatement->execute();
             $subFormSubRegionId = $subFormStatement->fetchColumn();
-
+            
+            $subFormListOfValuesStatement = $connection->prepare('SELECT pgapex.f_region_save_list_of_values(:valueColumn, :labelColumn, :viewName, :schemaName)');
+            $subFormCalenderFormatStatement = $connection->prepare('SELECT pgapex.f_region_save_calender_format(:formFieldId, :calenderFormat)');
+            $subFormFieldSizeStatement = $connection->prepare('SELECT pgapex.f_region_save_form_field_size(:formFieldId, :width, :widthUnit, :height, :heightUnit)');
             $subFormFieldStatement = $connection->prepare('SELECT pgapex.f_region_save_subform_field(:subregionId, :fieldType, :listOfValuesId, :formFieldTemplateId, '
                                                . ':fieldPreFillViewColumnName, :formElementName, :label, :sequence, :isMandatory, :isVisible, :defaultValue, :helpText, '
                                                . ':functionParameterType, :functionParameterOrdinalPosition)');
@@ -517,6 +547,28 @@ class Region extends Model {
               $subFormFieldStatement->bindValue(':functionParameterType',            $subFormField['attributes']['functionParameterType'],             PDO::PARAM_STR);
               $subFormFieldStatement->bindValue(':functionParameterOrdinalPosition', $subFormField['attributes']['functionParameterOrdinalPosition'],  PDO::PARAM_STR);
               $subFormFieldStatement->execute();
+              $subFormFieldId = $subFormFieldStatement->fetchColumn();
+
+              if ($subFormField['attributes']['fieldType'] != 'CHECKBOX' && $subFormField['attributes']['fieldType'] != 'RADIO') {
+                $subFormFieldSizeStatement->bindValue(':formFieldId', $subFormFieldId,                          PDO::PARAM_INT);
+                $subFormFieldSizeStatement->bindValue(':width',       $subFormField['attributes']['width'],     PDO::PARAM_STR);
+                $subFormFieldSizeStatement->bindValue(':widthUnit',   $subFormField['attributes']['widthUnit'], PDO::PARAM_STR);
+                $subFormFieldHeight = null;
+                $subFormFieldHeightUnit = null;
+                if ($subFormField['attributes']['fieldType'] == 'TEXTAREA' && $subFormField['attributes']['height']) {
+                  $subFormFieldHeight = $subFormField['attributes']['height'];
+                  $subFormFieldHeightUnit = $subFormField['attributes']['heightUnit'];
+                }
+                $subFormFieldSizeStatement->bindValue(':height',     $subFormFieldHeight,     PDO::PARAM_STR);
+                $subFormFieldSizeStatement->bindValue(':heightUnit', $subFormFieldHeightUnit, PDO::PARAM_STR);
+                $subFormFieldSizeStatement->execute();
+              }
+
+              if ($subFormField['attributes']['calenderFormat'] !== null) {
+                $subFormCalenderFormatStatement->bindValue(':formFieldId',    $subFormFieldId,                               PDO::PARAM_INT);
+                $subFormCalenderFormatStatement->bindValue(':calenderFormat', $subFormField['attributes']['calenderFormat'], PDO::PARAM_STR);
+                $subFormCalenderFormatStatement->execute();
+              }
             }
           } elseif ($subRegion['type'] === 'TABULAR_SUBFORM') {
             if ($subRegion['attributes']['subRegionId'] != null) {
@@ -534,7 +586,8 @@ class Region extends Model {
             }
               
               $tabularSubFormStatement = $connection->prepare('SELECT pgapex.f_region_save_tabularform_subregion(:subRegionId, :subRegionTemplateId, :name, :sequence, :isVisible, :queryParameter,
-                                                                                                                 :parentRegionId, :tabularFormTemplateId, :schemaName, :viewName, :itemsPerPage)');
+                                                                                                                 :parentRegionId, :tabularFormTemplateId, :schemaName, :viewName, :itemsPerPage,
+                                                                                                                 :includeLinkedPage, :linkedPageId, :linkedPageUniqueId)');
               
               $tabularSubFormStatement->bindValue(':subRegionId',           $subRegion['attributes']['subRegionId'],                  PDO::PARAM_INT);
               $tabularSubFormStatement->bindValue(':subRegionTemplateId',   $subRegion['attributes']['subRegionTemplateId'],          PDO::PARAM_INT);
@@ -546,7 +599,10 @@ class Region extends Model {
               $tabularSubFormStatement->bindValue(':tabularFormTemplateId', $subRegion['attributes']['tabularFormTemplateId'],        PDO::PARAM_INT);
               $tabularSubFormStatement->bindValue(':schemaName',            $subRegion['attributes']['view']['attributes']['schema'], PDO::PARAM_STR);
               $tabularSubFormStatement->bindValue(':viewName',              $subRegion['attributes']['view']['attributes']['name'],   PDO::PARAM_STR);
-              $tabularSubFormStatement->bindValue(':itemsPerPage',          $subRegion['attributes']['itemsPerPage'],                  PDO::PARAM_INT);
+              $tabularSubFormStatement->bindValue(':itemsPerPage',          $subRegion['attributes']['itemsPerPage'],                 PDO::PARAM_INT);
+              $tabularSubFormStatement->bindValue(':includeLinkedPage',     $subRegion['attributes']['includeLinkedPage'],            PDO::PARAM_BOOL);
+              $tabularSubFormStatement->bindValue(':linkedPageId',          $subRegion['attributes']['linkedPageId'],                 PDO::PARAM_INT);
+              $tabularSubFormStatement->bindValue(':linkedPageUniqueId',    $subRegion['attributes']['linkedPageUniqueId'],           PDO::PARAM_STR);
               $tabularSubFormStatement->execute();
               $tabularSubFormSubRegionId = $tabularSubFormStatement->fetchColumn();
               

@@ -9,6 +9,7 @@ use App\Services\Validators\Region\NavigationRegionValidator;
 use App\Services\Validators\Region\ReportAndDetailViewValidator;
 use App\Services\Validators\Region\ReportRegionValidator;
 use App\Services\Validators\Region\TabularFormRegionValidator;
+use App\Services\Validators\Region\ReportAndFormValidator;
 use Interop\Container\ContainerInterface as ContainerInterface;
 use App\Models\Region;
 
@@ -80,7 +81,12 @@ class RegionController extends Controller {
   }
 
   public function saveReportAndFormRegion(Request $request, Response $response) {
-    $this->getRegionModel()->saveReportAndFormRegion($request);
+    $validator = $this->getReportAndFormValidator();
+    $validator->validate($request);
+    if (!$validator->hasErrors()) {
+      $this->getRegionModel()->saveReportAndFormRegion($request);
+    }
+    $validator->attachErrorsToResponse($response);
     return $response->getApiResponse();
   }
 
@@ -126,5 +132,9 @@ class RegionController extends Controller {
 
   private function getTabularFormRegionValidator() {
     return new TabularFormRegionValidator($this->getContainer()['db']);
+  }
+
+  private function getReportAndFormValidator() {
+    return new ReportAndFormValidator($this->getContainer()['db']);
   }
 }
