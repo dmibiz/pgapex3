@@ -249,7 +249,7 @@ table_body_row_checkbox, table_body_row_page_link, table_body_row_cell, table_bo
 pagination_end, previous_page, next_page, active_page, inactive_page)
 VALUES (26, '<div>', '#PAGINATION#</div></div>', '<form method="POST" name="custom" action><input type="hidden" name="PGAPEX_TABULAR_SUBFORM" value="#TABULAR_SUBFORM_FUNCTION_ID#">',
 '<div class="form-group pull-right">', '#SUBMIT_BUTTON#',
-'</div>', '<div class="form-group"><table class="table table-bordered">', '<thead>', '</tr>',
+'</div>', '<div class="form-group tabular-subform-table-container"><table class="table table-bordered">', '<thead>', '</tr>',
 '<th class="cell--fit-content"><input type="checkbox" onclick="checkAll(this)"></th>', '<th>#CELL_CONTENT#</th>', '</tr>', '</thead>',
 '<tbody>', '<tr>', '<td class="cell--fit-content"><input type="checkbox" name="#FUNCTION_PARAMETERS#[]" value="#FUNCTION_PARAMETERS_VALUE#"></td>',
 '<td class="cell--fit-content"><a href="#PATH#?#UNIQUE_ID#=#UNIQUE_ID_VALUE#"><span class="glyphicon glyphicon-edit"></td>','<td>#CELL_CONTENT#</td>', '</td>', '</tbody>', '</table>', '</form>', '<nav><ul class="pagination">', '</ul></nav>',

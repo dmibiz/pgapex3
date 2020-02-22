@@ -126,11 +126,23 @@ a.toggle {
   white-space: unset;
 }
 
-.subregion form {
+.subregion .form-horizontal {
   margin-top: 20px;
   margin-right: 25px;
 }
 
 .form-group-striped {
   padding: 15px;
+}
+
+.subregion form {
+  margin-top: 20px;
+}
+
+.tabular-subform-table-container {
+  margin-bottom: 0px;
+}
+
+.subregion .form-group.pull-right button:last-child {
+  margin-right: 20px;
 }
