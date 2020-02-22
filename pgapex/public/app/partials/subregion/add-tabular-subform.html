@@ -1,44 +1,40 @@
 <ng-form name="tabularSubFormForm">
 
   <div class="form-group">
-    <div class="row">
-      <div class="col-md-3" ng-class="{'has-error': formError.showErrors(subReportForm.name, 'subreport/' + index + '/name')}">
-        <input required type="text" class="form-control" name="name" ng-model="tabularSubForm.name"
-                placeholder="{{'region.name'|translate}} *">
-      </div>
-      <div class="col-md-3" ng-class="{'has-error': formError.showErrors(subReportForm.sequence, 'subreport/' + index + '/sequence')}">
-        <input required type="number" min="0" class="form-control" name="sequence" ng-model="tabularSubForm.sequence"
-                placeholder="{{'region.sequence'|translate}} *">
-      </div>
-      <div class="col-md-3"
-            ng-class="{'has-error': formError.showErrors(tabularSubForm.paginationQueryParameter, 'subreport/' + index + '/paginationQueryParameter')}">
-        <input required type="text" class="form-control" name="paginationQueryParameter"
-                ng-model="tabularSubForm.paginationQueryParameter"
-                placeholder="{{'region.paginationQueryParameter'|translate}} *">
-      </div>
-      <div class="col-md-3" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.itemsPerPage, 'subreport/' + index + '/itemsPerPage')}">
-        <input required type="number" class="form-control" name="itemsPerPage" ng-model="tabularSubForm.itemsPerPage"
-                placeholder="{{'region.itemsPerPage'|translate}} *">
-      </div>
+    <div class="col-md-3" ng-class="{'has-error': formError.showErrors(subReportForm.name, 'subreport/' + index + '/name')}">
+      <input required type="text" class="form-control" name="name" ng-model="tabularSubForm.name"
+              placeholder="{{'region.name'|translate}} *">
+    </div>
+    <div class="col-md-3" ng-class="{'has-error': formError.showErrors(subReportForm.sequence, 'subreport/' + index + '/sequence')}">
+      <input required type="number" min="0" class="form-control" name="sequence" ng-model="tabularSubForm.sequence"
+              placeholder="{{'region.sequence'|translate}} *">
+    </div>
+    <div class="col-md-3"
+          ng-class="{'has-error': formError.showErrors(tabularSubForm.paginationQueryParameter, 'subreport/' + index + '/paginationQueryParameter')}">
+      <input required type="text" class="form-control" name="paginationQueryParameter"
+              ng-model="tabularSubForm.paginationQueryParameter"
+              placeholder="{{'region.paginationQueryParameter'|translate}} *">
+    </div>
+    <div class="col-md-3" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.itemsPerPage, 'subreport/' + index + '/itemsPerPage')}">
+      <input required type="number" class="form-control" name="itemsPerPage" ng-model="tabularSubForm.itemsPerPage"
+              placeholder="{{'region.itemsPerPage'|translate}} *">
     </div>
   </div>
   <div class="form-group">
-    <div class="row">
-      <div class="col-md-6" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.view, 'subreport/' + index + '/view')}">
-        <select name="view" ng-model="tabularSubForm.view" class="form-control" ng-change="changeViewColumns()"
-                required
-                ng-options="view as view.attributes.schema + '.' + view.attributes.name for view in viewsWithColumns track by trackView(view)">
-          <option value="">-- {{'region.view'|translate}} * --</option>
-        </select>
-      </div>
-      <div class="col-md-3" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.includeLinkedPage
-      , 'tabular-subform/' + $index + '/includeLinkedPage
-      ')}">
-        <label class="normal-label">
-          <input ng-model="tabularSubForm.includeLinkedPage" name="includeLinkedPage" type="checkbox" title="{{'region.includeLinkedPage'|translate}}">
-          <span>{{'region.includeLinkToPage'|translate}}</span>
-        </label>
-      </div>
+    <div class="col-md-6" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.view, 'subreport/' + index + '/view')}">
+      <select name="view" ng-model="tabularSubForm.view" class="form-control" ng-change="changeViewColumns()"
+              required
+              ng-options="view as view.attributes.schema + '.' + view.attributes.name for view in viewsWithColumns track by trackView(view)">
+        <option value="">-- {{'region.view'|translate}} * --</option>
+      </select>
+    </div>
+    <div class="col-md-3" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.includeLinkedPage
+    , 'tabular-subform/' + $index + '/includeLinkedPage
+    ')}">
+      <label class="normal-label">
+        <input ng-model="tabularSubForm.includeLinkedPage" name="includeLinkedPage" type="checkbox" title="{{'region.includeLinkedPage'|translate}}">
+        <span>{{'region.includeLinkToPage'|translate}}</span>
+      </label>
     </div>
   </div>
 
