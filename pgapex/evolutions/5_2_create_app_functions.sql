@@ -105,6 +105,12 @@ BEGIN
   END;
   PERFORM pgapex.f_app_dblink_disconnect();
   SELECT pgapex.f_app_create_response(t_response_body) INTO j_response;
+
+  IF j_response->'headers'->>'location' IS NULL THEN
+    PERFORM f_app_session_delete('success_message');
+    PERFORM f_app_session_delete('error_message');
+  END IF;
+
   RETURN j_response;
 END
 $$ LANGUAGE plpgsql
@@ -497,6 +503,32 @@ SET search_path = pgapex, public, pg_temp;
 
 ----------
 
+CREATE OR REPLACE FUNCTION pgapex.f_app_session_delete(
+  v_key VARCHAR
+)
+RETURNS void AS $$
+DECLARE
+  j_new_session_data JSONB;
+BEGIN
+  WITH session_data AS (
+    SELECT data FROM pgapex.session WHERE session_id = pgapex.f_app_get_session_id()
+  ), concat_json AS (
+    SELECT s2.key, s2.value FROM session_data, jsonb_each(session_data.data) s2
+    WHERE s2.key <> v_key
+  ), with_unique_keys AS (
+    SELECT DISTINCT ON (key) key, value FROM concat_json
+  )
+  SELECT json_object_agg(key, value) INTO j_new_session_data FROM with_unique_keys;
+
+  UPDATE pgapex.session SET data = j_new_session_data
+  WHERE session_id = pgapex.f_app_get_session_id();
+END
+$$ LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pgapex, public, pg_temp;
+
+----------
+
 CREATE OR REPLACE FUNCTION pgapex.f_app_get_cookie(
     v_cookie_name VARCHAR
   , j_headers     JSONB
@@ -742,12 +774,22 @@ CREATE OR REPLACE FUNCTION pgapex.f_app_get_message(
 )
   RETURNS text AS $$
 DECLARE
-  t_response TEXT;
-  t_message TEXT;
+  t_response                     TEXT;
+  t_message                      TEXT;
+  t_success_message_from_session TEXT;
+  t_error_message_from_session   TEXT;
 BEGIN
-  SELECT string_agg(message, '<br />') INTO t_message FROM temp_messages WHERE type = v_type AND transaction_id = txid_current();
-  IF t_message <> '' THEN
-    RETURN replace(t_message_template, '#MESSAGE#', t_message);
+  SELECT f_app_session_read('success_message') INTO t_success_message_from_session;
+  SELECT f_app_session_read('error_message') INTO t_error_message_from_session;
+  IF v_type = 'SUCCESS' AND t_success_message_from_session IS NOT NULL THEN
+    RETURN replace(t_message_template, '#MESSAGE#', t_success_message_from_session);
+  ELSIF v_type = 'ERROR' AND t_error_message_from_session IS NOT NULL THEN
+    RETURN replace(t_message_template, '#MESSAGE#', t_error_message_from_session);
+  ELSE
+    SELECT string_agg(message, '<br />') INTO t_message FROM temp_messages WHERE type = v_type AND transaction_id = txid_current();
+    IF t_message <> '' THEN
+      RETURN replace(t_message_template, '#MESSAGE#', t_message);
+    END IF;
   END IF;
   RETURN '';
 END
@@ -909,6 +951,7 @@ BEGIN
                                                   WHERE key IN (SELECT UNNEST(t_pre_fill_url_params)));
 
       PERFORM pgapex.f_app_set_header('location', t_url_query_string);
+      PERFORM pgapex.f_app_session_write('success_message', v_success_message);
     END IF;
   EXCEPTION
     WHEN OTHERS THEN
