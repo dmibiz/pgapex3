@@ -409,6 +409,7 @@ CREATE TABLE pgapex.form_template (
 	mandatory_row_begin TEXT NOT NULL,
 	mandatory_row_end TEXT NOT NULL,
 	mandatory_row TEXT NOT NULL,
+	help_text_block TEXT,
 	CONSTRAINT pk_form_template PRIMARY KEY (template_ID)
 	);
 CREATE TABLE pgapex.region (

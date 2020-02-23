@@ -162,10 +162,11 @@ VALUES (6, '<div><table class="table table-bordered">', '</table>#PAGINATION#</d
 '<tbody>', '<tr>', '<td>#CELL_CONTENT#</td>', '</tr>', '</tbody>',
 '<nav><ul class="pagination">', '</ul></nav>', '<li><a href="#LINK#">&laquo;</a></li>', '<li><a href="#LINK#">&raquo;</a></li>', '<li class="active"><a href="#LINK#">#NUMBER#</a></li>', '<li><a href="#LINK#">#NUMBER#</a></li>');
 
-INSERT INTO pgapex.form_template (template_id, form_begin, form_end, row_begin, row_end, row, mandatory_row_begin, mandatory_row_end, mandatory_row)
+INSERT INTO pgapex.form_template (template_id, form_begin, form_end, row_begin, row_end, row, mandatory_row_begin, mandatory_row_end, mandatory_row, help_text_block)
 VALUES(7, '<form class="form-horizontal" method="POST" action="">', '#SUBMIT_BUTTON#</form>',
 '<div class="form-group">', '</div>', '<label class="col-sm-2 control-label" title="#HELP_TEXT#">#LABEL#</label><div class="col-sm-10">#FORM_ELEMENT#</div>',
-'<div class="form-group">', '</div>', '<label class="col-sm-2 control-label" title="#HELP_TEXT#">#LABEL# *</label><div class="col-sm-10">#FORM_ELEMENT#</div>');
+'<div class="form-group">', '</div>', '<label class="col-sm-2 control-label" title="#HELP_TEXT#">#LABEL# *</label><div class="col-sm-10">#FORM_ELEMENT#</div>',
+'<small class="form-text text-muted">#HELP_TEXT#</small>');
 
 INSERT INTO pgapex.drop_down_template (template_id, drop_down_begin, drop_down_end, option_begin, option_end)
 VALUES (8, '<select class="form-control" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#">', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>');

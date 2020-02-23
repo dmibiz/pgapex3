@@ -1857,6 +1857,7 @@ DECLARE
   t_mandatory_row_begin_template TEXT;
   t_mandatory_row_end_template   TEXT;
   t_mandatory_row_template       TEXT;
+  t_help_text_block_template     TEXT;
   t_button_template              TEXT;
   v_pre_fill_schema              VARCHAR;
   v_pre_fill_view                VARCHAR;
@@ -1875,9 +1876,9 @@ DECLARE
   t_subregions                   TEXT;
 BEGIN
   SELECT fr.form_pre_fill_id, fr.button_label, ft.form_begin, ft.form_end, ft.row_begin, ft.row_end, ft.row,
-         ft.mandatory_row_begin, ft.mandatory_row_end, ft.mandatory_row, bt.template, fpf.schema_name, fpf.view_name
+         ft.mandatory_row_begin, ft.mandatory_row_end, ft.mandatory_row, ft.help_text_block, bt.template, fpf.schema_name, fpf.view_name
   INTO i_form_pre_fill_id, v_button_label, t_form_begin_template, t_form_end_template, t_row_begin_template, t_row_end_template, t_row_template,
-       t_mandatory_row_begin_template, t_mandatory_row_end_template, t_mandatory_row_template, t_button_template, v_pre_fill_schema, v_pre_fill_view
+       t_mandatory_row_begin_template, t_mandatory_row_end_template, t_mandatory_row_template, t_help_text_block_template, t_button_template, v_pre_fill_schema, v_pre_fill_view
   FROM pgapex.form_region fr
   LEFT JOIN pgapex.form_template ft ON ft.template_id = fr.template_id
   LEFT JOIN pgapex.button_template bt ON bt.template_id = fr.button_template_id
@@ -2039,6 +2040,9 @@ BEGIN
     t_form_element := replace(t_form_element, '#ROW_LABEL#', pgapex.f_app_html_special_chars(r_form_row.label));
     t_form_element := replace(t_form_element, '#WIDTH#', coalesce(r_form_row.width::TEXT, '100'));
     t_form_element := replace(t_form_element, '#WIDTH_UNIT#', coalesce(r_form_row.width_unit::TEXT, '%'));
+    IF r_form_row.is_visible = TRUE AND r_form_row.help_text IS NOT NULL THEN
+      t_form_element := t_form_element || t_help_text_block_template;
+    END IF;
 
     t_current_row_template := replace(t_current_row_template, '#FORM_ELEMENT#', t_form_element);
     t_current_row_template := replace(t_current_row_template, '#HELP_TEXT#',    pgapex.f_app_html_special_chars(coalesce(r_form_row.help_text, '')));
@@ -2075,6 +2079,7 @@ DECLARE
   t_mandatory_row_begin_template TEXT;
   t_mandatory_row_end_template   TEXT;
   t_mandatory_row_template       TEXT;
+  t_help_text_block_template     TEXT;
   t_button_template              TEXT;
   v_pre_fill_schema              VARCHAR;
   v_pre_fill_view                VARCHAR;
@@ -2092,9 +2097,9 @@ DECLARE
   j_option                       JSON;
 BEGIN
   SELECT pfr.form_pre_fill_id, fr.button_label, ft.form_begin, ft.form_end, ft.row_begin, ft.row_end, ft.row,
-         ft.mandatory_row_begin, ft.mandatory_row_end, ft.mandatory_row, bt.template, fpf.schema_name, fpf.view_name
+         ft.mandatory_row_begin, ft.mandatory_row_end, ft.mandatory_row, ft.help_text_block, bt.template, fpf.schema_name, fpf.view_name
   INTO i_form_pre_fill_id, v_button_label, t_form_begin_template, t_form_end_template, t_row_begin_template, t_row_end_template, t_row_template,
-       t_mandatory_row_begin_template, t_mandatory_row_end_template, t_mandatory_row_template, t_button_template, v_pre_fill_schema, v_pre_fill_view
+       t_mandatory_row_begin_template, t_mandatory_row_end_template, t_mandatory_row_template, t_help_text_block_template, t_button_template, v_pre_fill_schema, v_pre_fill_view
   FROM pgapex.form_region fr
   LEFT JOIN pgapex.form_template ft ON ft.template_id = fr.template_id
   LEFT JOIN pgapex.button_template bt ON bt.template_id = fr.button_template_id
@@ -2258,6 +2263,9 @@ BEGIN
     t_form_element := replace(t_form_element, '#ROW_LABEL#', pgapex.f_app_html_special_chars(r_form_row.label));
     t_form_element := replace(t_form_element, '#WIDTH#', coalesce(r_form_row.width::TEXT, '100'));
     t_form_element := replace(t_form_element, '#WIDTH_UNIT#', coalesce(r_form_row.width_unit::TEXT, '%'));
+    IF r_form_row.is_visible = TRUE AND r_form_row.help_text IS NOT NULL THEN
+      t_form_element := t_form_element || t_help_text_block_template;
+    END IF;
 
     t_current_row_template := replace(t_current_row_template, '#FORM_ELEMENT#', t_form_element);
     t_current_row_template := replace(t_current_row_template, '#HELP_TEXT#',    pgapex.f_app_html_special_chars(coalesce(r_form_row.help_text, '')));
