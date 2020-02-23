@@ -896,7 +896,7 @@ BEGIN
       PERFORM pgapex.f_app_add_success_message(v_success_message);
     END IF;
     IF v_redirect_url IS NOT NULL THEN
-      PERFORM pgapex.f_app_set_header('location', pgapex.f_app_replace_system_variables(v_redirect_url));
+      PERFORM pgapex.f_app_set_header('X-Test', 'testValue');
     ELSIF i_form_pre_fill_id IS NOT NULL THEN
       SELECT ARRAY( SELECT pi.name
       FROM pgapex.fetch_row_condition frc
