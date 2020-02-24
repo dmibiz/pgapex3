@@ -14,12 +14,14 @@ class FormRegionValidator extends RegionValidator {
     parent::validate($request);
     $this->validateFormTemplate($request);
     $this->validateButtonTemplate($request);
-    $this->validateButtonLabel($request);
-    $this->validateFunction($request);
+    $this->validateButtonLabel($request->getApiAttribute('buttonLabel'));
+    $this->validateFunction($request->getApiAttribute('functionSchema'), $request->getApiAttribute('functionName'));
 
     $formInputNames = $this->getFormInputNames($request);
     $this->validatePreFillForm($request, $formInputNames);
-    $this->validateFormInputs($request);
+    $this->validateFormInputs($request->getApiAttribute('formFields'));
+
+    $this->validateSubRegions($request);
   }
 
   private function validateFormTemplate(Request $request) {
@@ -36,17 +38,13 @@ class FormRegionValidator extends RegionValidator {
     }
   }
 
-  private function validateButtonLabel(Request $request) {
-    $label = $request->getApiAttribute('buttonLabel');
+  private function validateButtonLabel($label) {
     if ($label === null || trim($label) === '') {
       $this->addError('region.buttonLabelIsMandatory', '/data/attributes/buttonLabel');
     }
   }
 
-  private function validateFunction(Request $request) {
-    $functionSchema = $request->getApiAttribute('functionSchema');
-    $functionName = $request->getApiAttribute('functionName');
-
+  private function validateFunction($functionSchema, $functionName) {
     if ($functionSchema === null || $functionName === null ||
       trim($functionSchema) === '' || trim($functionName) === '')
     {
@@ -101,8 +99,7 @@ class FormRegionValidator extends RegionValidator {
     return $formFieldInputNames;
   }
 
-  private function validateFormInputs(Request $request) {
-    $formFields = $request->getApiAttribute('formFields');
+  private function validateFormInputs($formFields) {
     $sequences = [];
 
     for ($i = 0; $i < count($formFields); $i++) {
@@ -146,6 +143,101 @@ class FormRegionValidator extends RegionValidator {
           $this->addError('region.listOfValuesValueIsMandatory', '/data/attributes/functionParameters/' . $i . '/listOfValuesValue');
         }
       }
+
+      if ($formField['fieldType'] === 'CALENDER' && (trim($formField['calenderFormat']) === '' || $formField['calenderFormat'] === null)) {
+        $this->addError('region.calenderFormatIsMandatory', '/data/attributes/functionParameters/' . $i . '/calenderFormat');
+      }
+
+      if (!in_array($formField['fieldType'], ['RADIO', 'CHECKBOX'])) {
+        if (trim($formField['width']) === '' || $formField['width'] === null) {
+          $this->addError('region.widthIsMandatory', '/data/attributes/functionParameters/' . $i . '/calenderFormat');
+        }
+        if (trim($formField['widthUnit']) === '' || $formField['widthUnit'] === null) {
+          $this->addError('region.widthUnitIsMandatory', '/data/attributes/functionParameters/' . $i . '/calenderFormat');
+        }
+      }
+    }
+  }
+
+  protected function validateSubRegions($request) {
+    $subRegions = $request->getApiAttribute('subRegions');
+    $sequences = [];
+
+    for ($i = 0; $i < count($subRegions); $i++) {
+      $subRegion = $subRegions[$i]['attributes'];
+
+      if ($subRegion['name'] === '') {
+        $this->addError('region.nameIsMandatory', '/data/attributes/' . $subRegion['addSubregionFormName'] . '/name');
+      }
+
+      if (!$this->isValidSequence($subRegion['sequence'])) {
+        $this->addError('region.sequenceIsMandatory', '/data/attributes/' . $subRegion['addSubregionFormName'] . '/sequence');
+      } else {
+        if (in_array($subRegion['sequence'], $sequences)) {
+          $this->addError('region.sequenceAlreadyExists', '/data/attributes/' . $subRegion['addSubregionFormName'] . '/sequence');
+        }
+        $sequences[] = $subRegion['sequence'];
+      }
+
+      /*if ($subRegion['linkedColumn'] === '') {
+        $this->addError('region.linkedColumnIsMandatory', '/data/attributes/' . $subRegion['addSubregionFormName'] . '/linkedColumn');
+      }*/
+
+      switch ($subRegions[$i]['type']) {
+        case 'SUBFORM':
+          $this->validateSubForm($subRegion);
+          break;
+        case 'TABULAR_SUBFORM':
+          $this->validateTabularSubForm($subRegion);
+          break;
+      }
+    }
+  }
+
+  protected function validateColumns($columns, $formName) {
+    $sequences = [];
+
+    for ($i = 0; $i < count($columns); $i++) {
+      $column = $columns[$i]['attributes'];
+      if (trim($column['heading']) === '') {
+        $this->addError('region.headingIsMandatory', '/data/attributes/addColumnLink/' . $formName . '/' . $i . '/heading');
+      }
+      if (!$this->isValidSequence($column['sequence'])) {
+        $this->addError('region.sequenceIsMandatory', '/data/attributes/addColumnLink' . $formName . '/' . $i . '/sequence');
+      } else {
+        if (in_array($column['sequence'], $sequences)) {
+          $this->addError('region.sequenceAlreadyExists', '/data/attributes/addColumnLink/' . $formName . '/' . $i . '/sequence');
+        }
+        $sequences[] = $column['sequence'];
+      }
+
+      if ($column['type'] === 'COLUMN'){
+        if (trim($column['column']) === '') {
+          $this->addError('region.columnIsMandatory', '/data/attributes/addColumnLink/' . $formName . '/' . $i . '/column');
+        }
+      } else {
+        if (trim($column['linkUrl']) === '') {
+          $this->addError('region.linkUrlIsMandatory', '/data/attributes/addColumnLink/' . $formName . '/' . $i . '/linkUrl');
+        }
+        if (trim($column['linkText']) === '') {
+          $this->addError('region.linkTextIsMandatory', '/data/attributes/addColumnLink/' . $formName . '/' . $i . '/linkText');
+        }
+      }
+    }
+  }
+
+  protected function validateSubForm($subRegion) {
+    $this->validateButtonLabel($subRegion['buttonLabel']);
+    $this->validateFunction($subRegion['function']['attributes']['schema'], $subRegion['function']['attributes']['name']);
+    $this->validateFormInputs($subRegion['functionParameters']);
+  }
+
+  protected function validateTabularSubForm($subRegion) {
+    $this->validateColumns($subRegion['formColumns'], $subRegion['addSubregionFormName']);
+    $viewSchema = trim($subRegion['view']['attributes']['schema']);
+      $viewName = ($subRegion['view']['attributes']['name']);
+      if ($viewSchema === '' || $viewName === '') {
+        $this->addError('region.viewIsMandatory', '/data/attributes/' . $subRegion['addSubregionFormName'] . '/view');
     }
   }
 }

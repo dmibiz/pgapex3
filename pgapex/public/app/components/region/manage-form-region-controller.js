@@ -367,7 +367,8 @@
             'formColumns': subRegion.formColumns,
             'includeLinkedPage': subRegion.includeLinkedPage,
             'linkedPageId': subRegion.linkedPageId || null,
-            'linkedPageUniqueId': subRegion.linkedPageUniqueId || null
+            'linkedPageUniqueId': subRegion.linkedPageUniqueId || null,
+            'addSubregionFormName': 'tabular-subform/' + subRegion.index
           }
         }
       } else {
