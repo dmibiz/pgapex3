@@ -106,10 +106,20 @@ BEGIN
   PERFORM pgapex.f_app_dblink_disconnect();
   SELECT pgapex.f_app_create_response(t_response_body) INTO j_response;
 
+  BEGIN
   IF j_response->'headers'->>'location' IS NULL THEN
-    PERFORM f_app_session_delete('success_message');
-    PERFORM f_app_session_delete('error_message');
+    IF f_app_session_read('success_message') IS NOT NULL THEN
+      PERFORM f_app_session_delete('success_message');
+    END IF;
+    IF f_app_session_read('error_message') IS NOT NULL THEN
+      PERFORM f_app_session_delete('error_message');
+    END IF;
   END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+      SELECT pgapex.f_app_error('System error: ' || SQLERRM) INTO t_response_body;
+      SELECT pgapex.f_app_create_response(t_response_body) INTO j_response;
+  END;
 
   RETURN j_response;
 END
@@ -518,7 +528,7 @@ BEGIN
   ), with_unique_keys AS (
     SELECT DISTINCT ON (key) key, value FROM concat_json
   )
-  SELECT json_object_agg(key, value) INTO j_new_session_data FROM with_unique_keys;
+  SELECT coalesce(json_object_agg(key, value), '{}') INTO j_new_session_data FROM with_unique_keys;
 
   UPDATE pgapex.session SET data = j_new_session_data
   WHERE session_id = pgapex.f_app_get_session_id();
