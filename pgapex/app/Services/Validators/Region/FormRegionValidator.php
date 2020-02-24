@@ -179,10 +179,6 @@ class FormRegionValidator extends RegionValidator {
         $sequences[] = $subRegion['sequence'];
       }
 
-      /*if ($subRegion['linkedColumn'] === '') {
-        $this->addError('region.linkedColumnIsMandatory', '/data/attributes/' . $subRegion['addSubregionFormName'] . '/linkedColumn');
-      }*/
-
       switch ($subRegions[$i]['type']) {
         case 'SUBFORM':
           $this->validateSubForm($subRegion);
@@ -238,6 +234,19 @@ class FormRegionValidator extends RegionValidator {
       $viewName = ($subRegion['view']['attributes']['name']);
       if ($viewSchema === '' || $viewName === '') {
         $this->addError('region.viewIsMandatory', '/data/attributes/' . $subRegion['addSubregionFormName'] . '/view');
+    }
+
+    if ($subRegion['includeLinkedPage']) {
+      if ($subRegion['linkedPageId'] === null) {
+        $this->addError('region.tabularSubFormLinkedPageIdIsMandatory', '/data/attributes/' . $subRegion['addSubregionFormName'] . '/linkedPageId');
+      }
+      if ($subRegion['linkedPageUniqueId'] === null) {
+        $this->addError('region.tabularSubFormLinkedPageUniqueIdIsMandatory', '/data/attributes/' . $subRegion['addSubregionFormName'] . '/linkedPageUniqueId');
+      }
+    }
+    
+    if (empty($subRegion['linkedColumns'])) {
+      $this->addError('region.tabularSubFormLinkedColumnsAreMandatory', '/data/attributes/' . $subRegion['addSubregionFormName'] . '/linkedColumns');
     }
   }
 }
