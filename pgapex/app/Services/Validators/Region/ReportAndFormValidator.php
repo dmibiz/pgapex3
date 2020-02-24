@@ -23,6 +23,7 @@ class ReportAndFormValidator extends Validator {
         $this->validateItemsPerPage($request);
         $this->validatePaginationQueryParameter($request);
         $this->validateColumns($request->getApiAttribute('reportColumns'), $request->getApiAttribute('addReportColumnsFormName'));
+        $this->validateFormPageId($request);
       }
     
       protected function validateView($request) {
@@ -107,8 +108,8 @@ class ReportAndFormValidator extends Validator {
         }
       }
     
-      protected function validateFormViewPageId($request) {
-        $pageId = $request->getApiAttribute('detailViewPageId');
+      protected function validateFormPageId($request) {
+        $pageId = $request->getApiAttribute('formPageId');
         if (!$this->isValidNumericId($pageId)) {
           $this->addError('region.pageIsMandatory', '/data/attributes/formPageId');
         }
