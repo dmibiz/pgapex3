@@ -235,8 +235,8 @@ VALUES (23, '<div><table class="table table-bordered">', '</table>#PAGINATION#</
 '<nav><ul class="pagination">', '</ul></nav>', '<li><a href="#LINK#">&laquo;</a></li>', '<li><a href="#LINK#">&raquo;</a></li>', '<li class="active"><a href="#LINK#">#NUMBER#</a></li>', '<li><a href="#LINK#">#NUMBER#</a></li>');
 
 INSERT INTO pgapex.calender_template (template_ID, calender_input, calender_script)
-VALUES (24, '<input type="text" id="calenderInput" class="form-control" size="50" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#"/>', '<script>
-                                                                      AnyTime.picker( "calenderInput",
+VALUES (24, '<input type="text" id="#NAME#" class="form-control" size="50" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#"/>', '<script>
+                                                                      AnyTime.picker( "#NAME#",
                                                                           { format: #CALENDER_FORMAT#, firstDOW: 1 } );
                                                                   </script>');
 
