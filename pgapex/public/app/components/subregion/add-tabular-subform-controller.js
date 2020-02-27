@@ -9,9 +9,9 @@
     this.formErrorService = formErrorService;
     this.templateService = templateService;
 
-    /*$scope.$watch('subForm.columns', function (items) {
-      $scope.subFormForm.$setValidity('columnsArrayLength', items.length > 0);
-    }, true);*/
+    $scope.$watch('tabularSubForm.formColumns', function (items) {
+      $scope.tabularSubFormForm.$setValidity('columnsArrayLength', items.length > 0);
+    }, true);
 
     this.init();
   }
@@ -19,11 +19,8 @@
   AddTabularSubFormController.prototype.init = function () {
     this.$scope.changeViewColumns = this.changeViewColumns.bind(this);
     this.$scope.tabularSubForm.index = this.$scope.index;
-    this.$scope.tabularSubForm.paginationQueryParameter = 'subform_page';
-    this.$scope.tabularSubForm.itemsPerPage = 15;
     this.$scope.applicationId = this.getApplicationId();
     this.$scope.setLinkedColumns = this.setLinkedColumns.bind(this);
-
     this.$scope.changeSubFormFunctionParameters = this.changeSubFormFunctionParameters.bind(this);
 
     this.$scope.trackView = function(view) {

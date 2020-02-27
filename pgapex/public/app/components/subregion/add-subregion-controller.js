@@ -19,7 +19,14 @@
 
   AddSubRegionController.prototype.addSubRegion = function (type) {
     this.$scope.lastSequence++;
-    this.$scope.subRegions.push({'type': type, 'columns': [], 'view': {'attributes': {}}, 'sequence': this.$scope.lastSequence});
+    let newSubRegion = {'type': type, 'view': {'attributes': {}}, 'sequence': this.$scope.lastSequence};
+    if (type === 'SUBREPORT') newSubRegion.columns = [];
+    if (type === 'TABULAR_SUBFORM') {
+      newSubRegion.buttons = [];
+      newSubRegion.formColumns = [];
+      newSubRegion.includeLinkedPage = false;
+    }
+    this.$scope.subRegions.push(newSubRegion);
   };
 
   AddSubRegionController.prototype.deleteSubRegion = function (position) {

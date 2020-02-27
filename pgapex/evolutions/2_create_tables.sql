@@ -691,7 +691,6 @@ CREATE TABLE pgapex.tabularform_subregion(
 	template_ID INTEGER NOT NULL,
 	schema_name VARCHAR ( 64 ) NOT NULL,
 	view_name VARCHAR ( 64 ) NOT NULL,
-	items_per_page INTEGER NOT NULL,
 	include_linked_page BOOLEAN DEFAULT FALSE NOT NULL,
 	linked_page_id INTEGER,
 	linked_page_unique_id VARCHAR( 64 ),

@@ -2791,8 +2791,6 @@ DECLARE
   t_region_template         TEXT;
   v_schema_name             VARCHAR;
   v_view_name               VARCHAR;
-  i_items_per_page          INT;
-  v_pagination_query_param  VARCHAR;
   i_current_page            INT      := 1;
   i_row_count               INT;
   i_page_count              INT;
@@ -2801,24 +2799,13 @@ DECLARE
   v_query                   VARCHAR;
   
 BEGIN
-  SELECT tfsr.schema_name, tfsr.view_name, tfsr.items_per_page, sr.query_parameter
-  INTO v_schema_name, v_view_name, i_items_per_page, v_pagination_query_param
+  SELECT tfsr.schema_name, tfsr.view_name
+  INTO v_schema_name, v_view_name
   FROM pgapex.tabularform_subregion tfsr
     LEFT JOIN pgapex.subregion sr ON tfsr.subregion_id = sr.subregion_id
   WHERE tfsr.subregion_id = i_subregion_id;
 
-  IF j_get_params IS NOT NULL AND j_get_params ? v_pagination_query_param THEN
-    i_current_page := (j_get_params->>v_pagination_query_param)::INT;
-  END IF;
-
   i_row_count := pgapex.f_app_get_row_count(v_schema_name, v_view_name);
-  i_page_count := ceil(i_row_count::float/i_items_per_page::float);
-
-  IF (i_page_count < i_current_page) OR (i_current_page < 1) THEN
-    i_current_page := 1;
-  END IF;
-
-  i_offset := (i_current_page - 1) * i_items_per_page;
 
   SELECT string_agg(params.param, ' AND ') INTO v_query
   FROM ( SELECT (tsflc.tabular_subform_view_column_name || '=' || quote_nullable(url_params.value)) param
@@ -2826,11 +2813,11 @@ BEGIN
          LEFT JOIN (SELECT key, value FROM json_each_text(j_get_params::json)) url_params ON url_params.key = tsflc.parent_form_prefill_column_name
        ) params;
 
-  v_query := 'SELECT json_agg(a) FROM (SELECT * FROM ' || v_schema_name || '.' || v_view_name || ' WHERE ' || v_query || ' LIMIT ' || i_items_per_page || ' OFFSET ' || i_offset || ') AS a';
+  v_query := 'SELECT json_agg(a) FROM (SELECT * FROM ' || v_schema_name || '.' || v_view_name || ' WHERE ' || v_query || ') AS a';
 
   SELECT res_rows INTO j_rows FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_query, FALSE) AS ( res_rows JSON );
 
-  RETURN pgapex.f_app_get_tabularform_subregion_with_template(i_subregion_id, j_rows, v_pagination_query_param, i_page_count, i_current_page);
+  RETURN pgapex.f_app_get_tabularform_subregion_with_template(i_subregion_id, j_rows);
 END
 $$ LANGUAGE plpgsql
 SECURITY DEFINER
@@ -2841,14 +2828,10 @@ SET search_path = pgapex, public, pg_temp;
 CREATE OR REPLACE FUNCTION pgapex.f_app_get_tabularform_subregion_with_template(
   i_subregion_id            INT
 , j_data                    JSON
-, v_pagination_query_param  VARCHAR
-, i_page_count              INT
-, i_current_page            INT
 )
   RETURNS TEXT AS $$
 DECLARE
   t_response                  TEXT;
-  t_pagination                TEXT     := '';
   v_url_prefix                VARCHAR;
   t_tabularform_begin         TEXT;
   t_tabularform_end           TEXT;
@@ -2873,12 +2856,6 @@ DECLARE
   t_table_body_end            TEXT;
   t_table_end                 TEXT;
   t_form_end                  TEXT;
-  t_pagination_begin          TEXT;
-  t_pagination_end            TEXT;
-  t_previous_page             TEXT;
-  t_next_page                 TEXT;
-  t_active_page               TEXT;
-  t_inactive_page             TEXT;
   t_unique_id                 TEXT;
   r_tabularform_column        pgapex.t_tabularform_column_with_link;
   r_tabularform_columns       pgapex.t_tabularform_column_with_link[];
@@ -2900,15 +2877,13 @@ BEGIN
          tsft.buttons_row_end, tsft.table_begin, tsft.table_header_begin, tsft.table_header_row_begin,
          tsft.table_header_checkbox, tsft.table_header_cell, tsft.table_header_row_end, tsft.table_header_end,
          tsft.table_body_begin, tsft.table_body_row_begin, tsft.table_body_row_checkbox, tsft.table_body_row_page_link, tsft.table_body_row_cell,
-         tsft.table_body_row_end, tsft.table_body_end, tsft.table_end, tsft.form_end, tsft.pagination_begin,
-         tsft.pagination_end, tsft.previous_page, tsft.next_page, tsft.active_page, tsft.inactive_page,
+         tsft.table_body_row_end, tsft.table_body_end, tsft.table_end, tsft.form_end,
          tfsr.include_linked_page, tfsr.linked_page_id, tfsr.linked_page_unique_id
   INTO t_tabularform_begin, t_tabularform_end, t_form_begin, t_buttons_row_begin, t_buttons_row_content,
          t_buttons_row_end, t_table_begin, t_table_header_begin, t_table_header_row_begin,
          t_table_header_checkbox, t_table_header_cell, t_table_header_row_end, t_table_header_end,
          t_table_body_begin, t_table_body_row_begin, t_table_body_row_checkbox, t_table_body_row_page_link, t_table_body_row_cell,
-         t_table_body_row_end, t_table_body_end, t_table_end, t_form_end, t_pagination_begin,
-         t_pagination_end, t_previous_page, t_next_page, t_active_page, t_inactive_page,
+         t_table_body_row_end, t_table_body_end, t_table_end, t_form_end,
          b_include_linked_page, i_linked_page_id, v_linked_page_unique_id
          
   FROM pgapex.tabularform_subregion tfsr
@@ -3018,32 +2993,9 @@ BEGIN
 
   t_response := t_response || t_table_body_end || t_table_end|| t_form_end || t_tabularform_end;
 
-  v_url_prefix := pgapex.f_app_get_setting('application_root') || '/app/' || pgapex.f_app_get_setting('application_id') || '/' || pgapex.f_app_get_setting('page_id') || '?' || v_pagination_query_param || '=';
+  v_url_prefix := pgapex.f_app_get_setting('application_root') || '/app/' || pgapex.f_app_get_setting('application_id') || '/' || pgapex.f_app_get_setting('page_id');
 
-  /*IF i_page_count > 1 THEN
-    t_pagination := t_pagination_begin;
-
-    IF i_current_page > 1 THEN
-      t_pagination := t_pagination || replace(t_previous_page, '#LINK#', v_url_prefix || 1);
-    END IF;
-
-    FOR p in 1 .. i_page_count
-    LOOP
-      IF p = i_current_page THEN
-        t_pagination := t_pagination || replace(replace(t_active_page, '#LINK#', v_url_prefix || p), '#NUMBER#', p::varchar);
-      ELSE
-        t_pagination := t_pagination || replace(replace(t_inactive_page, '#LINK#', v_url_prefix || p), '#NUMBER#', p::varchar);
-      END IF;
-    END LOOP;
-
-    IF i_current_page < i_page_count THEN
-      t_pagination := t_pagination || replace(t_next_page, '#LINK#', v_url_prefix || i_page_count);
-    END IF;
-
-    t_pagination := t_pagination || t_pagination_end;
-  END IF;*/
-
-  RETURN replace(t_response, '#PAGINATION#', t_pagination);
+  RETURN replace(t_response, '#PAGINATION#', '');
 END
 $$ LANGUAGE plpgsql
 SECURITY DEFINER

@@ -585,8 +585,8 @@ class Region extends Model {
               $tabularSubFormFunctionsDeleteStatement->execute();
             }
               
-              $tabularSubFormStatement = $connection->prepare('SELECT pgapex.f_region_save_tabularform_subregion(:subRegionId, :subRegionTemplateId, :name, :sequence, :isVisible, :queryParameter,
-                                                                                                                 :parentRegionId, :tabularFormTemplateId, :schemaName, :viewName, :itemsPerPage,
+              $tabularSubFormStatement = $connection->prepare('SELECT pgapex.f_region_save_tabularform_subregion(:subRegionId, :subRegionTemplateId, :name, :sequence, :isVisible,
+                                                                                                                 :parentRegionId, :tabularFormTemplateId, :schemaName, :viewName,
                                                                                                                  :includeLinkedPage, :linkedPageId, :linkedPageUniqueId)');
               
               $tabularSubFormStatement->bindValue(':subRegionId',           $subRegion['attributes']['subRegionId'],                  PDO::PARAM_INT);
@@ -594,12 +594,10 @@ class Region extends Model {
               $tabularSubFormStatement->bindValue(':name',                  $subRegion['attributes']['name'],                         PDO::PARAM_STR);
               $tabularSubFormStatement->bindValue(':sequence',              $subRegion['attributes']['sequence'],                     PDO::PARAM_INT);
               $tabularSubFormStatement->bindValue(':isVisible',             $subRegion['attributes']['isVisible'],                    PDO::PARAM_BOOL);
-              $tabularSubFormStatement->bindValue(':queryParameter',        $subRegion['attributes']['paginationQueryParameter'],     PDO::PARAM_STR);
               $tabularSubFormStatement->bindValue(':parentRegionId',        $formRegionId,                                            PDO::PARAM_INT);
               $tabularSubFormStatement->bindValue(':tabularFormTemplateId', $subRegion['attributes']['tabularFormTemplateId'],        PDO::PARAM_INT);
               $tabularSubFormStatement->bindValue(':schemaName',            $subRegion['attributes']['view']['attributes']['schema'], PDO::PARAM_STR);
               $tabularSubFormStatement->bindValue(':viewName',              $subRegion['attributes']['view']['attributes']['name'],   PDO::PARAM_STR);
-              $tabularSubFormStatement->bindValue(':itemsPerPage',          $subRegion['attributes']['itemsPerPage'],                 PDO::PARAM_INT);
               $tabularSubFormStatement->bindValue(':includeLinkedPage',     $subRegion['attributes']['includeLinkedPage'],            PDO::PARAM_BOOL);
               $tabularSubFormStatement->bindValue(':linkedPageId',          $subRegion['attributes']['linkedPageId'],                 PDO::PARAM_INT);
               $tabularSubFormStatement->bindValue(':linkedPageUniqueId',    $subRegion['attributes']['linkedPageUniqueId'],           PDO::PARAM_STR);

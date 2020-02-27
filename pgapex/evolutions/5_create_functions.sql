@@ -2285,12 +2285,10 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_save_tabularform_subregion(
   , v_name                           pgapex.subregion.name%TYPE
   , i_sequence                       pgapex.subregion.sequence%TYPE
   , b_is_visible                     pgapex.subregion.is_visible%TYPE
-  , v_query_parameter                pgapex.subregion.query_parameter%TYPE
   , i_parent_region_id               pgapex.subregion.parent_region_id%TYPE
   , i_tabularform_template_id        pgapex.tabularform_subregion.template_id%TYPE
   , v_schema_name                    pgapex.tabularform_subregion.schema_name%TYPE
   , v_view_name                      pgapex.tabularform_subregion.view_name%TYPE
-  , i_items_per_page                 pgapex.tabularform_subregion.items_per_page%TYPE
   , b_include_linked_page            pgapex.tabularform_subregion.include_linked_page%TYPE
   , i_linked_page_id                 pgapex.tabularform_subregion.linked_page_id%TYPE
   , v_linked_page_unique_id          pgapex.tabularform_subregion.linked_page_unique_id%TYPE
@@ -2301,11 +2299,11 @@ DECLARE
 BEGIN
   SELECT nextval('pgapex.subregion_subregion_id_seq') INTO i_new_subregion_id;
 
-  INSERT INTO pgapex.subregion (subregion_id, template_id, name, is_visible, query_parameter, parent_region_id, sequence)
-  VALUES (i_new_subregion_id, i_subregion_template_id, v_name, b_is_visible, v_query_parameter, i_parent_region_id, i_sequence);
+  INSERT INTO pgapex.subregion (subregion_id, template_id, name, is_visible, parent_region_id, sequence)
+  VALUES (i_new_subregion_id, i_subregion_template_id, v_name, b_is_visible, i_parent_region_id, i_sequence);
 
-  INSERT INTO pgapex.tabularform_subregion (subregion_id, template_id, schema_name, view_name, items_per_page, include_linked_page, linked_page_id, linked_page_unique_id)
-  VALUES (i_new_subregion_id, i_tabularform_template_id, v_schema_name, v_view_name, i_items_per_page, b_include_linked_page, i_linked_page_id, v_linked_page_unique_id);
+  INSERT INTO pgapex.tabularform_subregion (subregion_id, template_id, schema_name, view_name, include_linked_page, linked_page_id, linked_page_unique_id)
+  VALUES (i_new_subregion_id, i_tabularform_template_id, v_schema_name, v_view_name, b_include_linked_page, i_linked_page_id, v_linked_page_unique_id);
 
   RETURN i_new_subregion_id;
 END
