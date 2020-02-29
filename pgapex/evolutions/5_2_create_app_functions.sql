@@ -74,7 +74,7 @@ BEGIN
     SELECT pgapex.f_app_create_response(t_response_body) INTO j_response;
     RETURN j_response;
   END IF;
-
+  
   PERFORM pgapex.f_app_open_session(v_application_root, i_application_id, j_headers);
 
   SELECT pgapex.f_app_get_page_id(i_application_id, v_page_id) INTO i_page_id;
@@ -105,7 +105,6 @@ BEGIN
   END;
   PERFORM pgapex.f_app_dblink_disconnect();
   SELECT pgapex.f_app_create_response(t_response_body) INTO j_response;
-
   BEGIN
   IF j_response->'headers'->>'location' IS NULL THEN
     IF f_app_session_read('success_message') IS NOT NULL THEN
@@ -2637,7 +2636,7 @@ BEGIN
 
         IF r_subregion.subregion_type = 'REPORT' THEN
           SELECT pgapex.f_app_get_report_subregion(r_subregion.subregion_id, v_parent_region_unique_id, v_argument,
-            r_subregion.query_parameter, j_get_params) INTO t_subregion_content;
+          r_subregion.query_parameter, j_get_params) INTO t_subregion_content;
         ELSIF r_subregion.subregion_type = 'FORM' THEN
           SELECT pgapex.f_app_get_form_subregion(r_subregion.subregion_id, j_get_params) INTO t_subregion_content;
         ELSIF r_subregion.subregion_type = 'TABULAR_SUBFORM' THEN
@@ -2805,13 +2804,13 @@ BEGIN
     LEFT JOIN pgapex.subregion sr ON tfsr.subregion_id = sr.subregion_id
   WHERE tfsr.subregion_id = i_subregion_id;
 
-  i_row_count := pgapex.f_app_get_row_count(v_schema_name, v_view_name);
-
-  SELECT string_agg(params.param, ' AND ') INTO v_query
-  FROM ( SELECT (tsflc.tabular_subform_view_column_name || '=' || quote_nullable(url_params.value)) param
-         FROM pgapex.tabular_subform_linked_column tsflc
-         LEFT JOIN (SELECT key, value FROM json_each_text(j_get_params::json)) url_params ON url_params.key = tsflc.parent_form_prefill_column_name
-       ) params;
+  IF (json_typeof(j_get_params::json) = 'object') THEN
+    SELECT string_agg(params.param, ' AND ') INTO v_query
+    FROM ( SELECT (tsflc.tabular_subform_view_column_name || '=' || quote_nullable(url_params.value)) param
+          FROM pgapex.tabular_subform_linked_column tsflc
+          LEFT JOIN (SELECT key, value FROM json_each_text(j_get_params::json)) url_params ON url_params.key = tsflc.parent_form_prefill_column_name
+        ) params;
+  END IF;
 
   v_query := 'SELECT json_agg(a) FROM (SELECT * FROM ' || v_schema_name || '.' || v_view_name || ' WHERE ' || v_query || ') AS a';
 
