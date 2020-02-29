@@ -1,7 +1,6 @@
 $( function() {
     $.widget( "custom.combobox", {
       _create: function() {
-        console.log("Test");
         this.wrapper = $( "<span>" )
           .addClass( "custom-combobox" )
           .insertAfter( this.element );
@@ -133,8 +132,8 @@ $( function() {
       }
     });
  
-    $( "#combobox" ).combobox();
+    /*$( "#combobox" ).combobox();
     $( "#toggle" ).on( "click", function() {
       $( "#combobox" ).toggle();
-    });
-  } );
+    });*/
+});

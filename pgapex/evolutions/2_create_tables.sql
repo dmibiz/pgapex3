@@ -676,6 +676,7 @@ CREATE TABLE pgapex.combo_box_template (
 	combo_box_end TEXT NOT NULL,
 	option_begin TEXT NOT NULL,
 	option_end TEXT NOT NULL,
+	combo_box_script TEXT NOT NULL,
 	CONSTRAINT pk_combo_box_template PRIMARY KEY (template_ID)
 	);
 

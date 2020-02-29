@@ -1974,7 +1974,7 @@ BEGIN
       pi.name AS form_element_name, lov.schema_name, lov.view_name, lov.label_view_column_name, lov.value_view_column_name,
       it.template AS input_template, tt.template AS textarea_template,
       ddt.drop_down_begin, ddt.drop_down_end, ddt.option_begin, ddt.option_end,
-      cbt.combo_box_begin, cbt.combo_box_end, cbt.option_begin AS combo_box_option_begin, cbt.option_end AS combo_box_option_end,
+      cbt.combo_box_begin, cbt.combo_box_end, cbt.option_begin AS combo_box_option_begin, cbt.option_end AS combo_box_option_end, cbt.combo_box_script,
       ct.calender_input, ct.calender_script, cf.calender_format, ffs.width, ffs.width_unit, ffs.height, ffs.height_unit
     FROM pgapex.form_field ff
       LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
@@ -2074,6 +2074,7 @@ BEGIN
 
         t_form_element := t_form_element || t_options;
         t_form_element := t_form_element || r_form_row.combo_box_end;
+        t_form_element := t_form_element || r_form_row.combo_box_script;
       ELSIF r_form_row.field_type_id = 'CALENDER' THEN
         t_form_element := r_form_row.calender_input;
         t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
@@ -2197,7 +2198,7 @@ BEGIN
       pi.name AS form_element_name, lov.schema_name, lov.view_name, lov.label_view_column_name, lov.value_view_column_name,
       it.template AS input_template, tt.template AS textarea_template,
       ddt.drop_down_begin, ddt.drop_down_end, ddt.option_begin, ddt.option_end,
-      cbt.combo_box_begin, cbt.combo_box_end, cbt.option_begin AS combo_box_option_begin, cbt.option_end AS combo_box_option_end,
+      cbt.combo_box_begin, cbt.combo_box_end, cbt.option_begin AS combo_box_option_begin, cbt.option_end AS combo_box_option_end, cbt.combo_box_script,
       ct.calender_input, ct.calender_script, cf.calender_format, ffs.width, ffs.width_unit, ffs.height, ffs.height_unit
     FROM pgapex.form_field ff
       LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
@@ -2297,6 +2298,7 @@ BEGIN
 
         t_form_element := t_form_element || t_options;
         t_form_element := t_form_element || r_form_row.combo_box_end;
+        t_form_element := t_form_element || r_form_row.combo_box_script;
       ELSIF r_form_row.field_type_id = 'CALENDER' THEN
         t_form_element := r_form_row.calender_input;
         t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
