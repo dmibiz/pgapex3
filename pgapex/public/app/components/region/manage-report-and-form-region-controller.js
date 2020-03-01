@@ -261,7 +261,6 @@
   };
 
   ManageReportAndFormRegionController.prototype.saveRegion = function () {
-    console.log(this.$scope.region);
     this.regionService.saveReportAndFormRegion(
       this.$scope.region.view.attributes.schema,
       this.$scope.region.view.attributes.name,
@@ -315,7 +314,6 @@
     if (!this.isEditPage()) { return; }
     this.regionService.getRegion(this.getRegionId()).then(function (response) {
       var region = response.getDataOrDefault({'attributes': {}});
-      console.log(region);
       region.view = {'attributes': {'schema': region.viewSchema, 'name': region.viewName}};
       this.$scope.region = region;
 

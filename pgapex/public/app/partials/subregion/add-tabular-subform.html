@@ -54,7 +54,7 @@
           <label for="{{ 'linkedColumn' + $index + index }}" class="control-label">{{ preFillColumn.column.attributes.name }}</label>
         </div>
         <div class="col-md-3" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.{{'linkedColumn' + $index + index}}, 'tabular-subform/' + index + '/linkedColumn' + $index + index)}">
-          <select id="{{ 'linkedColumn' + $index + index }}" name="{{ 'linkedColumn' + $index + index }}" ng-model="tabularSubForm.linkedColumns[preFillColumn.column.attributes.name]" class="form-control" ng-change="setLinkedColumns()" required
+          <select id="{{ 'linkedColumn' + $index + index }}" name="{{ 'linkedColumn' + $index + index }}" ng-model="tabularSubForm.linkedColumns[preFillColumn.column.attributes.name]" class="form-control" required
                   ng-options="viewColumn.attributes.name as viewColumn.attributes.name for viewColumn in viewColumns" required>
           <option value="">-- {{'region.linkedColumn'|translate}} * --</option>
           </select>

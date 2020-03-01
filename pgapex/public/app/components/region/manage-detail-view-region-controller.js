@@ -47,7 +47,6 @@
     this.initReportLinkTemplates();
     this.initDetailViewTemplates();
     this.initAvailablePages();
-    console.log(this.$scope.region);
   };
 
   ManageDetailViewRegionController.prototype.getApplicationId = function() {
@@ -262,7 +261,6 @@
   };
 
   ManageDetailViewRegionController.prototype.saveRegion = function () {
-    console.log(this.$scope.region);
     this.regionService.saveReportAndDetailViewRegion(
       this.$scope.region.view.attributes.schema,
       this.$scope.region.view.attributes.name,

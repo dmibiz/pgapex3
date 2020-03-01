@@ -14,7 +14,6 @@
     }, true);
 
     this.init();
-    console.log(this.$scope.tabularSubForm.sequence);
   }
 
   AddTabularSubFormController.prototype.init = function () {
@@ -70,10 +69,6 @@
       this.$scope.viewsWithColumns = response.getDataOrDefault([]);
       this.setViewColumns();
     }.bind(this));
-  };
-
-  AddTabularSubFormController.prototype.setLinkedColumns = function() {
-    console.log(this.$scope.linkedColumns);
   };
 
   AddTabularSubFormController.prototype.changeViewColumns = function() {

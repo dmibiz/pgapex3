@@ -7,7 +7,6 @@
     this.formErrorService = formErrorService;
     this.$scope.helper = helperService;
     this.$scope.test = this.test.bind(this);
-    console.log(this.$scope.buttons);
     this.init();
   }
 
@@ -29,10 +28,6 @@
   AddTabularSubFormButtonController.prototype.deleteButton = function (buttonPosition) {
     this.$scope.buttons.splice(buttonPosition, 1);
     this.$scope.formError = this.formErrorService.empty();
-  };
-
-  AddTabularSubFormButtonController.prototype.test = function() {
-      console.log(this.$scope.buttons);
   };
 
   function init() {
