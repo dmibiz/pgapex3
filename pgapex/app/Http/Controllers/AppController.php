@@ -19,7 +19,7 @@ class AppController extends Controller {
   }
 
   public function queryPage(Request $request, Response $response, $args) {
-    Header( "Cache-Control: no-store, no-cache" );
+    Header( "Cache-Control: no-store, no-cache, post-check=0, pre-check=0" );
     Header( "Pragma: no-cache" );
     $applicationId = $args['applicationId'];
     $pageId = isset($args['pageId']) ? $args['pageId'] : null;
