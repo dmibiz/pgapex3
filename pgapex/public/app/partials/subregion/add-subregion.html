@@ -10,7 +10,11 @@
   <div class="col-xs-2 text-right">
     <div class="dropdown">
       <button class="btn btn-sm btn-primary dropdown-toggle"
-              type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              type="button"
+              data-toggle="dropdown" 
+              aria-haspopup="true" 
+              aria-expanded="true"
+              ng-disabled="!formPreFill">
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
       </button>
       <ul class="dropdown-menu">
@@ -22,7 +26,7 @@
   </div>
 </div>
 
-<div ng-repeat="subRegion in subRegions">
+<div ng-if="formPreFill" ng-repeat="subRegion in subRegions">
   <div ng-if="subRegion.type === 'SUBREPORT'">
     <div class="panel panel-default subregion-form__panel">
       <div class="panel-heading">

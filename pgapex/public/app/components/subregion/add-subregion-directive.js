@@ -11,6 +11,7 @@
         applicationId: '=',
         detailViewRegionId: '=',
         lastSequence: '=',
+        formPreFill: '=',
         formPreFillColumns: '=',
         functions: '=',
         parentRegion: '=',

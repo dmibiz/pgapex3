@@ -241,7 +241,7 @@ VALUES (24, '<input type="text" id="#NAME#" class="form-control" size="50" place
                                                                   </script>');
 
 INSERT INTO pgapex.combo_box_template (template_id, combo_box_begin, combo_box_end, option_begin, option_end, combo_box_script)
-VALUES (25, '<select id="#NAME#" class="form-control" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#">', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>', '<script>$(document).ready(function() { $( "##NAME#" ).combobox(); }); $("##NAME#").next().children("input").ready(function() { $("##NAME#").next().children("input").css("width", "#WIDTH##WIDTH_UNIT#"); });</script> ');
+VALUES (25, '<select id="#NAME#" class="form-control" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#">', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>', '<script>$(document).ready(function() { $( "##NAME#" ).combobox(); }); $("##NAME#").next().children("input").ready(function() { $("##NAME#").next().children("input").css("width", "#WIDTH##WIDTH_UNIT#"); });</script>');
 
 INSERT INTO pgapex.tabular_subform_template (template_ID, tabular_subform_begin, tabular_subform_end, form_begin, buttons_row_begin,
 buttons_row_content, buttons_row_end, table_begin, table_header_begin, table_header_row_begin, table_header_checkbox,
