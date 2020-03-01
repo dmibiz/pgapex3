@@ -188,7 +188,12 @@
             <div ng-show="functionParameter.fieldType === 'CALENDER'">
               <div class="col-md-2"
                   ng-class="{'has-error': formError.showErrors(functionParameterForm.calenderFormat, 'functionParameters/' + $index + '/calenderFormat')}">
-                <input ng-model="functionParameter.calenderFormat" name="calenderFormat" type="text" class="form-control" placeholder="{{'region.calenderFormat'|translate}}">
+                <input ng-model="functionParameter.calenderFormat" 
+                       ng-required="functionParameter.fieldType === 'CALENDER'"
+                       name="calenderFormat" 
+                       type="text" 
+                       class="form-control" 
+                       placeholder="{{'region.calenderFormat'|translate}}">
               </div>
               <div class="col-sm-1">
                 <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.calenderFormatInfo()"></span>
@@ -205,12 +210,12 @@
             <div class="col-md-2"
                  ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidth, 'functionParameters/' + $index + '/inputWidth')}"
                  ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
-              <input ng-model="functionParameter.width" name="inputWidth" type="number" min="1" class="form-control" placeholder="{{'region.width'|translate}}">
+              <input ng-model="functionParameter.width" name="inputWidth" type="number" min="1" class="form-control" placeholder="{{'region.width'|translate}}" required>
             </div>
             <div class="col-md-1"
                  ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidthUnit, 'functionParameters/' + $index + '/inputWidthUnit')}"
                  ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
-                  <select id="inputWidthUnit" name="inputWidthUnit" ng-model="functionParameter.widthUnit" class="form-control">
+                  <select id="inputWidthUnit" name="inputWidthUnit" ng-model="functionParameter.widthUnit" class="form-control" required>
                     <option value="px">px</option>
                     <option value="%">%</option>
                   </select>
@@ -225,7 +230,6 @@
                  ng-show="functionParameter.fieldType === 'TEXTAREA'">
                   <select id="inputHeightUnit" name="inputHeightUnit" ng-model="functionParameter.heightUnit" class="form-control">
                     <option value="px">px</option>
-                    <option value="%">%</option>
                   </select>
             </div>
           </div>
@@ -243,7 +247,10 @@
             formError.showErrors(functionParameterForm.listOfValuesValue, 'functionParameters/' + $index + '/listOfValuesValue') ||
             formError.showErrors(functionParameterForm.listOfValuesLabel, 'functionParameters/' + $index + '/listOfValuesLabel') ||
             formError.showErrors(functionParameterForm.preFillColumn, 'functionParameters/' + $index + '/preFillColumn') ||
-            formError.showErrors(functionParameterForm.helpText, 'functionParameters/' + $index + '/helpText')
+            formError.showErrors(functionParameterForm.helpText, 'functionParameters/' + $index + '/helpText') ||
+            formError.showErrors(functionParameterForm.inputWidth, 'functionParameters/' + $index + '/inputWidth') ||
+            formError.showErrors(functionParameterForm.inputWidthUnit, 'functionParameters/' + $index + '/inputWidthUnit') ||
+            formError.showErrors(functionParameterForm.calenderFormat, 'functionParameters/' + $index + '/calenderFormat')
           ">
             <div class="col-sm-12">
               <span ng-show="functionParameterForm.inputName.$touched && functionParameterForm.inputName.$error.required" class="help-block">{{'region.inputNameIsMandatory'|translate}}</span>
@@ -254,6 +261,9 @@
               <span ng-show="functionParameterForm.listOfValuesView.$touched && functionParameterForm.listOfValuesView.$error.required" class="help-block">{{'region.listOfValuesViewIsMandatory'|translate}}</span>
               <span ng-show="functionParameterForm.listOfValuesValue.$touched && functionParameterForm.listOfValuesValue.$error.required" class="help-block">{{'region.listOfValuesValueIsMandatory'|translate}}</span>
               <span ng-show="functionParameterForm.listOfValuesLabel.$touched && functionParameterForm.listOfValuesLabel.$error.required" class="help-block">{{'region.listOfValuesLabelIsMandatory'|translate}}</span>
+              <span ng-show="functionParameterForm.inputWidth.$touched && functionParameterForm.inputWidth.$error.required" class="help-block">{{'region.inputWidthIsMandatory'|translate}}</span>
+              <span ng-show="functionParameterForm.inputWidthUnit.$touched && functionParameterForm.inputWidthUnit.$error.required" class="help-block">{{'region.inputWidthUnitIsMandatory'|translate}}</span>
+              <span ng-show="functionParameterForm.calenderFormat.$touched && functionParameterForm.calenderFormat.$error.required" class="help-block">{{'region.calenderFormatIsMandatory'|translate}}</span>
 
               <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/inputName')" class="help-block">{{error|translate}}</span>
               <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/label')" class="help-block">{{error|translate}}</span>
@@ -268,6 +278,9 @@
               <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/listOfValuesLabel')" class="help-block">{{error|translate}}</span>
               <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/preFillColumn')" class="help-block">{{error|translate}}</span>
               <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/helpText')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/inputWidth')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/inputWidthUnit')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/calenderFormat')" class="help-block">{{error|translate}}</span>
             </div>
           </div>
         </ng-form>

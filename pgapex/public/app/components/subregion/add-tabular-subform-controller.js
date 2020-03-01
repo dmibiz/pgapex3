@@ -14,6 +14,7 @@
     }, true);
 
     this.init();
+    console.log(this.$scope.tabularSubForm.sequence);
   }
 
   AddTabularSubFormController.prototype.init = function () {

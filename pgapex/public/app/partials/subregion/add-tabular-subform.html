@@ -1,19 +1,19 @@
 <ng-form name="tabularSubFormForm">
 
   <div class="form-group">
-    <div class="col-md-3" ng-class="{'has-error': formError.showErrors(subReportForm.name, 'subreport/' + index + '/name')}">
+    <div class="col-md-3" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.name, 'tabular-subform/' + index + '/name')}">
       <input required type="text" class="form-control" name="name" ng-model="tabularSubForm.name"
               placeholder="{{'region.name'|translate}} *">
     </div>
-    <div class="col-md-3" ng-class="{'has-error': formError.showErrors(subReportForm.sequence, 'subreport/' + index + '/sequence')}">
+    <div class="col-md-3" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.sequence, 'tabular-subform/' + index + '/sequence')}">
       <input required type="number" min="0" class="form-control" name="sequence" ng-model="tabularSubForm.sequence"
               placeholder="{{'region.sequence'|translate}} *">
     </div>
-    <div class="col-md-6" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.view, 'subreport/' + index + '/view')}">
-      <select name="view" ng-model="tabularSubForm.view" class="form-control" ng-change="changeViewColumns()"
+    <div class="col-md-6" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.view, 'tabular-subform/' + index + '/view')}">
+      <select id ="view" name="view" ng-model="tabularSubForm.view" class="form-control" ng-change="changeViewColumns()"
               required
               ng-options="view as view.attributes.schema + '.' + view.attributes.name for view in viewsWithColumns track by trackView(view)">
-        <option value="">-- {{'region.view'|translate}} * --</option>
+        <option value="" disabled>-- {{'region.view'|translate}} * --</option>
       </select>
     </div>
   </div>
@@ -28,59 +28,91 @@
     </div>
   </div>
 
+  <div ng-show="tabularSubFormForm.name.$touched && tabularSubFormForm.name.$error.required" class="row has-error">
+    {{'region.nameIsMandatory'|translate}}
+  </div>
+  <div ng-show="tabularSubFormForm.sequence.$touched && tabularSubFormForm.sequence.$error.required" class="row has-error">
+    {{'region.sequenceIsMandatory'|translate}}
+  </div>
+  <div ng-show="tabularSubFormForm.view.$touched && tabularSubFormForm.view.$error.required" class="row has-error">
+    {{'region.viewIsMandatory'|translate}}
+  </div>
+
+  <span ng-repeat="error in formError.getErrors('tabular-subform/' + index + '/name')" class="help-block has-error">{{error|translate}}</span>
+  <span ng-repeat="error in formError.getErrors('tabular-subform/' + index + '/sequence')" class="help-block has-error">{{error|translate}}</span>
+  <span ng-repeat="error in formError.getErrors('tabular-subform/' + index + '/view')" class="help-block has-error">{{error|translate}}</span>
+
   <div ng-show="tabularSubForm.view.attributes.schema && tabularSubForm.view.attributes.name">
     <div class="row">
       <div class="col-xs-12">
         <h3>{{'region.linkedColumns'|translate}}</h3>
       </div>
     </div>
-    <div class="form-group" ng-repeat="preFillColumn in preFillColumns | preFillColumnsWithValues">
-      <div class="col-md-2">
-        <label for="{{ 'linkedColumn' + $index + index }}" class="control-label">{{ preFillColumn.column.attributes.name }}</label>
+    <div class="form-group container" ng-repeat="preFillColumn in preFillColumns | preFillColumnsWithValues">
+      <div class="row">
+        <div class="col-md-1">
+          <label for="{{ 'linkedColumn' + $index + index }}" class="control-label">{{ preFillColumn.column.attributes.name }}</label>
+        </div>
+        <div class="col-md-3" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.{{'linkedColumn' + $index + index}}, 'tabular-subform/' + index + '/linkedColumn' + $index + index)}">
+          <select id="{{ 'linkedColumn' + $index + index }}" name="{{ 'linkedColumn' + $index + index }}" ng-model="tabularSubForm.linkedColumns[preFillColumn.column.attributes.name]" class="form-control" ng-change="setLinkedColumns()" required
+                  ng-options="viewColumn.attributes.name as viewColumn.attributes.name for viewColumn in viewColumns" required>
+          <option value="">-- {{'region.linkedColumn'|translate}} * --</option>
+          </select>
+        </div>
       </div>
-      <div class="col-md-6" ng-class="{'has-error': formError.showErrors(tabularSubForm.linkedColumn, 'tabular-subform/' + index + '/linkedColumn')}">
-        <select id="{{ 'linkedColumn' + $index + index }}" name="{{ 'linkedColumn' + $index + index }}" ng-model="tabularSubForm.linkedColumns[preFillColumn.column.attributes.name]" class="form-control" ng-change="setLinkedColumns()" required
-                ng-options="viewColumn.attributes.name as viewColumn.attributes.name for viewColumn in viewColumns">
-        <option value="">-- {{'region.linkedColumn'|translate}} * --</option>
-        </select>
+
+      <div class="row">
+        <div class="col-md-3">
+          <div ng-show="tabularSubFormForm.{{'linkedColumn' + $index + index}}.$touched && tabularSubFormForm.{{'linkedColumn' + $index + index}}.$error.required" class="has-error">
+            {{'region.linkedColumnIsMandatory'|translate}}
+          </div>
+          <span ng-repeat="error in formError.getErrors('tabular-subform/' + index + '/linkedColumn' + $index + index)" class="help-block has-error">{{error|translate}}</span>
+        </div>
       </div>
     </div>
-    <div ng-show="tabularSubForm.includeLinkedPage
-    ">
+
+    <div class="container" ng-show="tabularSubForm.includeLinkedPage">
       <div class="row">
-        <div class="col-xs-12">
-          <h3>{{'region.setLinkedPage'|translate}}</h3>
-        </div>
+        <h3>{{'region.setLinkedPage'|translate}}</h3>
       </div>
-      <div class="form-group" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.tabularSubformLinkedPageUniqueId, 'tabularSubformLinkedPageUniqueId')}">
-        <div class="col-md-2">
-          <label for="tabularSubformLinkedPageUniqueId" class="control-label">{{'region.uniqueId'|translate}} *</label>
-        </div>
-        <div class="col-md-6">
-          <select id="tabularSubformLinkedPageUniqueId" name="tabularSubformLinkedPageUniqueId" ng-model="tabularSubForm.linkedPageUniqueId" class="form-control"
-                  ng-required="tabularSubForm.includeLinkedPage"
-                  ng-options="viewColumn.attributes.name as viewColumn.attributes.name for viewColumn in viewColumns">
-          </select>
-          <div ng-show="formError.showErrors(tabularSubFormForm.tabularSubformLinkedPageUniqueId, 'tabularSubformLinkedPageUniqueId')">
-            <span ng-show="tabularSubFormForm.tabularSubformLinkedPageUniqueId.$error.required" class="help-block">{{'region.uniqueIdIsMandatory'|translate}}</span>
-            <span ng-repeat="error in formError.getErrors('tabularSubformLinkedPageUniqueId')" class="help-block">{{error|translate}}</span>
+      <div class="row">
+        <div class="form-group" ng-class="{'has-error': formError.showErrors(tabularSubFormForm.tabularSubFormLinkedPageUniqueId, 'tabularSubFormLinkedPageUniqueId')}">
+          <div class="col-md-2">
+            <label for="tabularSubformLinkedPageUniqueId" class="control-label">{{'region.uniqueId'|translate}} *</label>
+          </div>
+          <div class="col-md-4">
+            <select id="tabularSubFormLinkedPageUniqueId" name="tabularSubFormLinkedPageUniqueId" ng-model="tabularSubForm.linkedPageUniqueId" class="form-control"
+                    ng-required="tabularSubForm.includeLinkedPage"
+                    ng-options="viewColumn.attributes.name as viewColumn.attributes.name for viewColumn in viewColumns">
+            </select>
           </div>
         </div>
       </div>
-      <div class="form-group"
-          ng-class="{'has-error': formError.showErrors(tabularSubFormForm.tabularSubFormLinkedPageId, 'tabularSubFormLinkedPageId')}">
-        <div class="col-md-2">
-          <label for="formPageId" class="control-label">{{'region.page'|translate}} *</label>
-        </div>
-        <div class="col-md-6">
-          <select id="tabularSubFormLinkedPageId" name="tabularSubFormLinkedPageId" ng-model="tabularSubForm.linkedPageId" class="form-control"
-                  ng-required="tabularSubForm.includeLinkedPage" ng-options="page.id as page.attributes.title + ' (id: ' + page.id + ')' for page in pages">
-          </select>
-          <div ng-show="formError.showErrors(tabularSubFormForm.linkedPageId, 'tanularSubFormLinkedPageId')">
-            <span ng-show="tabularSubFormForm.tabularSubFormLinkedPageId.$error.required" class="help-block">{{'region.pageIsMandatory'|translate}}</span>
-            <span ng-repeat="error in formError.getErrors('formPageId')"
-                  class="help-block">{{error|translate}}</span>
+      <div class="row">
+        <div class="form-group"
+            ng-class="{'has-error': formError.showErrors(tabularSubFormForm.tabularSubFormLinkedPageId, 'tabularSubFormLinkedPageId')}">
+          <div class="col-md-2">
+            <label for="formPageId" class="control-label">{{'region.page'|translate}} *</label>
           </div>
+          <div class="col-md-4">
+            <select id="tabularSubFormLinkedPageId" name="tabularSubFormLinkedPageId" ng-model="tabularSubForm.linkedPageId" class="form-control"
+                    ng-required="tabularSubForm.includeLinkedPage" ng-options="page.id as page.attributes.title + ' (id: ' + page.id + ')' for page in pages">
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row" ng-show="formError.showErrors(tabularSubFormForm.tabularSubFormLinkedPageUniqueId, 'tabularSubFormLinkedPageUniqueId') ||
+                                formError.showErrors(tabularSubFormForm.tabularSubFormLinkedPageId, 'tabularSubFormLinkedPageId')">
+        <div class="col-md-3">
+          <div ng-show="tabularSubFormForm.tabularSubFormLinkedPageUniqueId.$touched && tabularSubFormForm.tabularSubFormLinkedPageUniqueId.$error.required" class="has-error">
+            {{'region.uniqueIdIsMandatory'|translate}}
+          </div>
+          <div ng-show="tabularSubFormForm.tabularSubFormLinkedPageId.$touched && tabularSubFormForm.tabularSubFormLinkedPageId.$error.required" class="has-error">
+            {{'region.pageIsMandatory'|translate}}
+          </div>
+
+          <span ng-repeat="error in formError.getErrors('tabular-subform/' + index + '/tabularSubformLinkedPageUniqueId' + $index + index)" class="help-block has-error">{{error|translate}}</span>
+          <span ng-repeat="error in formError.getErrors('tabular-subform/' + index + '/tabularSubformLinkedPageId' + $index + index)" class="help-block has-error">{{error|translate}}</span>
         </div>
       </div>
     </div>

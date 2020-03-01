@@ -112,12 +112,19 @@
                 {{functionParameter.attributes.name}}
                 <span class="label label-default">{{functionParameter.attributes.argumentType}}</span>
               </div>
-              <div class="col-md-3" ng-class="{'has-error': formError.showErrors(functionParameterForm.fieldTemplate, 'functionParameters/' + $index + '/fieldTemplate')}">
-                <select id="viewColumnForParameterValue" name="viewColumnForParameterValue" ng-model="functionParameter.viewColumnForValue" class="form-control" required
-                        ng-options="viewColumn.attributes.name as viewColumn.attributes.name for viewColumn in viewColumns"
-                >
-                  <option value="" disabled>-- {{'region.viewColumn'|translate}} * --</option>
-                </select>
+              <div class="row">
+                <div class="col-md-3" ng-class="{'has-error': formError.showErrors(functionParameterForm.viewColumnForFunctionArgument, 'functionParameters/' + $index + '/viewColumnForFunctionArgument')}">
+                  <select id="viewColumnForFunctionArgument" name="viewColumnForFunctionArgument" ng-model="functionParameter.viewColumnForValue" class="form-control" required
+                          ng-options="viewColumn.attributes.name as viewColumn.attributes.name for viewColumn in viewColumns"
+                  >
+                    <option value="" disabled>-- {{'region.viewColumn'|translate}} * --</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row" ng-show="formError.showErrors(functionParameterForm.viewColumnForFunctionArgument, 'functionParameters/' + $index + '/viewColumnForFunctionArgument')">
+                <div class="col-md-4" >
+                  <span ng-show="functionParameterForm.viewColumnForFunctionArgument.$touched && functionParameterForm.viewColumnForFunctionArgument.$error.required" class="has-error help-block">{{'region.viewColumnIsMandatory'|translate}}</span>
+                </div>
               </div>
             </div>
   

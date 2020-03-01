@@ -187,6 +187,10 @@
     "height": "Height",
     "includeLinkToPage": "Include link to another page",
     "setLinkedPage": "Set linked page",
-    "calenderFormatInfoTableDescription": "The following format specifiers are recognized:"
+    "calenderFormatInfoTableDescription": "The following format specifiers are recognized:",
+    "inputWidthIsMandatory": "Width is mandatory",
+    "inputWidthUnitIsMandatory": "Width unit is mandatory",
+    "calenderFormatIsMandatory": "Calender format is mandatory",
+    "viewColumnIsMandatory": "View column is mandatory"
   }
 }

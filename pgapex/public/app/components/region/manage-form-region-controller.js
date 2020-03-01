@@ -312,7 +312,7 @@
     if (!this.isEditPage()) { return; }
     this.regionService.getRegion(this.getRegionId()).then(function (response) {
       this.$scope.region = response.getDataOrDefault({'attributes': {}}).attributes;
-      console.log(this.$scope.region);
+      this.setLastSequences();
     }.bind(this));
   };
 
@@ -381,6 +381,16 @@
     this.pageService.getPages(this.$scope.applicationId).then(function (response) {
       this.$scope.pages = response.getDataOrDefault([]);
     }.bind(this));
+  };
+
+  ManageFormRegionController.prototype.setLastSequences = function() {
+
+    var lastSequenceOfSubRegions = Math.max.apply(Math,
+      this.$scope.region.subRegions.map(function (subRegion) {
+        return subRegion.sequence;
+    }));
+
+    this.$scope.lastSequenceOfSubRegions = isFinite(lastSequenceOfSubRegions) ? lastSequenceOfSubRegions : 0;
   };
 
   function init() {

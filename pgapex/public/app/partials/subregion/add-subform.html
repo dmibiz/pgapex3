@@ -8,23 +8,19 @@
           <input required type="number" min="0" class="form-control" name="sequence" ng-model="subForm.sequence"
                  placeholder="{{'region.sequence'|translate}} *">
         </div>
-        <div class="col-sm-4">
-          <input type="text" class="form-control" name="subFormButtonLabel" ng-model="subForm.buttonLabel" id="subFormButtonLabel" placeholder="{{'region.buttonLabel'|translate}}" required>
-          <div ng-show="formError.showErrors(manageRegionForm.buttonLabel, 'buttonLabel')">
-            <span ng-show="manageRegionForm.buttonLabel.$error.required" class="help-block">{{'region.buttonLabelIsMandatory'|translate}}</span>
-            <span ng-repeat="error in formError.getErrors('buttonLabel')" class="help-block">{{error|translate}}</span>
-          </div>
+        <div class="col-md-4" ng-class="{'has-error': formError.showErrors(subFormForm.buttonLabel, 'subform/' + index + '/buttonLabel')}">
+          <input type="text" class="form-control" name="buttonLabel" ng-model="subForm.buttonLabel" id="subFormButtonLabel" placeholder="{{'region.buttonLabel'|translate}}" required>
         </div>
     </div>
     <div class="form-group" ng-class="{'has-error': formError.showErrors(manageRegionForm.buttonLabel, 'buttonLabel')}">
       <div class="col-sm-6">
-        <input type="text" class="form-control" name="subFormSuccessMessage" ng-model="subForm.successMessage" id="subFormSuccessMessage" placeholder="{{'region.successMessage'|translate}}">
+        <input type="text" class="form-control" name="subFormSuccessMessage" ng-model="subForm.successMessage" id="subFormSuccessMessage" placeholder="{{'region.successMessage'|translate}}" required>
         <div ng-show="formError.showErrors(manageRegionForm.successMessage, 'successMessage')">
           <span ng-repeat="error in formError.getErrors('successMessage')" class="help-block">{{error|translate}}</span>
         </div>
       </div>
       <div class="col-sm-6">
-        <input type="text" class="form-control" name="subFormErrorMessage" ng-model="subForm.errorMessage" id="subFormErrorMessage" placeholder="{{'region.errorMessage'|translate}}">
+        <input type="text" class="form-control" name="subFormErrorMessage" ng-model="subForm.errorMessage" id="subFormErrorMessage" placeholder="{{'region.errorMessage'|translate}}" required>
         <div ng-show="formError.showErrors(manageRegionForm.errorMessage, 'errorMessage')">
           <span ng-repeat="error in formError.getErrors('errorMessage')" class="help-block">{{error|translate}}</span>
         </div>
@@ -129,7 +125,12 @@
             <div ng-show="functionParameter.fieldType === 'CALENDER'">
               <div class="col-md-2"
                   ng-class="{'has-error': formError.showErrors(functionParameterForm.calenderFormat, 'functionParameters/' + $index + '/calenderFormat')}">
-                <input ng-model="functionParameter.calenderFormat" name="calenderFormat" type="text" class="form-control" placeholder="{{'region.calenderFormat'|translate}}">
+                <input ng-model="functionParameter.calenderFormat"
+                       ng-required="functionParameter.fieldType === 'CALENDER'" 
+                       name="calenderFormat" 
+                       type="text" 
+                       class="form-control" 
+                       placeholder="{{'region.calenderFormat'|translate}}">
               </div>
               <div class="col-sm-1">
                 <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.calenderFormatInfo()"></span>
@@ -146,12 +147,12 @@
             <div class="col-md-2"
                  ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidth, 'functionParameters/' + $index + '/inputWidth')}"
                  ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
-              <input ng-model="functionParameter.width" name="inputWidth" type="number" min="1" class="form-control" placeholder="{{'region.width'|translate}}">
+              <input ng-model="functionParameter.width" name="inputWidth" type="number" min="1" class="form-control" placeholder="{{'region.width'|translate}}" required>
             </div>
             <div class="col-md-2"
                  ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidthUnit, 'functionParameters/' + $index + '/inputWidthUnit')}"
                  ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
-                  <select id="inputWidthUnit" name="inputWidthUnit" ng-model="functionParameter.widthUnit" class="form-control">
+                  <select id="inputWidthUnit" name="inputWidthUnit" ng-model="functionParameter.widthUnit" class="form-control" required>
                     <option value="px">px</option>
                     <option value="%">%</option>
                   </select>
@@ -166,7 +167,6 @@
                  ng-show="functionParameter.fieldType === 'TEXTAREA'">
                   <select id="inputHeightUnit" name="inputHeightUnit" ng-model="functionParameter.heightUnit" class="form-control">
                     <option value="px">px</option>
-                    <option value="%">%</option>
                   </select>
             </div>
           </div>
@@ -184,7 +184,10 @@
             formError.showErrors(functionParameterForm.listOfValuesValue, 'functionParameters/' + $index + '/listOfValuesValue') ||
             formError.showErrors(functionParameterForm.listOfValuesLabel, 'functionParameters/' + $index + '/listOfValuesLabel') ||
             formError.showErrors(functionParameterForm.preFillColumn, 'functionParameters/' + $index + '/preFillColumn') ||
-            formError.showErrors(functionParameterForm.helpText, 'functionParameters/' + $index + '/helpText')
+            formError.showErrors(functionParameterForm.helpText, 'functionParameters/' + $index + '/helpText') ||
+            formError.showErrors(functionParameterForm.inputWidth, 'functionParameters/' + $index + '/inputWidth') ||
+            formError.showErrors(functionParameterForm.inputWidthUnit, 'functionParameters/' + $index + '/inputWidthUnit') ||
+            formError.showErrors(functionParameterForm.calenderFormat, 'functionParameters/' + $index + '/calenderFormat')
           ">
             <div class="col-sm-12">
               <span ng-show="functionParameterForm.inputName.$touched && functionParameterForm.inputName.$error.required" class="help-block">{{'region.inputNameIsMandatory'|translate}}</span>
@@ -195,6 +198,9 @@
               <span ng-show="functionParameterForm.listOfValuesView.$touched && functionParameterForm.listOfValuesView.$error.required" class="help-block">{{'region.listOfValuesViewIsMandatory'|translate}}</span>
               <span ng-show="functionParameterForm.listOfValuesValue.$touched && functionParameterForm.listOfValuesValue.$error.required" class="help-block">{{'region.listOfValuesValueIsMandatory'|translate}}</span>
               <span ng-show="functionParameterForm.listOfValuesLabel.$touched && functionParameterForm.listOfValuesLabel.$error.required" class="help-block">{{'region.listOfValuesLabelIsMandatory'|translate}}</span>
+              <span ng-show="functionParameterForm.inputWidth.$touched && functionParameterForm.inputWidth.$error.required" class="help-block">{{'region.inputWidthIsMandatory'|translate}}</span>
+              <span ng-show="functionParameterForm.inputWidthUnit.$touched && functionParameterForm.inputWidthUnit.$error.required" class="help-block">{{'region.inputWidthUnitIsMandatory'|translate}}</span>
+              <span ng-show="functionParameterForm.calenderFormat.$touched && functionParameterForm.calenderFormat.$error.required" class="help-block">{{'region.calenderFormatIsMandatory'|translate}}</span>
 
               <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/inputName')" class="help-block">{{error|translate}}</span>
               <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/label')" class="help-block">{{error|translate}}</span>
@@ -209,6 +215,9 @@
               <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/listOfValuesLabel')" class="help-block">{{error|translate}}</span>
               <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/preFillColumn')" class="help-block">{{error|translate}}</span>
               <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/helpText')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/inputWidth')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/inputWidthUnit')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/calenderFormat')" class="help-block">{{error|translate}}</span>
             </div>
           </div>
         </ng-form>
@@ -221,31 +230,26 @@
     <div ng-show="subFormForm.sequence.$touched && subFormForm.sequence.$error.required" class="row has-error">
       {{'region.sequenceIsMandatory'|translate}}
     </div>
-    <div
-        ng-show="subFormForm.paginationQueryParameter.$touched && subFormForm.paginationQueryParameter.$error.required"
-        class="row has-error">
-      {{'region.paginationQueryParameter'|translate}}
+    <div ng-show="subFormForm.buttonLabel.$touched && subFormForm.buttonLabel.$error.required" class="row has-error">
+      {{'region.buttonLabelIsMandatory'|translate}}
     </div>
-    <div ng-show="subFormForm.itemsPerPage.$touched && subFormForm.itemsPerPage.$error.required"
-         class="row has-error">
-      {{'region.itemsPerPageIsMandatory'|translate}}
+    <div ng-show="subFormForm.function.$touched && subFormForm.function.$error.required" class="row has-error">
+      {{'region.functionIsMandatory'|translate}}
     </div>
-    <div ng-show="subFormForm.view.$touched && subFormForm.view.$error.required" class="row has-error">
-      {{'region.viewIsMandatory'|translate}}
+    <div ng-show="subFormForm.successMessage.$touched && subFormForm.successMessage.$error.required" class="row has-error">
+      {{'region.successMessageMandatory'|translate}}
     </div>
-    <div ng-show="subFormForm.linkedColumn.$touched && subFormForm.linkedColumn.$error.required"
-         class="row has-error">
-      {{'region.linkedColumnIsMandatory'|translate}}
+    <div ng-show="subFormForm.errorMessage.$touched && subFormForm.errorMessage.$error.required" class="row has-error">
+      {{'region.errorMessageIsMandatory'|translate}}
     </div>
+    
   
     <span ng-repeat="error in formError.getErrors('subform/' + index + '/name')" class="help-block has-error">{{error|translate}}</span>
     <span ng-repeat="error in formError.getErrors('subform/' + index + '/sequence')" class="help-block has-error">{{error|translate}}</span>
-    <span ng-repeat="error in formError.getErrors('subform/' + index + '/paginationQueryParameter')" class="help-block has-error">{{error|translate}}</span>
-    <span ng-repeat="error in formError.getErrors('subform/' + index + '/itemsPerPage')" class="help-block has-error">{{error|translate}}</span>
-    <span ng-repeat="error in formError.getErrors('subform/' + index + '/view')" class="help-block has-error">{{error|translate}}</span>
-    <span ng-repeat="error in formError.getErrors('subform/' + index + '/linkedColumn')" class="help-block has-error">{{error|translate}}</span>
+    <span ng-repeat="error in formError.getErrors('subform/' + index + '/buttonLabel')" class="help-block has-error">{{error|translate}}</span>
+    <span ng-repeat="error in formError.getErrors('subform/' + index + '/function')" class="help-block has-error">{{error|translate}}</span>
+    <span ng-repeat="error in formError.getErrors('subform/' + index + '/successMessage')" class="help-block has-error">{{error|translate}}</span>
+    <span ng-repeat="error in formError.getErrors('subform/' + index + '/errorMessage')" class="help-block has-error">{{error|translate}}</span>
   
-    <!-- <add-column-link title="region.reportColumns" attribute-title="region.addReportColumn" name="{{'subform/' + index}}"
-                     view-columns="viewColumns"  form-error="formError" columns="subForm.columns" last-sequence="lastSequenceOfColumns"></add-column-link> -->
   </ng-form>
   
