@@ -6,7 +6,6 @@
     this.$scope = $scope;
     this.formErrorService = formErrorService;
     this.$scope.helper = helperService;
-    this.$scope.test = this.test.bind(this);
     this.init();
   }
 
