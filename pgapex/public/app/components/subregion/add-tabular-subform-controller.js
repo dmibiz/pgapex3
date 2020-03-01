@@ -20,7 +20,6 @@
     this.$scope.changeViewColumns = this.changeViewColumns.bind(this);
     this.$scope.tabularSubForm.index = this.$scope.index;
     this.$scope.applicationId = this.getApplicationId();
-    this.$scope.setLinkedColumns = this.setLinkedColumns.bind(this);
     this.$scope.changeSubFormFunctionParameters = this.changeSubFormFunctionParameters.bind(this);
 
     this.$scope.trackView = function(view) {
