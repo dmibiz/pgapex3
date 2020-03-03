@@ -151,7 +151,7 @@
       var functionsWithParameters = response.getDataOrDefault([]);
       functionsWithParameters.forEach(function (functionWithParameters) {
         functionWithParameters.attributes.parameters.sort(function(firstParameter, secondParameter) {
-          firstParameter.attributes.ordinalPosition - secondParameter.attributes.ordinalPosition;
+          return firstParameter.attributes.ordinalPosition - secondParameter.attributes.ordinalPosition;
         });
       });
       functionsWithParameters.forEach(function(functionWithParameters) {
