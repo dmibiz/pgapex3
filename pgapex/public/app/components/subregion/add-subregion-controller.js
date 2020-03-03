@@ -19,7 +19,7 @@
 
   AddSubRegionController.prototype.addSubRegion = function (type) {
     this.$scope.lastSequence++;
-    let newSubRegion = {'type': type, 'view': {'attributes': {}}, 'sequence': this.$scope.lastSequence};
+    var newSubRegion = {'type': type, 'view': {'attributes': {}}, 'sequence': this.$scope.lastSequence};
     if (type === 'SUBREPORT') newSubRegion.columns = [];
     if (type === 'TABULAR_SUBFORM') {
       newSubRegion.buttons = [];

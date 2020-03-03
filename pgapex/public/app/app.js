@@ -47,7 +47,9 @@
     .config(['cfpLoadingBarProvider', cfpLoadingBarProviderConfig])
     .filter('preFillColumnsWithValues', function() {
       return function(formPreFillColumns) {
-        return formPreFillColumns.filter(preFillColumn => preFillColumn.value);
+        return formPreFillColumns.filter(function(preFillColumn) { 
+          return preFillColumn.value;
+        });
       }
     });
   }
