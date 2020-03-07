@@ -932,7 +932,7 @@ BEGIN
   t_function_call := 'SELECT 1 FROM ' || v_schema_name || '.' || v_function_name || ' ( ';
   t_function_call := t_function_call || (SELECT string_agg(a.param, ', ')
                       FROM (
-                             SELECT ff.function_parameter_ordinal_position, quote_nullable(url_params.value) AS param
+                             SELECT ff.function_parameter_ordinal_position, coalesce(nullif(quote_nullable(url_params.value), ''''''), 'NULL') AS param
                              FROM pgapex.form_field ff
                                LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
                                LEFT JOIN json_each_text(j_post_params::json) url_params ON url_params.key = pi.name
@@ -940,6 +940,7 @@ BEGIN
                              ORDER BY ff.function_parameter_ordinal_position ASC
                            ) a);
   t_function_call := t_function_call || ' );';
+  INSERT INTO public.debug (test_value) VALUES (t_function_call);
 
   BEGIN
     SELECT res_func INTO i_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func int );
@@ -1002,7 +1003,7 @@ BEGIN
   t_function_call := 'SELECT 1 FROM ' || v_schema_name || '.' || v_function_name || ' ( ';
   t_function_call := t_function_call || (SELECT string_agg(a.param, ', ')
                       FROM (
-                             SELECT ff.function_parameter_ordinal_position, quote_nullable(url_params.value) AS param
+                             SELECT ff.function_parameter_ordinal_position, coalesce(nullif(quote_nullable(url_params.value), ''''''), 'NULL') AS param
                              FROM pgapex.form_field ff
                                LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
                                LEFT JOIN json_each_text(j_post_params::json) url_params ON url_params.key = pi.name
