@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Middleware;
 
-use Interop\Container\ContainerInterface as ContainerInterface;
+use Psr\Container\ContainerInterface as ContainerInterface;
 
 abstract class Middleware {
   private $container;

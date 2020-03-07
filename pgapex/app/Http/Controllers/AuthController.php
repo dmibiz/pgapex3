@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Request;
 use App\Http\Response;
-use Interop\Container\ContainerInterface as ContainerInterface;
+use Psr\Container\ContainerInterface as ContainerInterface;
 use App\Services\Validators\Auth\LoginValidator;
 
 class AuthController extends Controller {

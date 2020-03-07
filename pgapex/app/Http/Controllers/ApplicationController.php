@@ -7,7 +7,7 @@ use App\Models\Database;
 use App\Services\Validators\Application\ApplicationValidator;
 use App\Services\Validators\Application\ApplicationAuthenticationValidator;
 use Exception;
-use Interop\Container\ContainerInterface as ContainerInterface;
+use Psr\Container\ContainerInterface as ContainerInterface;
 use App\Models\Application;
 
 class ApplicationController extends Controller {

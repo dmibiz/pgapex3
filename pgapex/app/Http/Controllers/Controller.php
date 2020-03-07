@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use Interop\Container\ContainerInterface as ContainerInterface;
+use Psr\Container\ContainerInterface as ContainerInterface;
 
 abstract class Controller {
   private $container;

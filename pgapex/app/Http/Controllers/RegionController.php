@@ -10,7 +10,7 @@ use App\Services\Validators\Region\ReportAndDetailViewValidator;
 use App\Services\Validators\Region\ReportRegionValidator;
 use App\Services\Validators\Region\TabularFormRegionValidator;
 use App\Services\Validators\Region\ReportAndFormValidator;
-use Interop\Container\ContainerInterface as ContainerInterface;
+use Psr\Container\ContainerInterface as ContainerInterface;
 use App\Models\Region;
 
 class RegionController extends Controller {

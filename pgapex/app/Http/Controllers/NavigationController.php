@@ -6,7 +6,7 @@ use App\Http\Response;
 use App\Models\Navigation;
 use App\Services\Validators\Navigation\NavigationValidator;
 use App\Services\Validators\Navigation\NavigationItemValidator;
-use Interop\Container\ContainerInterface as ContainerInterface;
+use Psr\Container\ContainerInterface as ContainerInterface;
 
 class NavigationController extends Controller {
   private $navigation;

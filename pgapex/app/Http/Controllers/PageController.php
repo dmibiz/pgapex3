@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Request;
 use App\Http\Response;
 use App\Services\Validators\Page\PageValidator;
-use Interop\Container\ContainerInterface as ContainerInterface;
+use Psr\Container\ContainerInterface as ContainerInterface;
 use App\Models\Page;
 
 class PageController extends Controller {
