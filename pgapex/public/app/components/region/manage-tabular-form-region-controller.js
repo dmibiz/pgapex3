@@ -90,7 +90,7 @@
   };
 
   ManageTabularFormRegionController.prototype.initFunctions = function() {
-    this.databaseService.getFunctionsWithParameters(this.$scope.tabularSubFormAppId).then(function (response) {
+    this.databaseService.getFunctionsWithParameters(this.$scope.tabularFormAppId).then(function (response) {
       var functions = response.getDataOrDefault([]);
       functions.forEach(function (functionWithParameter) {
         functionWithParameter.attributes.parameters.sort(function(firstParameter, secondParameter) {
