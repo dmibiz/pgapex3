@@ -940,7 +940,6 @@ BEGIN
                              ORDER BY ff.function_parameter_ordinal_position ASC
                            ) a);
   t_function_call := t_function_call || ' );';
-  INSERT INTO public.debug (test_value) VALUES (t_function_call);
 
   BEGIN
     SELECT res_func INTO i_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func int );
