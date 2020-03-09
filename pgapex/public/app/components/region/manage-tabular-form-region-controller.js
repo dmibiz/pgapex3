@@ -25,18 +25,24 @@
       'itemsPerPage': 15,
       'tabularFormColumns': [],
       'tabularFormButtons': [],
-      'paginationQueryParameter': 'tabularform_page'
+      'paginationQueryParameter': 'tabularform_page',
+      'hasXminParameters': false
     };
 
     this.$scope.mode = this.isCreatePage() ? 'create' : 'edit';
     this.$scope.changeViewColumns = this.changeViewColumns.bind(this);
     this.$scope.saveRegion = this.saveRegion.bind(this);
     this.$scope.formError = this.formErrorService.empty();
+    this.$scope.regionHasXminParameters = false;
 
     this.$scope.trackView = function(view) {
       if (!view || !view.attributes) { return view; }
       return view.attributes.schema + '.' + view.attributes.name;
     }.bind(this);
+
+    this.$scope.$watch('region.tabularFormButtons', function (newValue, oldValue, scope) {
+      scope.regionHasXminParameters = hasXminParameters(newValue);
+    }, true);
 
     this.initRegionTemplates();
     this.initTabularFormTemplates();
@@ -44,6 +50,13 @@
     this.initFunctions();
     this.initViewsWithColumns();
   };
+
+  function hasXminParameters(buttons) {
+    for (var button of buttons) {
+      if (button.xminParameter) return true;
+    }
+    return false;
+  }
 
   ManageTabularFormRegionController.prototype.getApplicationId = function() {
     return this.$routeParams.applicationId ? parseInt(this.$routeParams.applicationId) : null;
@@ -187,7 +200,8 @@
         'functionName': tabularFormButton.function.attributes.name,
         'successMessage': tabularFormButton.successMessage,
         'errorMessage': tabularFormButton.errorMessage,
-        'appUserParameter': tabularFormButton.appUserParameter
+        'appUserParameter': tabularFormButton.appUserParameter,
+        'xminParameter': tabularFormButton.xminParameter
       };
     });
   };
@@ -208,6 +222,7 @@
       this.$scope.region.itemsPerPage,
       this.$scope.region.paginationQueryParameter,
       this.$scope.region.uniqueId,
+      this.$scope.region.xminViewColumn || null,
       this.getTabularFormColumns(),
       this.getTabularFormButtons(),
       'tabularFormColumns'

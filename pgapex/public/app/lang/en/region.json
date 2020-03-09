@@ -136,7 +136,8 @@
     "buttons": "Buttons",
     "atLeastOneButtonMustBeAdded": "At least one button must be added",
     "deleteTabularFormButton": "Delete tabular form button",
-    "addAppUserAsParameter": "APP_USER as second function parameter",
+    "addAppUserAsParameter": "APP_USER as the final function parameter",
+    "addXminAsParameter": "Xmin as second function parameter",
     "successMessageIsMandatory": "Success message is mandatory.",
     "errorMessageIsMandatory": "Error message is mandatory.",
     "addDetailViewColumn": "Add detail view column",
@@ -191,6 +192,7 @@
     "inputWidthIsMandatory": "Width is mandatory",
     "inputWidthUnitIsMandatory": "Width unit is mandatory",
     "calenderFormatIsMandatory": "Calender format is mandatory",
-    "viewColumnIsMandatory": "View column is mandatory"
+    "viewColumnIsMandatory": "View column is mandatory",
+    "setXmin": "Set xmin"
   }
 }
