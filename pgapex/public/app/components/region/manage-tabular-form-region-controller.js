@@ -52,8 +52,8 @@
   };
 
   function hasXminParameters(buttons) {
-    for (var button of buttons) {
-      if (button.xminParameter) return true;
+    for (var i = 0; i < buttons.length; i++) {
+      if (buttons[i].xminParameter) return true;
     }
     return false;
   }
