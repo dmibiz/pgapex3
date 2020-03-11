@@ -76,15 +76,15 @@
     </div>
     <div class="row add-button__item__checkbox">
       <div class="col-md-5">
-        <div class="form-group" ng-class="{'has-error': formError.showErrors(manageRegionForm.addUserAsFinalParameter, 'addUserAsFinalParameter')}">
-          <input id="addAppUserAsParameter{{::$id}}" name="addUserAsFinalParameter" ng-model="button.appUserParameter" type="checkbox">
-          <label for="addAppUserAsParameter{{::$id}}">{{'region.addAppUserAsParameter'|translate}}</label>
-        </div>
-      </div>
-      <div class="col-md-5">
         <div class="form-group" ng-class="{'has-error': formError.showErrors(manageRegionForm.addXminAsSecondParameter, 'addXminAsSecondParameter')}">
           <input id="addXminAsParameter{{::$id}}" name="addXminAsSecondParameter" ng-model="button.xminParameter" type="checkbox">
           <label for="addXminAsParameter{{::$id}}">{{'region.addXminAsParameter'|translate}}</label>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="form-group" ng-class="{'has-error': formError.showErrors(manageRegionForm.addUserAsFinalParameter, 'addUserAsFinalParameter')}">
+          <input id="addAppUserAsParameter{{::$id}}" name="addUserAsFinalParameter" ng-model="button.appUserParameter" type="checkbox">
+          <label for="addAppUserAsParameter{{::$id}}">{{'region.addAppUserAsParameter'|translate}}</label>
         </div>
       </div>
     </div>

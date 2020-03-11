@@ -222,7 +222,7 @@
       this.$scope.region.itemsPerPage,
       this.$scope.region.paginationQueryParameter,
       this.$scope.region.uniqueId,
-      this.$scope.region.xminViewColumn || null,
+      this.$scope.region.xminViewColumn,
       this.getTabularFormColumns(),
       this.getTabularFormButtons(),
       'tabularFormColumns'

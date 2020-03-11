@@ -1103,9 +1103,16 @@ DECLARE
   v_success_message   VARCHAR;
   v_error_message     VARCHAR;
   b_app_user          BOOLEAN;
+  b_xmin_parameter    BOOLEAN;
+  t_xmin_view_column  TEXT;
+  v_view_schema       TEXT;
+  v_view_name         TEXT;
+  v_xmin_value_query  TEXT;
+  t_unique_id         TEXT;
   t_function_params   TEXT[];
   t_function_param    TEXT;
   t_app_user_param    TEXT  := '';
+  t_xmin_param        TEXT  := '';
   t_function_call     TEXT;
   i_function_response INT;
 BEGIN
@@ -1116,8 +1123,13 @@ BEGIN
     PERFORM pgapex.f_app_add_error_message('Region does not exist');
   END IF;
 
-  SELECT tff.schema_name, tff.function_name, tff.success_message, tff.error_message, tff.app_user
-  INTO v_schema_name, v_function_name, v_success_message, v_error_message, b_app_user
+  SELECT tfr.schema_name, tfr.view_name, tfr.unique_id, tfr.xmin_view_column
+  INTO v_view_schema, v_view_name, t_unique_id, t_xmin_view_column
+  FROM pgapex.tabularform_region tfr
+  WHERE tfr.region_id = i_region_id;
+
+  SELECT tff.schema_name, tff.function_name, tff.success_message, tff.error_message, tff.app_user, tff.xmin_parameter
+  INTO v_schema_name, v_function_name, v_success_message, v_error_message, b_app_user, b_xmin_parameter
   FROM pgapex.tabularform_function tff
   WHERE tff.region_id = i_region_id AND tff.tabularform_function_id = (j_post_params->>'PGAPEX_BUTTON')::int;
 
@@ -1131,7 +1143,13 @@ BEGIN
   BEGIN
     FOREACH t_function_param IN ARRAY t_function_params
     LOOP
-      t_function_call := 'SELECT ' || v_schema_name || '.' || v_function_name || '(' || t_function_param || t_app_user_param || ');';
+      IF b_xmin_parameter IS TRUE THEN
+        v_xmin_value_query := 'SELECT ' || t_xmin_view_column ||' FROM ' || v_view_schema || '.' || v_view_name || ' WHERE ' || t_unique_id || '=' || t_function_param || ' LIMIT 1';
+        SELECT res_xmin_value INTO t_xmin_param FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_xmin_value_query, FALSE) AS ( res_xmin_value TEXT );
+        INSERT INTO public.debug (test_value) VALUES(t_xmin_param);
+        t_xmin_param := ', ' || quote_literal(t_xmin_param); 
+      END IF;
+      t_function_call := 'SELECT ' || v_schema_name || '.' || v_function_name || '(' || t_function_param || coalesce(t_xmin_param, '') || t_app_user_param || ');';
       SELECT res_func INTO i_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func int );
     END LOOP;
 

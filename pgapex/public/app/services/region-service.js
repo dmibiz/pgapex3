@@ -236,7 +236,7 @@
   RegionService.prototype.saveTabularFormRegion = function (pageId, pageTemplateDisplayPointId, regionId, regionTemplate,
                                                             name, sequence, isVisible, tabularFormTemplate, viewSchema,
                                                             viewName, showHeader, itemsPerPage,
-                                                            paginationQueryParameter, uniqueId, tabularFormColumns,
+                                                            paginationQueryParameter, uniqueId, xminViewColumn, tabularFormColumns,
                                                             tabularFormButtons, addTabularFormColumnsFormName) {
     var attributes = {
       "pageId": pageId,
@@ -253,6 +253,7 @@
       "itemsPerPage": itemsPerPage,
       "paginationQueryParameter": paginationQueryParameter,
       "uniqueId": uniqueId,
+      "xminViewColumn": xminViewColumn,
       "tabularFormColumns": tabularFormColumns,
       "tabularFormButtons": tabularFormButtons,
       "addTabularFormColumnsFormName": addTabularFormColumnsFormName

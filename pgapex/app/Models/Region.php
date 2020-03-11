@@ -697,7 +697,7 @@ class Region extends Model {
 
       $statement = $connection->prepare('SELECT pgapex.f_region_save_tabularform_region(:regionId, :pageId, '
       . ':regionTemplateId, :tplDpId, :name, :sequence, :isVisible, :tabularFormTemplateId, :viewSchema, :viewName, '
-      . ':itemsPerPage, :showHeader, :uniqueId, :paginationQueryParameter)');
+      . ':itemsPerPage, :showHeader, :uniqueId, :xminViewColumn, :paginationQueryParameter)');
       $statement->bindValue(':regionId',                 $request->getApiAttribute('regionId'),                   PDO::PARAM_INT);
       $statement->bindValue(':pageId',                   $request->getApiAttribute('pageId'),                     PDO::PARAM_INT);
       $statement->bindValue(':regionTemplateId',         $request->getApiAttribute('regionTemplate'),             PDO::PARAM_INT);
@@ -711,6 +711,7 @@ class Region extends Model {
       $statement->bindValue(':itemsPerPage',             $request->getApiAttribute('itemsPerPage'),               PDO::PARAM_INT);
       $statement->bindValue(':showHeader',               $request->getApiAttribute('showHeader'),                 PDO::PARAM_BOOL);
       $statement->bindValue(':uniqueId',                 $request->getApiAttribute('uniqueId'),                   PDO::PARAM_STR);
+      $statement->bindValue(':xminViewColumn',           $request->getApiAttribute('xminViewColumn'),             PDO::PARAM_STR);
       $statement->bindValue(':paginationQueryParameter', $request->getApiAttribute('paginationQueryParameter'),   PDO::PARAM_STR);
       $statement->execute();
       $regionId = $statement->fetchColumn();
@@ -750,7 +751,7 @@ class Region extends Model {
       $statement->execute();
 
       $buttonStatement = $connection->prepare('SELECT pgapex.f_region_create_tabularform_region_function(:regionId, '
-        . ':buttonTemplateId, :functionSchema, :functionName, :buttonLabel, :sequence, :successMessage, :errorMessage, :appUserParameter)');
+        . ':buttonTemplateId, :functionSchema, :functionName, :buttonLabel, :sequence, :successMessage, :errorMessage, :appUserParameter, :xminParameter)');
       foreach ($request->getApiAttribute('tabularFormButtons') as $tabularFormButton) {
         $buttonStatement->bindValue(':regionId',          $regionId,                              PDO::PARAM_INT);
         $buttonStatement->bindValue(':buttonTemplateId',  $tabularFormButton['templateId'],       PDO::PARAM_INT);
@@ -761,6 +762,7 @@ class Region extends Model {
         $buttonStatement->bindValue(':successMessage',    $tabularFormButton['successMessage'],   PDO::PARAM_STR);
         $buttonStatement->bindValue(':errorMessage',      $tabularFormButton['errorMessage'],     PDO::PARAM_STR);
         $buttonStatement->bindValue(':appUserParameter',  $tabularFormButton['appUserParameter'], PDO::PARAM_BOOL);
+        $buttonStatement->bindValue(':xminParameter',     $tabularFormButton['xminParameter'],    PDO::PARAM_BOOL);
         $buttonStatement->execute();
       }
 

@@ -1610,6 +1610,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_save_tabularform_region(
   , i_items_per_page                 pgapex.tabularform_region.items_per_page%TYPE
   , b_show_header                    pgapex.tabularform_region.show_header%TYPE
   , v_unique_id                      pgapex.tabularform_region.unique_id%TYPE
+  , v_xmin_view_column               pgapex.tabularform_region.xmin_view_column%TYPE
   , v_pagination_query_parameter     pgapex.page_item.name%TYPE
 )
   RETURNS int AS $$
@@ -1622,8 +1623,8 @@ BEGIN
     INSERT INTO pgapex.region (region_id, page_id, template_id, page_template_display_point_id, name, sequence, is_visible)
     VALUES (i_new_region_id, i_page_id, i_region_template_id, i_page_template_display_point_id, v_name, i_sequence, b_is_visible);
 
-    INSERT INTO pgapex.tabularform_region (region_id, template_id, schema_name, view_name, items_per_page, show_header, unique_id)
-    VALUES (i_new_region_id, i_tabularform_template_id, v_schema_name, v_view_name, i_items_per_page, b_show_header, v_unique_id);
+    INSERT INTO pgapex.tabularform_region (region_id, template_id, schema_name, view_name, items_per_page, show_header, unique_id, xmin_view_column)
+    VALUES (i_new_region_id, i_tabularform_template_id, v_schema_name, v_view_name, i_items_per_page, b_show_header, v_unique_id, v_xmin_view_column);
 
     INSERT INTO pgapex.page_item (page_id, tabularform_region_id, name) VALUES (i_page_id, i_new_region_id, v_pagination_query_parameter);
 
@@ -1645,6 +1646,7 @@ BEGIN
       , items_per_page = i_items_per_page
       , show_header = b_show_header
       , unique_id = v_unique_id
+      , xmin_view_column = v_xmin_view_column
     WHERE region_id = i_region_id;
 
     UPDATE pgapex.page_item
@@ -1732,6 +1734,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_create_tabularform_region_function(
   , v_success_message     VARCHAR ( 255 )
   , v_error_message       VARCHAR ( 255 )
   , b_app_user            BOOLEAN
+  , b_xmin_parameter      BOOLEAN
 )
   RETURNS boolean AS $$
 DECLARE
@@ -1739,9 +1742,9 @@ DECLARE
 BEGIN
   SELECT nextval('pgapex.tabularform_function_tabularform_function_id_seq') INTO i_tabularform_function_id;
   INSERT INTO pgapex.tabularform_function (tabularform_function_id, region_id, button_template_id, schema_name, function_name, button_label,
-   sequence, success_message, error_message, app_user)
+   sequence, success_message, error_message, app_user, xmin_parameter)
   VALUES (i_tabularform_function_id, i_region_id, i_button_template_id, v_function_schema, v_function_name, v_button_label, i_sequence,
-  v_success_message, v_error_message, b_app_user);
+  v_success_message, v_error_message, b_app_user, b_xmin_parameter);
 
   RETURN FOUND;
 END
@@ -2714,6 +2717,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_tabularform_region(
       'itemsPerPage', tfr.items_per_page,
       'showHeader', tfr.show_header,
       'uniqueId', tfr.unique_id,
+      'xminViewColumn', tfr.xmin_view_column,
       'paginationQueryParameter', pi.name,
       'tabularFormButtons', (
         SELECT json_agg(
@@ -2730,7 +2734,8 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_tabularform_region(
             ),
             'successMessage', tff.success_message,
             'errorMessage', tff.error_message,
-            'appUserParameter', tff.app_user
+            'appUserParameter', tff.app_user,
+            'xminParameter', tff.xmin_parameter
           )
         )
         FROM pgapex.tabularform_function tff
@@ -2773,7 +2778,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_tabularform_region(
     LEFT JOIN pgapex.tabularform_column_link tfcl ON tfcl.tabularform_column_id = tfc.tabularform_column_id
   WHERE r.region_id = i_region_id
   GROUP BY r.region_id, r.name, r.sequence, r.template_id, r.is_visible, pi.name,
-    tfr.template_id, tfr.schema_name, tfr.view_name, tfr.items_per_page, tfr.show_header, tfr.unique_id;
+    tfr.template_id, tfr.schema_name, tfr.view_name, tfr.items_per_page, tfr.show_header, tfr.unique_id, tfr.xmin_view_column;
 
 $$ LANGUAGE sql
 SECURITY DEFINER

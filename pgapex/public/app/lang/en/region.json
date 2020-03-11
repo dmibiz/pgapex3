@@ -193,6 +193,7 @@
     "inputWidthUnitIsMandatory": "Width unit is mandatory",
     "calenderFormatIsMandatory": "Calender format is mandatory",
     "viewColumnIsMandatory": "View column is mandatory",
-    "setXmin": "Set xmin"
+    "setXmin": "Set xmin",
+    "xminIsMandatory": "Xmin is mandatory"
   }
 }

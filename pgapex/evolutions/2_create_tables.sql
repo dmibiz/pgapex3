@@ -359,6 +359,7 @@ CREATE TABLE pgapex.tabularform_region(
 	items_per_page INTEGER NOT NULL,
 	show_header BOOLEAN DEFAULT TRUE NOT NULL,
 	unique_ID VARCHAR ( 64 ) NOT NULL,
+	xmin_view_column VARCHAR ( 64 ),
 	CONSTRAINT pk_tabularform_region PRIMARY KEY (region_ID)
   );
 CREATE INDEX idx_tabularform_region_view_name ON pgapex.tabularform_region (view_name );
@@ -561,8 +562,9 @@ CREATE TABLE pgapex.tabularform_function (
   button_label VARCHAR ( 255 ) NOT NULL,
   sequence INT NOT NULL,
   success_message VARCHAR ( 255 ) NOT NULL,
-	error_message VARCHAR ( 255 ) NOT NULL,
-	app_user BOOLEAN DEFAULT FALSE,
+  error_message VARCHAR ( 255 ) NOT NULL,
+  app_user BOOLEAN DEFAULT FALSE,
+  xmin_parameter BOOLEAN DEFAULT FALSE,
   CONSTRAINT pk_tabularform_function PRIMARY KEY (tabularform_function_ID),
   CONSTRAINT chk_tabularform_function_sequence_must_be_not_negative CHECK (sequence >= 0)
   );
