@@ -1146,7 +1146,6 @@ BEGIN
       IF b_xmin_parameter IS TRUE THEN
         v_xmin_value_query := 'SELECT ' || t_xmin_view_column ||' FROM ' || v_view_schema || '.' || v_view_name || ' WHERE ' || t_unique_id || '=' || t_function_param || ' LIMIT 1';
         SELECT res_xmin_value INTO t_xmin_param FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_xmin_value_query, FALSE) AS ( res_xmin_value TEXT );
-        INSERT INTO public.debug (test_value) VALUES(t_xmin_param);
         t_xmin_param := ', ' || quote_literal(t_xmin_param); 
       END IF;
       t_function_call := 'SELECT ' || v_schema_name || '.' || v_function_name || '(' || t_function_param || coalesce(t_xmin_param, '') || t_app_user_param || ');';
