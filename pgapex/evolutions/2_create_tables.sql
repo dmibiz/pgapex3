@@ -220,7 +220,7 @@ CREATE TABLE pgapex.form_field (
 	sequence INTEGER NOT NULL,
 	is_mandatory BOOLEAN DEFAULT FALSE NOT NULL,
 	is_visible BOOLEAN DEFAULT TRUE NOT NULL,
-	default_value VARCHAR ( 255 ),
+	default_value TEXT,
 	help_text VARCHAR ( 255 ),
 	function_parameter_type VARCHAR ( 64 ) NOT NULL,
 	function_parameter_ordinal_position SMALLINT NOT NULL,
