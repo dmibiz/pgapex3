@@ -317,6 +317,7 @@ WITH views_with_columns AS (
                           'name', vc.column_name
                       )
                   )
+                  ORDER BY vc.column_number::INT ASC
               )
           )
       ) AS vwc
@@ -1578,6 +1579,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_report_region(
                       )
                   )
                 END
+                ORDER BY rc.sequence ASC
             )
         )
     )
@@ -2619,7 +2621,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_form_region(
                                            'name', vc.column_name
                                          )
                                        )
-                                     ))
+                                     ) ORDER BY vc.column_number::INT ASC)
                                      FROM pgapex.view_column vc
                                      LEFT JOIN pgapex.fetch_row_condition frc ON (vc.column_name = frc.view_column_name AND frc.form_pre_fill_id = fpf.form_pre_fill_id)
                                      LEFT JOIN pgapex.page_item pi ON pi.page_item_id = frc.url_parameter_id
@@ -2683,7 +2685,8 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_form_region(
                                     WHERE ff.region_id = r.region_id
                                     ORDER BY ff.function_parameter_ordinal_position) ff_agg
               )
-            , 'subRegions', (SELECT f_region_get_form_subregions(i_region_id)::jsonb || f_region_get_tabularform_subregions(i_region_id)::jsonb)::json
+            , 'subRegions', (SELECT json_agg(row_to_json(s)->'value') FROM (SELECT value FROM jsonb_array_elements(pgapex.f_region_get_form_subregions(i_region_id)::jsonb || pgapex.f_region_get_tabularform_subregions(i_region_id)::jsonb)
+                            ORDER BY value->'sequence') AS s)
         )
     )
   FROM pgapex.region r
@@ -2737,6 +2740,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_tabularform_region(
             'appUserParameter', tff.app_user,
             'xminParameter', tff.xmin_parameter
           )
+          ORDER BY tff.sequence ASC
         )
         FROM pgapex.tabularform_function tff
         WHERE tff.region_id = r.region_id
@@ -2768,6 +2772,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_tabularform_region(
           )
         )
         END
+        ORDER BY tfc.sequence ASC
 		  )
 	  )
   )
@@ -2846,6 +2851,7 @@ BEGIN
   WHERE dvr.region_id = i_region_id
   GROUP BY sr.name, sr.subregion_id, sr.sequence, sr.query_parameter,
     rr.template_id, rr.schema_name, rr.view_name, rr.show_header, rr.items_per_page, rr.unique_id
+  ORDER BY sr.sequence ASC
     ) AS a;
 
   IF j_result IS NOT NULL THEN
@@ -3020,6 +3026,7 @@ BEGIN
               )
             )
           )
+          ORDER BY tsf.sequence ASC
         )
         FROM pgapex.tabular_subform_function tsf
         WHERE tsf.subregion_id = tsr.subregion_id
@@ -3056,6 +3063,7 @@ BEGIN
           )
         )
         END
+        ORDER BY tfc.sequence
 		  )
     )
     FROM pgapex.subregion sr
@@ -3153,6 +3161,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_report_and_form_region_by_report_
           )
         )
       END
+      ORDER BY rc.sequence ASC
 	    )
       FROM pgapex.report_column rc
         LEFT JOIN pgapex.report_column_link rcl ON rc.report_column_id = rcl.report_column_id
@@ -3230,6 +3239,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_report_and_detailview_region_by_r
           )
         )
       END
+      ORDER BY rc.sequence ASC
 	    )
       FROM pgapex.report_column rc
         LEFT JOIN pgapex.report_column_link rcl ON rc.report_column_id = rcl.report_column_id
@@ -3263,6 +3273,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_report_and_detailview_region_by_r
           )
         )
       END
+      ORDER BY dvc.sequence ASC
 	    )
       FROM pgapex.detailview_column dvc
         LEFT JOIN pgapex.detailview_column_link dvcl ON dvc.detailview_column_id = dvcl.detailview_column_id
@@ -3341,6 +3352,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_report_and_detailview_region_by_d
           )
         )
       END
+      ORDER BY rc.sequence ASC
 	    )
       FROM pgapex.report_column rc
         LEFT JOIN pgapex.report_column_link rcl ON rc.report_column_id = rcl.report_column_id
@@ -3374,6 +3386,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_report_and_detailview_region_by_d
           )
         )
       END
+      ORDER BY dvc.sequence ASC
 	    )
       FROM pgapex.detailview_column dvc
         LEFT JOIN pgapex.detailview_column_link dvcl ON dvc.detailview_column_id = dvcl.detailview_column_id

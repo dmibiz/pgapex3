@@ -201,7 +201,7 @@
         'successMessage': tabularFormButton.successMessage,
         'errorMessage': tabularFormButton.errorMessage,
         'appUserParameter': tabularFormButton.appUserParameter,
-        'xminParameter': tabularFormButton.xminParameter
+        'xminParameter': tabularFormButton.xminParameter || false
       };
     });
   };

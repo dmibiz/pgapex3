@@ -39,6 +39,7 @@ SELECT DISTINCT
 , i.view_name
 , i.column_name
 , i.column_type
+, i.column_number
 FROM
   pgapex.application a
 , pgapex.f_get_view_column_meta_info(a.database_name, a.database_username, a.database_password) i;

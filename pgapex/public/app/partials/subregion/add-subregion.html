@@ -14,7 +14,7 @@
               data-toggle="dropdown" 
               aria-haspopup="true" 
               aria-expanded="true"
-              ng-disabled="!formPreFill">
+              ng-disabled="parentRegion == 'FORM' && !formPreFill">
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
       </button>
       <ul class="dropdown-menu">
@@ -26,7 +26,7 @@
   </div>
 </div>
 
-<div ng-if="formPreFill" ng-repeat="subRegion in subRegions">
+<div ng-if="(parentRegion == 'FORM' && formPreFill) || parentRegion != 'FORM'" ng-repeat="subRegion in subRegions">
   <div ng-if="subRegion.type === 'SUBREPORT'">
     <div class="panel panel-default subregion-form__panel">
       <div class="panel-heading">

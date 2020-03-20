@@ -913,7 +913,7 @@ DECLARE
   v_error_message     VARCHAR;
   v_redirect_url      VARCHAR;
   t_function_call     TEXT;
-  i_function_response INT;
+  t_function_response TEXT;
   i_form_pre_fill_id  INT;
   t_pre_fill_url_params TEXT[];
   t_url_query_string TEXT;
@@ -929,7 +929,7 @@ BEGIN
   INTO v_schema_name, v_function_name, v_success_message, v_error_message, v_redirect_url, i_form_pre_fill_id
   FROM pgapex.form_region WHERE region_id = i_region_id;
 
-  t_function_call := 'SELECT 1 FROM ' || v_schema_name || '.' || v_function_name || ' ( ';
+  t_function_call := 'SELECT ' || v_schema_name || '.' || v_function_name || ' ( ';
   t_function_call := t_function_call || (SELECT string_agg(a.param, ', ')
                       FROM (
                              SELECT ff.function_parameter_ordinal_position, coalesce(nullif(quote_nullable(url_params.value), ''''''), 'NULL') AS param
@@ -942,25 +942,16 @@ BEGIN
   t_function_call := t_function_call || ' );';
 
   BEGIN
-    SELECT res_func INTO i_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func int );
+    SELECT res_func INTO t_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func text );
+    INSERT INTO public.debug (test_value) VALUES (t_function_response);
     IF v_success_message IS NOT NULL THEN
       PERFORM pgapex.f_app_add_success_message(v_success_message);
     END IF;
+    IF t_function_response IS NULL THEN
+      RAISE EXCEPTION 'Function did not return any value';
+    END IF;
     IF v_redirect_url IS NOT NULL THEN
       PERFORM pgapex.f_app_set_header('location', pgapex.f_app_replace_system_variables(v_redirect_url));
-    ELSIF i_form_pre_fill_id IS NOT NULL THEN
-      SELECT ARRAY( SELECT pi.name
-      FROM pgapex.fetch_row_condition frc
-      RIGHT JOIN pgapex.page_item pi ON pi.page_item_id = frc.url_parameter_id
-      WHERE frc.form_pre_fill_id = i_form_pre_fill_id) INTO t_pre_fill_url_params;
-
-      t_url_query_string := '?';
-      t_url_query_string := t_url_query_string || (SELECT string_agg(key || '=' || value, '&')
-                                                  FROM json_each_text(j_post_params::JSON)
-                                                  WHERE key IN (SELECT UNNEST(t_pre_fill_url_params)));
-
-      PERFORM pgapex.f_app_set_header('location', t_url_query_string);
-      PERFORM pgapex.f_app_session_write('success_message', v_success_message);
     END IF;
   EXCEPTION
     WHEN OTHERS THEN
@@ -986,15 +977,8 @@ DECLARE
   v_error_message     VARCHAR;
   v_redirect_url      VARCHAR;
   t_function_call     TEXT;
-  i_function_response INT;
+  t_function_response INT;
 BEGIN
-  /*IF (SELECT NOT EXISTS(SELECT 1
-                        FROM pgapex.region r
-                        LEFT JOIN pgapex.form_region fr ON fr.region_id = r.region_id
-                        WHERE r.page_id = i_page_id AND r.region_id = i_region_id AND fr.region_id IS NOT NULL)) THEN
-    PERFORM pgapex.f_app_add_error_message('Region does not exist');
-  END IF;*/
-
   SELECT schema_name, function_name, success_message, error_message, redirect_url
   INTO v_schema_name, v_function_name, v_success_message, v_error_message, v_redirect_url
   FROM pgapex.form_region WHERE subregion_id = i_subregion_id;
@@ -1012,9 +996,12 @@ BEGIN
   t_function_call := t_function_call || ' );';
 
   BEGIN
-    SELECT res_func INTO i_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func int );
+    SELECT res_func INTO t_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func text );
     IF v_success_message IS NOT NULL THEN
       PERFORM pgapex.f_app_add_success_message(v_success_message);
+    END IF;
+    IF t_function_response IS NULL THEN
+      RAISE EXCEPTION 'Function did not return any value';
     END IF;
     IF v_redirect_url IS NOT NULL THEN
       PERFORM pgapex.f_app_set_header('location', pgapex.f_app_replace_system_variables(v_redirect_url));
@@ -1046,7 +1033,7 @@ DECLARE
   i_function_id       INT;
   t_function_id       TEXT;
   t_function_params   TEXT;
-  i_function_response INT;
+  t_function_response INT;
   j_function_params   JSON;
   t_function_param    TEXT;
   j_function_param    JSON;
@@ -1073,7 +1060,10 @@ BEGIN
                                 ORDER BY cast(value->'ordinal_position' AS TEXT) ASC
                         ) a);
       t_function_call := t_function_call || ');';
-      SELECT res_func INTO i_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func int );
+      SELECT res_func INTO t_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func text );
+      IF t_function_response IS NULL THEN
+        RAISE EXCEPTION 'One of the function calls did not return any value';
+      END IF;
     END LOOP;
 
     IF v_success_message IS NOT NULL THEN
@@ -1114,7 +1104,7 @@ DECLARE
   t_app_user_param    TEXT  := '';
   t_xmin_param        TEXT  := '';
   t_function_call     TEXT;
-  i_function_response INT;
+  t_function_response INT;
 BEGIN
   IF (SELECT NOT EXISTS(SELECT 1
                         FROM pgapex.region r
@@ -1144,12 +1134,13 @@ BEGIN
     FOREACH t_function_param IN ARRAY t_function_params
     LOOP
       IF b_xmin_parameter IS TRUE THEN
-        v_xmin_value_query := 'SELECT ' || t_xmin_view_column ||' FROM ' || v_view_schema || '.' || v_view_name || ' WHERE ' || t_unique_id || '=' || t_function_param || ' LIMIT 1';
-        SELECT res_xmin_value INTO t_xmin_param FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_xmin_value_query, FALSE) AS ( res_xmin_value TEXT );
-        t_xmin_param := ', ' || quote_literal(t_xmin_param); 
+        t_xmin_param := ', ' || quote_literal((j_post_params->'#XMIN_COLUMN#'->>replace(t_function_param, '''', ''))::TEXT);
       END IF;
       t_function_call := 'SELECT ' || v_schema_name || '.' || v_function_name || '(' || t_function_param || coalesce(t_xmin_param, '') || t_app_user_param || ');';
-      SELECT res_func INTO i_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func int );
+      SELECT res_func INTO t_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func text );
+      IF t_function_response IS NULL THEN
+        RAISE EXCEPTION 'One of the function calls did not return any value';
+      END IF;
     END LOOP;
 
     IF v_success_message IS NOT NULL THEN
@@ -2395,6 +2386,7 @@ DECLARE
   t_active_page             TEXT;
   t_inactive_page           TEXT;
   t_unique_id               TEXT;
+  t_xmin_view_column        TEXT;
   r_tabularform_column      pgapex.t_tabularform_column_with_link;
   r_tabularform_columns     pgapex.t_tabularform_column_with_link[];
   r_tabularform_button      pgapex.t_tabularform_button;
@@ -2410,13 +2402,13 @@ BEGIN
          tft.table_header_checkbox, tft.table_header_cell, tft.table_header_row_end, tft.table_header_end,
          tft.table_body_begin, tft.table_body_row_begin, tft.table_body_row_checkbox, tft.table_body_row_cell,
          tft.table_body_row_end, tft.table_body_end, tft.table_end, tft.form_end, tft.pagination_begin,
-         tft.pagination_end, tft.previous_page, tft.next_page, tft.active_page, tft.inactive_page, tfr.unique_id
+         tft.pagination_end, tft.previous_page, tft.next_page, tft.active_page, tft.inactive_page, tfr.unique_id, tfr.xmin_view_column
   INTO t_tabularform_begin, t_tabularform_end, t_form_begin, t_buttons_row_begin, t_buttons_row_content,
          t_buttons_row_end, t_table_begin, t_table_header_begin, t_table_header_row_begin,
          t_table_header_checkbox, t_table_header_cell, t_table_header_row_end, t_table_header_end,
          t_table_body_begin, t_table_body_row_begin, t_table_body_row_checkbox, t_table_body_row_cell,
          t_table_body_row_end, t_table_body_end, t_table_end, t_form_end, t_pagination_begin,
-         t_pagination_end, t_previous_page, t_next_page, t_active_page, t_inactive_page, t_unique_id
+         t_pagination_end, t_previous_page, t_next_page, t_active_page, t_inactive_page, t_unique_id, t_xmin_view_column
   FROM pgapex.tabularform_region tfr
   LEFT JOIN pgapex.tabularform_template tft ON tft.template_id = tfr.template_id
   WHERE tfr.region_id = i_region_id;
@@ -2469,6 +2461,7 @@ BEGIN
     LOOP
       t_body_checkbox := t_table_body_row_checkbox;
       t_body_checkbox := replace(t_body_checkbox, '#UNIQUE_ID_VALUE#', (j_row->>t_unique_id)::text);
+      t_body_checkbox := replace(t_body_checkbox, '#XMIN_VALUE#', coalesce((j_row->>t_xmin_view_column)::text, ''));
 
       t_response := t_response || t_table_body_row_begin || t_body_checkbox;
         FOREACH r_tabularform_column IN ARRAY r_tabularform_columns
@@ -2827,7 +2820,7 @@ BEGIN
     SELECT string_agg(params.param, ' AND ') INTO v_query
     FROM ( SELECT (tsflc.tabular_subform_view_column_name || '=' || quote_nullable(url_params.value)) param
           FROM pgapex.tabular_subform_linked_column tsflc
-          LEFT JOIN (SELECT key, value FROM json_each_text(j_get_params::json)) url_params ON url_params.key = tsflc.parent_form_prefill_column_name
+          INNER JOIN (SELECT key, value FROM json_each_text(j_get_params::json)) url_params ON url_params.key = tsflc.parent_form_prefill_column_name
         ) params;
   END IF;
 

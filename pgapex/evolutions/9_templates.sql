@@ -193,7 +193,7 @@ VALUES (15, '<div>', '#PAGINATION#</div></div>', '<form method="POST" name="cust
 '<div class="form-group pull-right">', '#SUBMIT_BUTTON#',
 '</div>', '<div class="form-group"><table class="table table-bordered">', '<thead>', '</tr>',
 '<th class="cell--fit-content"><input type="checkbox" onclick="checkAll(this)"></th>', '<th>#CELL_CONTENT#</th>', '</tr>', '</thead>',
-'<tbody>', '<tr>', '<td class="cell--fit-content"><input type="checkbox" name="#UNIQUE_ID_COLUMN#[]" value="#UNIQUE_ID_VALUE#"></td>',
+'<tbody>', '<tr>', '<td class="cell--fit-content"><input type="checkbox" name="#UNIQUE_ID_COLUMN#[]" value="#UNIQUE_ID_VALUE#"><input type="hidden" name="#XMIN_COLUMN#[#UNIQUE_ID_VALUE#]" value="#XMIN_VALUE#"></td>',
 '<td>#CELL_CONTENT#</td>', '</td>', '</tbody>', '</table>', '</form>', '<nav><ul class="pagination">', '</ul></nav>',
 '<li><a href="#LINK#">&laquo;</a></li>', '<li><a href="#LINK#">&raquo;</a></li>',
 '<li class="active"><a href="#LINK#">#NUMBER#</a></li>', '<li><a href="#LINK#">#NUMBER#</a></li>');

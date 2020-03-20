@@ -73,10 +73,11 @@ CREATE OR REPLACE FUNCTION pgapex.f_get_view_column_meta_info(
 , password VARCHAR
 )
 RETURNS TABLE (
-  schema_name VARCHAR
-, view_name   VARCHAR
-, column_name VARCHAR
-, column_type VARCHAR
+  schema_name   VARCHAR
+, view_name     VARCHAR
+, column_name   VARCHAR
+, column_type   VARCHAR
+, column_number VARCHAR
 ) AS $$
 BEGIN
   RETURN QUERY
@@ -85,10 +86,11 @@ BEGIN
   , res_view_name
   , res_column_name
   , res_column_type
+  , res_column_number
   FROM
   dblink(
     'dbname=' || database || ' user=' || username || ' password=' || password,
-    'SELECT n.nspname, c.relname, a.attname, t.typname ' ||
+    'SELECT n.nspname, c.relname, a.attname, t.typname, a.attnum ' ||
     'FROM pg_catalog.pg_class c ' ||
     'LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace ' ||
     'LEFT JOIN pg_catalog.pg_attribute a ON a.attrelid = c.oid ' ||
@@ -100,10 +102,11 @@ BEGIN
     '  AND a.attnum > 0 ' ||
     '  AND NOT a.attisdropped'
   ) AS (
-    res_schema_name VARCHAR
-  , res_view_name   VARCHAR
-  , res_column_name VARCHAR
-  , res_column_type VARCHAR
+    res_schema_name   VARCHAR
+  , res_view_name     VARCHAR
+  , res_column_name   VARCHAR
+  , res_column_type   VARCHAR
+  , res_column_number VARCHAR
   );
 EXCEPTION
   WHEN OTHERS THEN
