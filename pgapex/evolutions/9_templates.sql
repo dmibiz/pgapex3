@@ -182,7 +182,7 @@ INSERT INTO pgapex.textarea_template (template_id, template) VALUES (10, '<texta
 INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (11, 'TEXT', '<input type="text" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#">');
 INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (12, 'PASSWORD', '<input type="password" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#">');
 INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (13, 'RADIO', '<div><input type="radio" name="#NAME#" value="#VALUE#"#CHECKED#> #INPUT_LABEL#</div>');
-INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (14, 'CHECKBOX', '<input type="checkbox" class="checkbox" name="#NAME#" value="#VALUE#"#CHECKED#>');
+INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (14, 'CHECKBOX', '<input type="hidden" value="FALSE" name="#NAME#"><input type="checkbox" class="checkbox" name="#NAME#" value="#VALUE#"#CHECKED#>');
 
 INSERT INTO pgapex.tabularform_template (template_ID, tabularform_begin, tabularform_end, form_begin, buttons_row_begin,
 buttons_row_content, buttons_row_end, table_begin, table_header_begin, table_header_row_begin, table_header_checkbox,

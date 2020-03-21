@@ -943,7 +943,6 @@ BEGIN
 
   BEGIN
     SELECT res_func INTO t_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func text );
-    INSERT INTO public.debug (test_value) VALUES (t_function_response);
     IF v_success_message IS NOT NULL THEN
       PERFORM pgapex.f_app_add_success_message(v_success_message);
     END IF;
@@ -2019,8 +2018,16 @@ BEGIN
 
       IF r_form_row.field_type_id IN ('TEXT', 'PASSWORD', 'CHECKBOX') THEN
         t_form_element := r_form_row.input_template;
-        t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
-        t_form_element := replace(t_form_element, '#CHECKED#', '');
+        IF (r_form_row.field_type_id = 'CHECKBOX') THEN
+          IF r_form_row.default_value IS NOT NULL THEN
+            t_form_element := replace(t_form_element, '#CHECKED#', ' checked="checked" ');
+          ELSE
+            t_form_element := replace(t_form_element, '#CHECKED#', '');
+            t_form_element := replace(t_form_element, '#VALUE#', 'TRUE');
+          END IF;
+        ELSE 
+          t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
+        END IF;
 
       ELSIF r_form_row.field_type_id = 'RADIO' THEN
         v_query := 'SELECT json_build_object(''value'', ' || r_form_row.value_view_column_name || ', ''label'', ' || r_form_row.label_view_column_name || ') ' ||
@@ -2243,8 +2250,16 @@ BEGIN
 
       IF r_form_row.field_type_id IN ('TEXT', 'PASSWORD', 'CHECKBOX') THEN
         t_form_element := r_form_row.input_template;
-        t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
-        t_form_element := replace(t_form_element, '#CHECKED#', '');
+        IF (r_form_row.field_type_id = 'CHECKBOX') THEN
+          IF r_form_row.default_value IS NOT NULL THEN
+            t_form_element := replace(t_form_element, '#CHECKED#', ' checked="checked" ');
+          ELSE
+            t_form_element := replace(t_form_element, '#CHECKED#', '');
+            t_form_element := replace(t_form_element, '#VALUE#', 'TRUE');
+          END IF;
+        ELSE 
+          t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
+        END IF;
 
       ELSIF r_form_row.field_type_id = 'RADIO' THEN
         v_query := 'SELECT json_build_object(''value'', ' || r_form_row.value_view_column_name || ', ''label'', ' || r_form_row.label_view_column_name || ') ' ||
