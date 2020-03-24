@@ -192,8 +192,6 @@
       'reportCreateEntityPageId': reportCreateEntityPageId,
       'formPageId': formPageId
     };
-
-    console.log(attributes);
     var request = this.apiService.createApiRequest()
       .setAttributes(attributes)
       .getRequest();

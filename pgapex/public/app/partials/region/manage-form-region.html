@@ -107,8 +107,11 @@
               {{functionParameter.attributes.name}}
               <span class="label label-default">{{functionParameter.attributes.argumentType}}</span>
             </div>
-            <div class="col-md-1" ng-class="{'has-error': formError.showErrors(functionParameterForm.inputName, 'functionParameters/' + $index + '/inputName')}">
+            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.inputName, 'functionParameters/' + $index + '/inputName')}">
               <input required ng-model="functionParameter.inputName" name="label" type="text" class="form-control" placeholder="{{'region.inputName'|translate}} *" ng-pattern="'[a-zA-Z_]+'">
+            </div>
+            <div class="col-sm-1">
+              <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.info('region.formInputNameHelpText')"></span>
             </div>
             <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.label, 'functionParameters/' + $index + '/label')}">
               <input required ng-model="functionParameter.label" name="label" type="text" class="form-control" placeholder="{{'region.label'|translate}} *">
@@ -131,11 +134,11 @@
             <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.defaultValue, 'functionParameters/' + $index + '/defaultValue')}">
               <input ng-model="functionParameter.defaultValue" name="defaultValue" type="text" class="form-control" placeholder="{{'region.defaultValue'|translate}}">
             </div>
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.helpText, 'functionParameters/' + $index + '/helpText')}">
-              <input ng-model="functionParameter.helpText" name="helpText" type="text" class="form-control" placeholder="{{'region.helpText'|translate}}">
-            </div>
           </div>
           <div class="row">
+            <div class="col-md-5" ng-class="{'has-error': formError.showErrors(functionParameterForm.helpText, 'functionParameters/' + $index + '/helpText')}">
+              <input ng-model="functionParameter.helpText" name="helpText" type="text" class="form-control" placeholder="{{'region.helpText'|translate}}">
+            </div>
             <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.fieldType, 'functionParameters/' + $index + '/fieldType')}">
               <select id="fieldType" name="fieldType" ng-model="functionParameter.fieldType" class="form-control" required ng-change="functionParameter.fieldTemplate = '' ; functionParameter.listOfValuesView = ''">
                 <option value="" disabled>-- {{'region.fieldType'|translate}} * --</option>
@@ -149,16 +152,37 @@
                 <option value="CALENDER">{{'region.fieldTypeCalender'|translate}}</option>
               </select>
             </div>
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.fieldTemplate, 'functionParameters/' + $index + '/fieldTemplate')}">
+            <div class="col-md-3" ng-class="{'has-error': formError.showErrors(functionParameterForm.fieldTemplate, 'functionParameters/' + $index + '/fieldTemplate')}">
               <select id="fieldTemplate" name="fieldTemplate" ng-model="functionParameter.fieldTemplate" ng-disabled="!functionParameter.fieldType" class="form-control" required
                       ng-options="ft.id as ft.attributes.name for ft in getFunctionParameterTemplates(functionParameter)"
               >
                 <option value="" disabled>-- {{'region.fieldTemplate'|translate}} * --</option>
               </select>
             </div>
-            <div class="col-md-2"
-                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesView, 'functionParameters/' + $index + '/listOfValuesView')}"
-                 ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'">
+            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.preFillColumn, 'functionParameters/' + $index + '/preFillColumn')}">
+              <select id="preFillColumn" name="preFillColumn" ng-model="functionParameter.preFillColumn" class="form-control" ng-show="region.formPreFill && region.formPreFillView"
+                      ng-options="formPreFillColumn.column.attributes.name as formPreFillColumn.column.attributes.name for formPreFillColumn in region.formPreFillColumns">
+                <option value="" disabled>-- {{'region.preFillColumn'|translate}} --</option>
+              </select>
+            </div>
+          </div>
+          <div class="row" style="margin-top: 15px" ng-show="functionParameter.fieldType === 'CALENDER'">
+            <div class="col-md-3"
+                ng-class="{'has-error': formError.showErrors(functionParameterForm.calenderFormat, 'functionParameters/' + $index + '/calenderFormat')}">
+              <input ng-model="functionParameter.calenderFormat" 
+                    ng-required="functionParameter.fieldType === 'CALENDER'"
+                    name="calenderFormat" 
+                    type="text" 
+                    class="form-control" 
+                    placeholder="{{'region.calenderFormat'|translate}}">
+            </div>
+            <div class="col-sm-1">
+              <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.calenderFormatInfo()"></span>
+            </div>
+          </div>
+          <div class="row" style="margin-top: 15px;" ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'">
+            <div class="col-md-5"
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesView, 'functionParameters/' + $index + '/listOfValuesView')}">
               <select id="listOfValuesView" name="listOfValuesView" ng-model="functionParameter.listOfValuesView" class="form-control"
                       ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
                       ng-options="viewWithColumns as (viewWithColumns.attributes.schema + '.' + viewWithColumns.attributes.name) for viewWithColumns in viewsWithColumns track by trackDatabaseObject(viewWithColumns)">
@@ -166,8 +190,7 @@
               </select>
             </div>
             <div class="col-md-2"
-                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesValue, 'functionParameters/' + $index + '/listOfValuesValue')}"
-                 ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'">
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesValue, 'functionParameters/' + $index + '/listOfValuesValue')}">
               <select id="listOfValuesValue" name="listOfValuesValue" ng-model="functionParameter.listOfValuesValue" class="form-control"
                       ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
                       ng-disabled="!functionParameter.listOfValuesView"
@@ -176,33 +199,12 @@
               </select>
             </div>
             <div class="col-md-2"
-                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesLabel, 'functionParameters/' + $index + '/listOfValuesLabel')}"
-                 ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'">
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesLabel, 'functionParameters/' + $index + '/listOfValuesLabel')}">
               <select id="listOfValuesLabel" name="listOfValuesLabel" ng-model="functionParameter.listOfValuesLabel" class="form-control"
                       ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
                       ng-disabled="!functionParameter.listOfValuesView"
                       ng-options="column as column.attributes.name for column in functionParameter.listOfValuesView.attributes.columns track by column.attributes.name">
                 <option value="" disabled>-- {{'region.columnForLabel'|translate}} * --</option>
-              </select>
-            </div>
-            <div ng-show="functionParameter.fieldType === 'CALENDER'">
-              <div class="col-md-2"
-                  ng-class="{'has-error': formError.showErrors(functionParameterForm.calenderFormat, 'functionParameters/' + $index + '/calenderFormat')}">
-                <input ng-model="functionParameter.calenderFormat" 
-                       ng-required="functionParameter.fieldType === 'CALENDER'"
-                       name="calenderFormat" 
-                       type="text" 
-                       class="form-control" 
-                       placeholder="{{'region.calenderFormat'|translate}}">
-              </div>
-              <div class="col-sm-1">
-                <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.calenderFormatInfo()"></span>
-              </div>
-            </div>
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.preFillColumn, 'functionParameters/' + $index + '/preFillColumn')}">
-              <select id="preFillColumn" name="preFillColumn" ng-model="functionParameter.preFillColumn" class="form-control" ng-show="region.formPreFill && region.formPreFillView"
-                      ng-options="formPreFillColumn.column.attributes.name as formPreFillColumn.column.attributes.name for formPreFillColumn in region.formPreFillColumns">
-                <option value="" disabled>-- {{'region.preFillColumn'|translate}} --</option>
               </select>
             </div>
           </div>

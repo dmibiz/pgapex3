@@ -44,36 +44,39 @@
               {{functionParameter.attributes.name}}
               <span class="label label-default">{{functionParameter.attributes.argumentType}}</span>
             </div>
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.inputName, 'functionParameters/' + $index + '/inputName')}">
+            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.inputName, 'subform/' + index + '/functionParameters/' + $index + '/inputName')}">
               <input required ng-model="functionParameter.inputName" name="label" type="text" class="form-control" placeholder="{{'region.inputName'|translate}} *" ng-pattern="'[a-zA-Z_]+'">
             </div>
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.label, 'functionParameters/' + $index + '/label')}">
+            <div class="col-sm-1">
+              <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.info('region.formInputNameHelpText')"></span>
+            </div>
+            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.label, 'subform/' + index + '/functionParameters/' + $index + '/label')}">
               <input required ng-model="functionParameter.label" name="label" type="text" class="form-control" placeholder="{{'region.label'|translate}} *">
             </div>
-            <div class="col-md-1" ng-class="{'has-error': formError.showErrors(functionParameterForm.sequence, 'functionParameters/' + $index + '/sequence')}">
+            <div class="col-md-1" ng-class="{'has-error': formError.showErrors(functionParameterForm.sequence, 'subform/' + index + '/functionParameters/' + $index + '/sequence')}">
               <input required ng-model="functionParameter.sequence" name="sequence" type="number" min="0" class="form-control" placeholder="{{'region.sequence'|translate}} *">
             </div>
-            <div class="col-md-1" ng-class="{'has-error': formError.showErrors(functionParameterForm.isMandatory, 'functionParameters/' + $index + '/isMandatory')}">
+            <div class="col-md-1" ng-class="{'has-error': formError.showErrors(functionParameterForm.isMandatory, 'subform/' + index + '/functionParameters/' + $index + '/isMandatory')}">
               <label class="normal-label">
                 <input ng-model="functionParameter.isMandatory" name="isMandatory" type="checkbox" title="{{'region.isMandatory'|translate}}">
                 <span>{{'region.isMandatory'|translate}}</span>
               </label>
             </div>
-            <div class="col-md-1" ng-class="{'has-error': formError.showErrors(functionParameterForm.isVisible, 'functionParameters/' + $index + '/isVisible')}">
+            <div class="col-md-1" ng-class="{'has-error': formError.showErrors(functionParameterForm.isVisible, 'subform/' + index + '/functionParameters/' + $index + '/isVisible')}">
               <label class="normal-label">
                 <input ng-model="functionParameter.isVisible" name="isVisible" type="checkbox" title="{{'region.isVisible'|translate}}">
                 <span>{{'region.isVisible'|translate}}</span>
               </label>
             </div>
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.defaultValue, 'functionParameters/' + $index + '/defaultValue')}">
+            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.defaultValue, 'subform/' + index + '/functionParameters/' + $index + '/defaultValue')}">
               <input ng-model="functionParameter.defaultValue" name="defaultValue" type="text" class="form-control" placeholder="{{'region.defaultValue'|translate}}">
             </div>
           </div>
           <div class="row">
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.helpText, 'functionParameters/' + $index + '/helpText')}">
+            <div class="col-md-5" ng-class="{'has-error': formError.showErrors(functionParameterForm.helpText, 'subform/' + index + '/functionParameters/' + $index + '/helpText')}">
               <input ng-model="functionParameter.helpText" name="helpText" type="text" class="form-control" placeholder="{{'region.helpText'|translate}}">
             </div>
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.fieldType, 'functionParameters/' + $index + '/fieldType')}">
+            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.fieldType, 'subform/' + index + '/functionParameters/' + $index + '/fieldType')}">
               <select id="fieldType" name="fieldType" ng-model="functionParameter.fieldType" class="form-control" required ng-change="functionParameter.fieldTemplate = '' ; functionParameter.listOfValuesView = ''">
                 <option value="" disabled>-- {{'region.fieldType'|translate}} * --</option>
                 <option value="TEXT">{{'region.fieldTypeText'|translate}}</option>
@@ -86,45 +89,23 @@
                 <option value="CALENDER">{{'region.fieldTypeCalender'|translate}}</option>
               </select>
             </div>
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.fieldTemplate, 'functionParameters/' + $index + '/fieldTemplate')}">
+            <div class="col-md-3" ng-class="{'has-error': formError.showErrors(functionParameterForm.fieldTemplate, 'subform/' + index + '/functionParameters/' + $index + '/fieldTemplate')}">
               <select id="fieldTemplate" name="fieldTemplate" ng-model="functionParameter.fieldTemplate" ng-disabled="!functionParameter.fieldType" class="form-control" required
                       ng-options="ft.id as ft.attributes.name for ft in getFunctionParameterTemplates(functionParameter)"
               >
                 <option value="" disabled>-- {{'region.fieldTemplate'|translate}} * --</option>
               </select>
             </div>
-            <div class="col-md-2" 
-                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesView, 'functionParameters/' + $index + '/listOfValuesView')}"
-                 ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'">
-              <select id="listOfValuesView" name="listOfValuesView" ng-model="functionParameter.listOfValuesView" class="form-control"
-                      ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
-                      ng-options="viewWithColumns as (viewWithColumns.attributes.schema + '.' + viewWithColumns.attributes.name) for viewWithColumns in viewsWithColumns track by trackDatabaseObject(viewWithColumns)">
-                <option value="" disabled>-- {{'region.listOfValuesView'|translate}} * --</option>
+            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.preFillColumn, 'subform/' + index + '/functionParameters/' + $index + '/subFormPreFillColumn')}">
+              <select id="subFormPreFillColumn" name="subFormPreFillColumn" ng-model="functionParameter.preFillColumn" class="form-control" ng-show="subFormPreFillColumns"
+                      ng-options="subFormPreFillColumn.column.attributes.name as subFormPreFillColumn.column.attributes.name for subFormPreFillColumn in subFormPreFillColumns">
+                <option value="" disabled>-- {{'region.preFillColumn'|translate}} --</option>
               </select>
             </div>
-            <div class="col-md-2" 
-                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesValue, 'functionParameters/' + $index + '/listOfValuesValue')}"
-                 ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'">
-              <select id="listOfValuesValue" name="listOfValuesValue" ng-model="functionParameter.listOfValuesValue" class="form-control"
-                      ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
-                      ng-disabled="!functionParameter.listOfValuesView"
-                      ng-options="column as column.attributes.name for column in functionParameter.listOfValuesView.attributes.columns track by column.attributes.name">
-                <option value="" disabled>-- {{'region.columnForValue'|translate}} * --</option>
-              </select>
-            </div>
-            <div class="col-md-2"
-                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesLabel, 'functionParameters/' + $index + '/listOfValuesLabel')}"
-                 ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'">
-              <select id="listOfValuesLabel" name="listOfValuesLabel" ng-model="functionParameter.listOfValuesLabel" class="form-control"
-                      ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
-                      ng-disabled="!functionParameter.listOfValuesView"
-                      ng-options="column as column.attributes.name for column in functionParameter.listOfValuesView.attributes.columns track by column.attributes.name">
-                <option value="" disabled>-- {{'region.columnForLabel'|translate}} * --</option>
-              </select>
-            </div>
-            <div ng-show="functionParameter.fieldType === 'CALENDER'">
-              <div class="col-md-2"
-                  ng-class="{'has-error': formError.showErrors(functionParameterForm.calenderFormat, 'functionParameters/' + $index + '/calenderFormat')}">
+          </div>
+          <div class="row" style="margin-top: 15px;" ng-show="functionParameter.fieldType === 'CALENDER'">
+            <div class="col-md-3"
+                  ng-class="{'has-error': formError.showErrors(functionParameterForm.calenderFormat, 'subform/' + index + '/functionParameters/' + $index + '/calenderFormat')}">
                 <input ng-model="functionParameter.calenderFormat"
                        ng-required="functionParameter.fieldType === 'CALENDER'" 
                        name="calenderFormat" 
@@ -135,22 +116,43 @@
               <div class="col-sm-1">
                 <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.calenderFormatInfo()"></span>
               </div>
+          </div>
+          <div class="row" style="margin-top: 15px" ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'">
+            <div class="col-md-5" 
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesView, 'subform/' + index + '/functionParameters/' + $index + '/listOfValuesView')}">
+              <select id="listOfValuesView" name="listOfValuesView" ng-model="functionParameter.listOfValuesView" class="form-control"
+                      ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
+                      ng-options="viewWithColumns as (viewWithColumns.attributes.schema + '.' + viewWithColumns.attributes.name) for viewWithColumns in viewsWithColumns track by trackDatabaseObject(viewWithColumns)">
+                <option value="" disabled>-- {{'region.listOfValuesView'|translate}} * --</option>
+              </select>
             </div>
-            <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.preFillColumn, 'functionParameters/' + $index + '/subFormPreFillColumn')}">
-              <select id="subFormPreFillColumn" name="subFormPreFillColumn" ng-model="functionParameter.preFillColumn" class="form-control" ng-show="subFormPreFillColumns"
-                      ng-options="subFormPreFillColumn.column.attributes.name as subFormPreFillColumn.column.attributes.name for subFormPreFillColumn in subFormPreFillColumns">
-                <option value="" disabled>-- {{'region.preFillColumn'|translate}} --</option>
+            <div class="col-md-2" 
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesValue, 'subform/' + index + '/functionParameters/' + $index + '/listOfValuesValue')}">
+              <select id="listOfValuesValue" name="listOfValuesValue" ng-model="functionParameter.listOfValuesValue" class="form-control"
+                      ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
+                      ng-disabled="!functionParameter.listOfValuesView"
+                      ng-options="column as column.attributes.name for column in functionParameter.listOfValuesView.attributes.columns track by column.attributes.name">
+                <option value="" disabled>-- {{'region.columnForValue'|translate}} * --</option>
+              </select>
+            </div>
+            <div class="col-md-2"
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.listOfValuesLabel, 'functionParameters/' + $index + '/listOfValuesLabel')}">
+              <select id="listOfValuesLabel" name="listOfValuesLabel" ng-model="functionParameter.listOfValuesLabel" class="form-control"
+                      ng-required="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'"
+                      ng-disabled="!functionParameter.listOfValuesView"
+                      ng-options="column as column.attributes.name for column in functionParameter.listOfValuesView.attributes.columns track by column.attributes.name">
+                <option value="" disabled>-- {{'region.columnForLabel'|translate}} * --</option>
               </select>
             </div>
           </div>
           <div class="row" style="margin-top: 15px">
             <div class="col-md-2"
-                 ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidth, 'functionParameters/' + $index + '/inputWidth')}"
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidth, 'subform/' + index + '/functionParameters/' + $index + '/inputWidth')}"
                  ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
               <input ng-model="functionParameter.width" name="inputWidth" type="number" min="1" class="form-control" placeholder="{{'region.width'|translate}}" required>
             </div>
             <div class="col-md-2"
-                 ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidthUnit, 'functionParameters/' + $index + '/inputWidthUnit')}"
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidthUnit, 'subform/' + index + '/functionParameters/' + $index + '/inputWidthUnit')}"
                  ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
                   <select id="inputWidthUnit" name="inputWidthUnit" ng-model="functionParameter.widthUnit" class="form-control" required>
                     <option value="px">px</option>
@@ -158,7 +160,7 @@
                   </select>
             </div>
             <div class="col-md-2"
-                 ng-class="{'has-error': formError.showErrors(functionParameterForm.inputHeight, 'functionParameters/' + $index + '/inputHeight')}"
+                 ng-class="{'has-error': formError.showErrors(functionParameterForm.inputHeight, 'subform/' + index + '/functionParameters/' + $index + '/inputHeight')}"
                  ng-show="functionParameter.fieldType === 'TEXTAREA'">
               <input ng-model="functionParameter.height" name="inputHeight" type="number" min="1" class="form-control" placeholder="{{'region.height'|translate}}">
             </div>
@@ -172,22 +174,22 @@
           </div>
 
           <div class="row form-group has-error" ng-show="
-            formError.showErrors(functionParameterForm.inputName, 'functionParameters/' + $index + '/inputName') ||
-            formError.showErrors(functionParameterForm.label, 'functionParameters/' + $index + '/label') ||
-            formError.showErrors(functionParameterForm.sequence, 'functionParameters/' + $index + '/sequence') ||
-            formError.showErrors(functionParameterForm.isMandatory, 'functionParameters/' + $index + '/isMandatory') ||
-            formError.showErrors(functionParameterForm.isVisible, 'functionParameters/' + $index + '/isVisible') ||
-            formError.showErrors(functionParameterForm.defaultValue, 'functionParameters/' + $index + '/defaultValue') ||
-            formError.showErrors(functionParameterForm.fieldType, 'functionParameters/' + $index + '/fieldType') ||
-            formError.showErrors(functionParameterForm.fieldTemplate, 'functionParameters/' + $index + '/fieldTemplate') ||
-            formError.showErrors(functionParameterForm.listOfValuesView, 'functionParameters/' + $index + '/listOfValuesView') ||
-            formError.showErrors(functionParameterForm.listOfValuesValue, 'functionParameters/' + $index + '/listOfValuesValue') ||
-            formError.showErrors(functionParameterForm.listOfValuesLabel, 'functionParameters/' + $index + '/listOfValuesLabel') ||
-            formError.showErrors(functionParameterForm.preFillColumn, 'functionParameters/' + $index + '/preFillColumn') ||
-            formError.showErrors(functionParameterForm.helpText, 'functionParameters/' + $index + '/helpText') ||
-            formError.showErrors(functionParameterForm.inputWidth, 'functionParameters/' + $index + '/inputWidth') ||
-            formError.showErrors(functionParameterForm.inputWidthUnit, 'functionParameters/' + $index + '/inputWidthUnit') ||
-            formError.showErrors(functionParameterForm.calenderFormat, 'functionParameters/' + $index + '/calenderFormat')
+            formError.showErrors(functionParameterForm.inputName, 'subform/' + index + '/functionParameters/' + $index + '/inputName') ||
+            formError.showErrors(functionParameterForm.label, 'subform/' + index + '/functionParameters/' + $index + '/label') ||
+            formError.showErrors(functionParameterForm.sequence, 'subform/' + index + '/functionParameters/' + $index + '/sequence') ||
+            formError.showErrors(functionParameterForm.isMandatory, 'subform/' + index + '/functionParameters/' + $index + '/isMandatory') ||
+            formError.showErrors(functionParameterForm.isVisible, 'subform/' + index + '/functionParameters/' + $index + '/isVisible') ||
+            formError.showErrors(functionParameterForm.defaultValue, 'subform/' + index + '/functionParameters/' + $index + '/defaultValue') ||
+            formError.showErrors(functionParameterForm.fieldType, 'subform/' + index + '/functionParameters/' + $index + '/fieldType') ||
+            formError.showErrors(functionParameterForm.fieldTemplate, 'subform/' + index + '/functionParameters/' + $index + '/fieldTemplate') ||
+            formError.showErrors(functionParameterForm.listOfValuesView, 'subform/' + index + '/functionParameters/' + $index + '/listOfValuesView') ||
+            formError.showErrors(functionParameterForm.listOfValuesValue, 'subform/' + index + '/functionParameters/' + $index + '/listOfValuesValue') ||
+            formError.showErrors(functionParameterForm.listOfValuesLabel, 'subform/' + index + '/functionParameters/' + $index + '/listOfValuesLabel') ||
+            formError.showErrors(functionParameterForm.preFillColumn, 'subform/' + index + '/functionParameters/' + $index + '/preFillColumn') ||
+            formError.showErrors(functionParameterForm.helpText, 'subform/' + index + '/functionParameters/' + $index + '/helpText') ||
+            formError.showErrors(functionParameterForm.inputWidth, 'subform/' + index + '/functionParameters/' + $index + '/inputWidth') ||
+            formError.showErrors(functionParameterForm.inputWidthUnit, 'subform/' + index + '/functionParameters/' + $index + '/inputWidthUnit') ||
+            formError.showErrors(functionParameterForm.calenderFormat, 'subform/' + index + '/functionParameters/' + $index + '/calenderFormat')
           ">
             <div class="col-sm-12">
               <span ng-show="functionParameterForm.inputName.$touched && functionParameterForm.inputName.$error.required" class="help-block">{{'region.inputNameIsMandatory'|translate}}</span>
@@ -202,22 +204,22 @@
               <span ng-show="functionParameterForm.inputWidthUnit.$touched && functionParameterForm.inputWidthUnit.$error.required" class="help-block">{{'region.inputWidthUnitIsMandatory'|translate}}</span>
               <span ng-show="functionParameterForm.calenderFormat.$touched && functionParameterForm.calenderFormat.$error.required" class="help-block">{{'region.calenderFormatIsMandatory'|translate}}</span>
 
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/inputName')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/label')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/sequence')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/isMandatory')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/isVisible')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/defaultValue')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/fieldType')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/fieldTemplate')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/listOfValuesView')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/listOfValuesValue')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/listOfValuesLabel')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/preFillColumn')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/helpText')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/inputWidth')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/inputWidthUnit')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('functionParameters/' + $index + '/calenderFormat')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/inputName')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/label')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/sequence')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/isMandatory')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/isVisible')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/defaultValue')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/fieldType')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/fieldTemplate')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/listOfValuesView')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/listOfValuesValue')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/listOfValuesLabel')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/preFillColumn')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/helpText')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/inputWidth')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/inputWidthUnit')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/calenderFormat')" class="help-block">{{error|translate}}</span>
             </div>
           </div>
         </ng-form>

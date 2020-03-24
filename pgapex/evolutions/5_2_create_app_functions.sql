@@ -976,13 +976,13 @@ DECLARE
   v_error_message     VARCHAR;
   v_redirect_url      VARCHAR;
   t_function_call     TEXT;
-  t_function_response INT;
+  t_function_response TEXT;
 BEGIN
   SELECT schema_name, function_name, success_message, error_message, redirect_url
   INTO v_schema_name, v_function_name, v_success_message, v_error_message, v_redirect_url
   FROM pgapex.form_region WHERE subregion_id = i_subregion_id;
 
-  t_function_call := 'SELECT 1 FROM ' || v_schema_name || '.' || v_function_name || ' ( ';
+  t_function_call := 'SELECT ' || v_schema_name || '.' || v_function_name || ' ( ';
   t_function_call := t_function_call || (SELECT string_agg(a.param, ', ')
                       FROM (
                              SELECT ff.function_parameter_ordinal_position, coalesce(nullif(quote_nullable(url_params.value), ''''''), 'NULL') AS param

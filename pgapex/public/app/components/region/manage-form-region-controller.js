@@ -242,14 +242,14 @@
       this.$scope.region.function.attributes.schema,
       this.$scope.region.function.attributes.name,
       this.$scope.region.formPreFill || false,
-      getFormFields(this.$scope.region.functionParameters),
+      getFormFields(this.$scope.region.functionParameters, 'functionParameters'),
       this.getPreFill(),
       this.getSubRegions()
     ).then(this.handleSaveResponse.bind(this));
   };
 
-  function getFormFields(functionParameters) {
-    return functionParameters.map(function (functionParameter) {
+  function getFormFields(functionParameters, functionParameterFormBaseName) {
+    return functionParameters.map(function (functionParameter, index) {
       return {
         "type": "form-field",
         "attributes": {
@@ -273,7 +273,8 @@
           "width": functionParameter.width || null,
           "widthUnit": functionParameter.widthUnit || null,
           "height": functionParameter.height || null,
-          "heightUnit": functionParameter.heightUnit || null
+          "heightUnit": functionParameter.heightUnit || null,
+          "functionParameterFormName":  functionParameterFormBaseName + '/' + index
         }
       };
     });
@@ -341,7 +342,7 @@
             'showHeader': true,
             'linkedColumn': subRegion.functionParameters,
             'addSubregionFormName': 'subform/' + subRegion.index,
-            'functionParameters': getFormFields(subRegion.functionParameters),
+            'functionParameters': getFormFields(subRegion.functionParameters, 'subform/' + subRegion.index + '/functionParameters'),
             'function': subRegion.function,
             'buttonLabel': subRegion.buttonLabel,
             'successMessage': subRegion.successMessage,

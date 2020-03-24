@@ -6,6 +6,8 @@ namespace App\Services\Validators\Region;
 use App\Http\Request;
 
 class FormRegionValidator extends RegionValidator {
+  private $inputNames = [];
+
   function __construct($database) {
     parent::__construct($database);
   }
@@ -105,55 +107,62 @@ class FormRegionValidator extends RegionValidator {
     for ($i = 0; $i < count($formFields); $i++) {
       $formField = $formFields[$i]['attributes'];
 
+      $functionParameterFormPointer = '/data/attributes/' . $formField['functionParameterFormName'];
+      $inputNamePointer = $functionParameterFormPointer . '/inputName';
       if (trim($formField['inputName']) === '') {
-        $this->addError('region.inputNameIsMandatory', '/data/attributes/functionParameters/' . $i . '/inputName');
+        $this->addError('region.inputNameIsMandatory', $inputNamePointer);
+      } else if (!$this->isValidFormInputName($formField['inputName'])) {
+        $this->addError('region.paginationQueryParameterMayConsistOfCharsAndUnderscores', $inputNamePointer);
+      } else if (in_array($formField['inputName'], $this->inputNames)) {
+        $this->addError('region.inputNameAlreadyExists', $inputNamePointer);
       }
+      $this->inputNames[] = $formField['inputName'];
 
       if (trim($formField['label']) === '') {
-        $this->addError('region.labelIsMandatory', '/data/attributes/functionParameters/' . $i . '/label');
+        $this->addError('region.labelIsMandatory', $functionParameterFormPointer . '/label');
       }
 
       if (!$this->isValidSequence($formField['sequence'])) {
-        $this->addError('region.sequenceIsMandatory', '/data/attributes/functionParameters/' . $i . '/sequence');
+        $this->addError('region.sequenceIsMandatory', $functionParameterFormPointer . '/sequence');
       } else {
         if (in_array($formField['sequence'], $sequences)) {
-          $this->addError('region.sequenceAlreadyExists', '/data/attributes/functionParameters/' . $i . '/sequence');
+          $this->addError('region.sequenceAlreadyExists', $functionParameterFormPointer . '/sequence');
         }
         $sequences[] = $formField['sequence'];
       }
 
       if (!in_array($formField['fieldType'], ['TEXT', 'PASSWORD', 'RADIO', 'CHECKBOX', 'DROP_DOWN', 'TEXTAREA', 'COMBO_BOX', 'CALENDER'])) {
-        $this->addError('region.fieldTypeIsMandatory', '/data/attributes/functionParameters/' . $i . '/fieldType');
+        $this->addError('region.fieldTypeIsMandatory', $functionParameterFormPointer . '/fieldType');
       }
 
       if (!$this->isValidNumericId($formField['fieldTemplate'])) {
-        $this->addError('region.fieldTemplateIsMandatory', '/data/attributes/functionParameters/' . $i . '/fieldTemplate');
+        $this->addError('region.fieldTemplateIsMandatory', $functionParameterFormPointer . '/fieldTemplate');
       }
 
       if (in_array($formField['fieldType'], ['RADIO', 'DROP_DOWN', 'COMBO_BOX'])) {
         $schemaName = $formField['listOfValuesSchema'];
         $viewName = $formField['listOfValuesView'];
         if ($schemaName === null || $viewName === null | trim($schemaName) === '' || trim($viewName) === '') {
-          $this->addError('region.listOfValuesViewIsMandatory', '/data/attributes/functionParameters/' . $i . '/listOfValuesView');
+          $this->addError('region.listOfValuesViewIsMandatory', $functionParameterFormPointer . '/listOfValuesView');
         }
         if ($formField['listOfValuesLabel'] === null || trim($formField['listOfValuesLabel']) === '') {
-          $this->addError('region.listOfValuesLabelIsMandatory', '/data/attributes/functionParameters/' . $i . '/listOfValuesLabel');
+          $this->addError('region.listOfValuesLabelIsMandatory', $functionParameterFormPointer . '/listOfValuesLabel');
         }
         if ($formField['listOfValuesValue'] === null || trim($formField['listOfValuesValue']) === '') {
-          $this->addError('region.listOfValuesValueIsMandatory', '/data/attributes/functionParameters/' . $i . '/listOfValuesValue');
+          $this->addError('region.listOfValuesValueIsMandatory', $functionParameterFormPointer . '/listOfValuesValue');
         }
       }
 
       if ($formField['fieldType'] === 'CALENDER' && (trim($formField['calenderFormat']) === '' || $formField['calenderFormat'] === null)) {
-        $this->addError('region.calenderFormatIsMandatory', '/data/attributes/functionParameters/' . $i . '/calenderFormat');
+        $this->addError('region.calenderFormatIsMandatory', $functionParameterFormPointer . '/calenderFormat');
       }
 
       if (!in_array($formField['fieldType'], ['RADIO', 'CHECKBOX'])) {
         if (trim($formField['width']) === '' || $formField['width'] === null) {
-          $this->addError('region.widthIsMandatory', '/data/attributes/functionParameters/' . $i . '/calenderFormat');
+          $this->addError('region.widthIsMandatory', $functionParameterFormPointer . '/inputWidth');
         }
         if (trim($formField['widthUnit']) === '' || $formField['widthUnit'] === null) {
-          $this->addError('region.widthUnitIsMandatory', '/data/attributes/functionParameters/' . $i . '/calenderFormat');
+          $this->addError('region.widthUnitIsMandatory', $functionParameterFormPointer . '/inputWidthUnit');
         }
       }
     }

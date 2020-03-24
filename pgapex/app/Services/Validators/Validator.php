@@ -40,5 +40,9 @@ abstract class Validator implements Service {
     return preg_match('/[a-zA-Z_]+/', $paginationQueryParameter);
   }
 
+  protected function isValidFormInputName($formInputName) {
+    return $this->isValidPageItem($formInputName);
+  }
+
   abstract public function validate(Request $request);
 }
