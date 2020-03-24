@@ -1076,7 +1076,6 @@ BEGIN
     END IF;
   EXCEPTION
     WHEN OTHERS THEN
-      INSERT INTO public.debug (test_value) VALUES (SQLERRM);
       PERFORM pgapex.f_app_add_error_message(coalesce(v_error_message, SQLERRM));
   END;
     
