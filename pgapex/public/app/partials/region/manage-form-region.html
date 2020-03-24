@@ -162,7 +162,7 @@
             <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.preFillColumn, 'functionParameters/' + $index + '/preFillColumn')}">
               <select id="preFillColumn" name="preFillColumn" ng-model="functionParameter.preFillColumn" class="form-control" ng-show="region.formPreFill && region.formPreFillView"
                       ng-options="formPreFillColumn.column.attributes.name as formPreFillColumn.column.attributes.name for formPreFillColumn in region.formPreFillColumns">
-                <option value="" disabled>-- {{'region.preFillColumn'|translate}} --</option>
+                <option value="">-- {{'region.preFillColumn'|translate}} --</option>
               </select>
             </div>
           </div>
