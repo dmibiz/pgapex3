@@ -948,6 +948,8 @@ BEGIN
     END IF;
     IF t_function_response IS NULL THEN
       RAISE EXCEPTION 'Function did not return any value';
+    ELSIF t_function_response = 'FALSE' THEN
+      RAISE EXCEPTION 'Function returned false';
     END IF;
     IF v_redirect_url IS NOT NULL THEN
       PERFORM pgapex.f_app_set_header('location', pgapex.f_app_replace_system_variables(v_redirect_url));
@@ -1001,6 +1003,8 @@ BEGIN
     END IF;
     IF t_function_response IS NULL THEN
       RAISE EXCEPTION 'Function did not return any value';
+    ELSIF t_function_response = 'FALSE' THEN
+      RAISE EXCEPTION 'Function returned false';
     END IF;
     IF v_redirect_url IS NOT NULL THEN
       PERFORM pgapex.f_app_set_header('location', pgapex.f_app_replace_system_variables(v_redirect_url));
@@ -1032,7 +1036,7 @@ DECLARE
   i_function_id       INT;
   t_function_id       TEXT;
   t_function_params   TEXT;
-  t_function_response INT;
+  t_function_response TEXT;
   j_function_params   JSON;
   t_function_param    TEXT;
   j_function_param    JSON;
@@ -1062,6 +1066,8 @@ BEGIN
       SELECT res_func INTO t_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func text );
       IF t_function_response IS NULL THEN
         RAISE EXCEPTION 'One of the function calls did not return any value';
+      ELSIF t_function_response = 'FALSE' THEN
+        RAISE EXCEPTION 'One of the function calls returned false';
       END IF;
     END LOOP;
 
@@ -1070,6 +1076,7 @@ BEGIN
     END IF;
   EXCEPTION
     WHEN OTHERS THEN
+      INSERT INTO public.debug (test_value) VALUES (SQLERRM);
       PERFORM pgapex.f_app_add_error_message(coalesce(v_error_message, SQLERRM));
   END;
     
@@ -1139,6 +1146,8 @@ BEGIN
       SELECT res_func INTO t_function_response FROM dblink(pgapex.f_app_get_dblink_connection_name(), t_function_call, TRUE) AS ( res_func text );
       IF t_function_response IS NULL THEN
         RAISE EXCEPTION 'One of the function calls did not return any value';
+      ELSIF t_function_response = 'FALSE' THEN
+        RAISE EXCEPTION 'One of the function calls returned false';
       END IF;
     END LOOP;
 
