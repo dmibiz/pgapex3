@@ -3018,6 +3018,7 @@ BEGIN
                       ),
                       'viewColumnForValue', tsfa.tabular_subform_view_column_name
                     )
+                    ORDER BY tsfa.function_parameter_ordinal_position
                   )
                   FROM pgapex.tabular_subform_function_argument tsfa
                   LEFT JOIN pgapex.parameter par ON (par.database_name = app.database_name AND par.schema_name = tsf.schema_name AND par.function_name = tsf.function_name AND par.parameter_type = tsfa.function_parameter_type AND par.ordinal_position = tsfa.function_parameter_ordinal_position)
