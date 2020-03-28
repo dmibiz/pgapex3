@@ -2685,8 +2685,8 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_form_region(
                                     WHERE ff.region_id = r.region_id
                                     ORDER BY ff.function_parameter_ordinal_position) ff_agg
               )
-            , 'subRegions', (SELECT json_agg(row_to_json(s)->'value') FROM (SELECT value FROM jsonb_array_elements(pgapex.f_region_get_form_subregions(i_region_id)::jsonb || pgapex.f_region_get_tabularform_subregions(i_region_id)::jsonb)
-                            ORDER BY value->'sequence') AS s)
+            , 'subRegions', coalesce((SELECT json_agg(row_to_json(s)->'value') FROM (SELECT value FROM jsonb_array_elements(pgapex.f_region_get_form_subregions(i_region_id)::jsonb || pgapex.f_region_get_tabularform_subregions(i_region_id)::jsonb)
+                            ORDER BY value->'sequence') AS s), '[]'::json)
         )
     )
   FROM pgapex.region r
