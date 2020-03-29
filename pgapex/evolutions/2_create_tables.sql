@@ -264,8 +264,9 @@ CREATE TABLE pgapex.form_region (
 	success_message VARCHAR ( 255 ),
 	error_message VARCHAR ( 255 ),
 	redirect_url VARCHAR ( 255 ),
+	CONSTRAINT pk_form_region PRIMARY KEY (region_ID),
 	CONSTRAINT uq_form_region_form_pre_fill_id UNIQUE (form_pre_fill_ID),
-	CONSTRAINT pk_form_region PRIMARY KEY (region_ID)
+	CONSTRAINT uq_form_region_subregion_id UNIQUE (subregion_ID)
 	);
 CREATE INDEX idx_form_region_button_template_id ON pgapex.form_region (button_template_ID );
 CREATE INDEX idx_form_region_template_id ON pgapex.form_region (template_ID );
@@ -808,6 +809,7 @@ ALTER TABLE pgapex.data_type ADD CONSTRAINT FK_data_type134 FOREIGN KEY (schema_
 ALTER TABLE pgapex.report_region ADD CONSTRAINT fk_report_region_region_id FOREIGN KEY (region_ID) REFERENCES pgapex.region (region_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.report_region ADD CONSTRAINT fk_report_region_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.report_template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.report_region ADD CONSTRAINT fk_report_region_subregion_id FOREIGN KEY (subregion_ID) REFERENCES pgapex.subregion (subregion_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE pgapex.form_region ADD CONSTRAINT fk_form_region_subregion_id FOREIGN KEY (subregion_ID) REFERENCES pgapex.subregion (subregion_ID) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.report_region ADD CONSTRAINT fk_report_region_link_template_id FOREIGN KEY (link_template_ID) REFERENCES pgapex.report_link_template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.tabularform_region ADD CONSTRAINT fk_tabularform_region_region_id FOREIGN KEY (region_ID) REFERENCES pgapex.region (region_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.tabularform_region ADD CONSTRAINT fk_tabularform_region_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.tabularform_template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -820,6 +822,7 @@ ALTER TABLE pgapex.form_field ADD CONSTRAINT fk_form_field_input_template_id FOR
 ALTER TABLE pgapex.form_field ADD CONSTRAINT fk_form_field_textarea_template_id FOREIGN KEY (textarea_template_ID) REFERENCES pgapex.textarea_template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.form_field ADD CONSTRAINT fk_form_field_field_type_id FOREIGN KEY (field_type_ID) REFERENCES pgapex.field_type (field_type_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.form_field ADD CONSTRAINT fk_form_field_region_id FOREIGN KEY (region_ID) REFERENCES pgapex.form_region (region_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE pgapex.form_field ADD CONSTRAINT fk_form_field_subregion_id FOREIGN KEY (subregion_ID) REFERENCES pgapex.form_region (subregion_ID) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.application ADD CONSTRAINT fk_application_authentication_scheme_id FOREIGN KEY (authentication_scheme_ID) REFERENCES pgapex.authentication_scheme (authentication_scheme_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.application ADD CONSTRAINT fk_application_login_page_template_id FOREIGN KEY (login_page_template_ID) REFERENCES pgapex.page_template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.navigation_item_template ADD CONSTRAINT fk_navigation_item_template_template_id FOREIGN KEY (navigation_template_ID) REFERENCES pgapex.navigation_template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;

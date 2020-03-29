@@ -212,12 +212,14 @@
             <div class="col-md-2"
                  ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidth, 'functionParameters/' + $index + '/inputWidth')}"
                  ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
-              <input ng-model="functionParameter.width" name="inputWidth" type="number" min="1" class="form-control" placeholder="{{'region.width'|translate}}" required>
+              <input ng-model="functionParameter.width" name="inputWidth" type="number" min="1" class="form-control" placeholder="{{'region.width'|translate}}"
+              ng-required="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
             </div>
             <div class="col-md-1"
                  ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidthUnit, 'functionParameters/' + $index + '/inputWidthUnit')}"
                  ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
-                  <select id="inputWidthUnit" name="inputWidthUnit" ng-model="functionParameter.widthUnit" class="form-control" required>
+                  <select id="inputWidthUnit" name="inputWidthUnit" ng-model="functionParameter.widthUnit" class="form-control"
+                   ng-required="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
                     <option value="px">px</option>
                     <option value="%">%</option>
                   </select>
