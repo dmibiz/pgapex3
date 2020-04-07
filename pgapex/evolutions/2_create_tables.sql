@@ -42,6 +42,7 @@ CREATE TABLE pgapex.tabularform_column (
 CREATE INDEX idx_tabularform_column_view_column_name ON pgapex.tabularform_column (view_column_name );
 CREATE INDEX idx_tabularform_column_tabularform_column_type_id ON pgapex.tabularform_column (tabularform_column_type_ID );
 CREATE INDEX idx_tabularform_column_region_id ON pgapex.tabularform_column (region_ID );
+CREATE INDEX idx_tabularform_column_subregion_id ON pgapex.tabularform_column (subregion_ID );
 CREATE TABLE pgapex.tabularform_column_link (
 	tabularform_column_link_ID SERIAL NOT NULL,
 	tabularform_column_ID INTEGER NOT NULL,
@@ -799,6 +800,7 @@ ALTER TABLE pgapex.input_template ADD CONSTRAINT fk_input_template_input_templat
 ALTER TABLE pgapex.report_template ADD CONSTRAINT fk_report_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.report_link_template ADD CONSTRAINT fk_report_link_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.tabularform_template ADD CONSTRAINT fk_tabularform_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE pgapex.tabular_subform_template ADD CONSTRAINT fk_tabular_subform_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.function ADD CONSTRAINT FK_function133 FOREIGN KEY (schema_ID) REFERENCES pgapex.schema (schema_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.function ADD CONSTRAINT FK_function139 FOREIGN KEY (data_type_ID) REFERENCES pgapex.data_type (data_type_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.fetch_row_condition ADD CONSTRAINT fk_fetch_row_condition_form_pre_fill_id FOREIGN KEY (form_pre_fill_ID) REFERENCES pgapex.form_pre_fill (form_pre_fill_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
@@ -837,7 +839,11 @@ ALTER TABLE pgapex.report_column ADD CONSTRAINT fk_report_column_region_id FOREI
 ALTER TABLE pgapex.report_column ADD CONSTRAINT fk_report_column_subregion_id FOREIGN KEY (subregion_ID) REFERENCES pgapex.report_region (subregion_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.tabularform_column ADD CONSTRAINT fk_tabularform_column_tabularform_column_type_id FOREIGN KEY (tabularform_column_type_ID) REFERENCES pgapex.tabularform_column_type (tabularform_column_type_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.tabularform_column ADD CONSTRAINT fk_tabularform_column_region_id FOREIGN KEY (region_ID) REFERENCES pgapex.tabularform_region (region_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE pgapex.tabularform_column ADD CONSTRAINT fk_tabularform_column_subregion_id FOREIGN KEY (subregion_ID) REFERENCES pgapex.tabularform_subregion (subregion_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.tabularform_function ADD CONSTRAINT fk_tabularform_function_region_id FOREIGN KEY (region_ID) REFERENCES pgapex.tabularform_region (region_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE pgapex.tabular_subform_function ADD CONSTRAINT fk_tabular_subform_function_subregion_id FOREIGN KEY (subregion_ID) REFERENCES pgapex.tabularform_subregion (subregion_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE pgapex.tabular_subform_function_argument ADD CONSTRAINT fk_tabular_subform_function_argument_id_tabular_subform_function_id FOREIGN KEY (tabular_subform_function_ID) REFERENCES pgapex.tabular_subform_function (tabular_subform_function_ID)  ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE pgapex.tabular_subform_linked_column ADD CONSTRAINT fk_tabular_subform_linked_column_tabularform_subregion_id FOREIGN KEY (subregion_ID) REFERENCES pgapex.tabularform_subregion (subregion_ID) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.page_template_display_point ADD CONSTRAINT fk_page_template_display_point_diplay_point_id FOREIGN KEY (display_point_ID) REFERENCES pgapex.display_point (display_point_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.page_template_display_point ADD CONSTRAINT fk_page_template_display_point_page_template_id FOREIGN KEY (page_template_ID) REFERENCES pgapex.page_template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.page ADD CONSTRAINT fk_page_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.page_template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
