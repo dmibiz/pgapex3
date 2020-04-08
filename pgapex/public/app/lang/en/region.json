@@ -176,6 +176,7 @@
     "formSubRegionHelpText": "Form can contain 0 or more subregions. Form subregion can be connected to a region using parent form region prefill columns. NB! Input names should be unique across the whole page. It means that one input name cannot be same as the name of some another input that is used in some form or subform on this page. Tabularform subregion is connected to a region using latter's prefill conditions (prefill view columns that are used in url query string to prefetch data). Form regions are available only if region has prefill.",
     "htmlRegionContentHelpText": "Use #APP_USER# to display the username of the currently logged-in user.",
     "formInputNameHelpText": "Input name, i.e., 'name' attribute of the input HTML element. It must be unique within the page and must not contain spaces. One can use the parameter name but has to manually make sure that the name is unique within the page.",
+    "isTextEscapedHelpText": "Determines as to whether the HTML tags will be escaped (TRUE) or not (FALSE).",
     "reportIncludeEntityCreateButton": "Include button for creating an entity",
     "createEntityPage": "Entity creation page",
     "reportCreateEntityButtonLabel": "Entity creation button label",

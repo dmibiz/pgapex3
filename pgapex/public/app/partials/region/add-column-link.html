@@ -22,6 +22,8 @@
   <div class="col-md-2">{{'region.heading'|translate}}</div>
   <div class="col-md-1">{{'region.sequence'|translate}}</div>
   <div class="col-md-1">{{'region.isTextEscaped'|translate}}</div>
+  <span class="glyphicon glyphicon-info-sign help-text"
+              ng-click="helper.info('region.isTextEscapedHelpText')"></span>
 </div>
 
 <div class="alert alert-info" ng-show="columns.length < 1">
