@@ -1941,6 +1941,8 @@ DECLARE
   j_pre_fetched_values           JSONB   := '{}';
   j_option                       JSON;
   t_subregions                   TEXT;
+  t_textarea_height_property     TEXT     := '';
+  t_textarea_rows_attribute      TEXT     := '';
 BEGIN
   SELECT fr.form_pre_fill_id, fr.button_label, ft.form_begin, ft.form_end, ft.row_begin, ft.row_end, ft.row,
          ft.mandatory_row_begin, ft.mandatory_row_end, ft.mandatory_row, ft.help_text_block, bt.template, fpf.schema_name, fpf.view_name
@@ -2059,7 +2061,13 @@ BEGIN
       ELSIF r_form_row.field_type_id = 'TEXTAREA' THEN
         t_form_element := r_form_row.textarea_template;
         t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
-        t_form_element := replace(t_form_element, '#HEIGHT_PROPERTY#', coalesce('height: ' || r_form_row.height || r_form_row.height_unit, ''));
+        IF r_form_row.height_unit = 'rows' THEN
+          t_textarea_rows_attribute := coalesce(r_form_row.height_unit || '="' || r_form_row.height || '"', '');
+        ELSE
+          t_textarea_height_property :=  coalesce('height: ' || r_form_row.height || r_form_row.height_unit, '');
+        END IF;
+        t_form_element := replace(t_form_element, '#HEIGHT_PROPERTY#', t_textarea_height_property);
+        t_form_element := replace(t_form_element, '#ROWS#', t_textarea_rows_attribute);
 
       ELSIF r_form_row.field_type_id = 'DROP_DOWN' THEN
         t_form_element := r_form_row.drop_down_begin;
@@ -2173,6 +2181,8 @@ DECLARE
   t_pre_fill_url_params          TEXT[];
   j_pre_fetched_values           JSONB   := '{}';
   j_option                       JSON;
+  t_textarea_height_property     TEXT     := '';
+  t_textarea_rows_attribute      TEXT     := '';
 BEGIN
   SELECT pfr.form_pre_fill_id, fr.button_label, ft.form_begin, ft.form_end, ft.row_begin, ft.row_end, ft.row,
          ft.mandatory_row_begin, ft.mandatory_row_end, ft.mandatory_row, ft.help_text_block, bt.template, fpf.schema_name, fpf.view_name
@@ -2293,7 +2303,13 @@ BEGIN
       ELSIF r_form_row.field_type_id = 'TEXTAREA' THEN
         t_form_element := r_form_row.textarea_template;
         t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
-        t_form_element := replace(t_form_element, '#HEIGHT_PROPERTY#', coalesce('height: ' || r_form_row.height || r_form_row.height_unit, ''));
+        IF r_form_row.height_unit = 'rows' THEN
+          t_textarea_rows_attribute := coalesce(r_form_row.height_unit || '="' || r_form_row.height || '"', '');
+        ELSE
+          t_textarea_height_property :=  coalesce('height: ' || r_form_row.height || r_form_row.height_unit, '');
+        END IF;
+        t_form_element := replace(t_form_element, '#HEIGHT_PROPERTY#', t_textarea_height_property);
+        t_form_element := replace(t_form_element, '#ROWS#', t_textarea_rows_attribute);
 
       ELSIF r_form_row.field_type_id = 'DROP_DOWN' THEN
         t_form_element := r_form_row.drop_down_begin;

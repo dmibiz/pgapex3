@@ -237,11 +237,12 @@
                  ng-show="functionParameter.fieldType === 'TEXTAREA' && functionParameter.isVisible">
               <input ng-model="functionParameter.height" name="inputHeight" type="number" min="1" class="form-control" placeholder="{{'region.height'|translate}}">
             </div>
-            <div class="col-md-1"
+            <div class="col-md-2"
                  ng-class="{'has-error': formError.showErrors(functionParameterForm.inputHeightUnit, 'inputHeightUnit/' + $index + '/inputHeightUnit')}"
                  ng-show="functionParameter.fieldType === 'TEXTAREA' && functionParameter.isVisible">
                   <select id="inputHeightUnit" name="inputHeightUnit" ng-model="functionParameter.heightUnit" class="form-control">
                     <option value="px">px</option>
+                    <option value="rows">rows</option>
                   </select>
             </div>
           </div>

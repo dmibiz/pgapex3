@@ -177,7 +177,7 @@ INSERT INTO pgapex.button_template (template_id, template) VALUES (9, '<div clas
   </div>
 </div>');
 
-INSERT INTO pgapex.textarea_template (template_id, template) VALUES (10, '<textarea class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#;#HEIGHT_PROPERTY#">#VALUE#</textarea>');
+INSERT INTO pgapex.textarea_template (template_id, template) VALUES (10, '<textarea class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#;#HEIGHT_PROPERTY#" #ROWS#>#VALUE#</textarea>');
 
 INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (11, 'TEXT', '<input type="text" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#">');
 INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (12, 'PASSWORD', '<input type="password" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#">');
