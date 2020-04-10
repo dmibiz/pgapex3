@@ -3,11 +3,12 @@
   var angular = window.angular;
   var module = angular.module('pgApexApp.region');
 
-  function RegionsController($scope, $routeParams, regionService, helperService) {
+  function RegionsController($scope, $routeParams, regionService, helperService, pageService) {
     this.$scope = $scope;
     this.$routeParams = $routeParams;
     this.regionService = regionService;
     this.helperService = helperService;
+    this.pageService = pageService;
 
     this.init();
     $scope.deleteRegion = this.deleteRegion.bind(this);
@@ -16,12 +17,21 @@
   RegionsController.prototype.init = function() {
     this.$scope.routeParams = this.$routeParams;
     this.$scope.displayPointsWithRegions = [];
+    this.$scope.pageTitle = '';
 
     this.loadDisplayPointsWithRegions();
+    this.loadPageTitle();
   };
 
   RegionsController.prototype.getPageId = function() {
     return this.$routeParams.pageId || null;
+  };
+
+  RegionsController.prototype.loadPageTitle = function() {
+    this.pageService.getPage(this.getPageId()).then(function (response) {
+      var responseData = response.getDataOrDefault([]);
+      this.$scope.pageTitle = responseData.attributes.title;
+    }.bind(this));
   };
 
   RegionsController.prototype.loadDisplayPointsWithRegions = function() {
@@ -46,7 +56,13 @@
   };
 
   function init() {
-    module.controller('pgApexApp.region.RegionsController', ['$scope', '$routeParams', 'regionService', 'helperService', RegionsController]);
+    module.controller('pgApexApp.region.RegionsController', [
+    '$scope', 
+    '$routeParams', 
+    'regionService', 
+    'helperService', 
+    'pageService', 
+    RegionsController]);
   }
 
   init();
