@@ -2121,7 +2121,7 @@ BEGIN
     END IF;
 
     t_current_row_template := replace(t_current_row_template, '#FORM_ELEMENT#', t_form_element);
-    t_current_row_template := replace(t_current_row_template, '#HELP_TEXT#',    pgapex.f_app_html_special_chars(coalesce(r_form_row.help_text, '')));
+    t_current_row_template := replace(t_current_row_template, '#HELP_TEXT#',    coalesce(r_form_row.help_text, ''));
     t_current_row_template := replace(t_current_row_template, '#LABEL#',        r_form_row.label);
     t_region_template := t_region_template || t_current_row_template;
     t_region_template := t_region_template || t_current_row_end_template;
@@ -2353,7 +2353,7 @@ BEGIN
     END IF;
 
     t_current_row_template := replace(t_current_row_template, '#FORM_ELEMENT#', t_form_element);
-    t_current_row_template := replace(t_current_row_template, '#HELP_TEXT#',    pgapex.f_app_html_special_chars(coalesce(r_form_row.help_text, '')));
+    t_current_row_template := replace(t_current_row_template, '#HELP_TEXT#',    coalesce(r_form_row.help_text, ''));
     t_current_row_template := replace(t_current_row_template, '#LABEL#',        r_form_row.label);
     t_region_template := t_region_template || t_current_row_template;
     t_region_template := t_region_template || t_current_row_end_template;

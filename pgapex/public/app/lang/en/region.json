@@ -177,7 +177,7 @@
     "htmlRegionContentHelpText": "Use #APP_USER# to display the username of the currently logged-in user.",
     "formInputNameHelpText": "Input name, i.e., 'name' attribute of the input HTML element. It must be unique within the page and must not contain spaces. One can use the parameter name but has to manually make sure that the name is unique within the page.",
     "formInputDefaultValueHelpText": "Only static values (constants) or the special variable: &USERNAME& In case of dates/timestamps use YYYY-MM-DD HH24:MI format (prescribed by ISO 8601). If one wants to calculate the default value dynamically, then it has to be done at the database level. &USERNAME&means that the default value is the username of currently logged-in user.",
-    "formInputHelpTextHelpText": "Will be displayed on the form, with small letters, besides the element.",
+    "formInputHelpTextHelpText": "Will be displayed on the form, with small letters, besides the element. HTML tags are allowed. It means that they won't be escaped.",
     "isTextEscapedHelpText": "Determines as to whether the HTML tags will be escaped (TRUE) or not (FALSE).",
     "formPageHelpText": "Page that contains the form that is used to update the data.",
     "createEntityPageHelpText": "Page that contains the form that is used to insert the data.",
