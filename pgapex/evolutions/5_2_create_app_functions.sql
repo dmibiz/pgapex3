@@ -2040,7 +2040,9 @@ BEGIN
       ELSIF r_form_row.field_type_id = 'RADIO' THEN
         v_query := 'SELECT json_build_object(''value'', ' || r_form_row.value_view_column_name || ', ''label'', ' || r_form_row.label_view_column_name || ') ' ||
                    ' FROM '  || r_form_row.schema_name || '.' || r_form_row.view_name;
-        t_options := '';
+        t_options := r_form_row.input_template;
+        t_options = replace(t_options, '#VALUE#', 'NULL');
+        t_options = replace(t_options, '#INPUT_LABEL#', '- NULL -');
         FOR j_option IN (SELECT res_options FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_query, FALSE) AS ( res_options JSON ))
         LOOP
           t_option := r_form_row.input_template;
@@ -2063,7 +2065,7 @@ BEGIN
         t_form_element := r_form_row.drop_down_begin;
         v_query := 'SELECT json_build_object(''value'', ' || r_form_row.value_view_column_name || ', ''label'', ' || r_form_row.label_view_column_name || ') ' ||
                    ' FROM '  || r_form_row.schema_name || '.' || r_form_row.view_name;
-        t_options := '';
+        t_options := '<option value="NULL">- NULL -</option>';
         FOR j_option IN (SELECT res_options FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_query, FALSE) AS ( res_options JSON ))
         LOOP
           t_option := r_form_row.option_begin;
@@ -2082,7 +2084,7 @@ BEGIN
         t_form_element := r_form_row.combo_box_begin;
         v_query := 'SELECT json_build_object(''value'', ' || r_form_row.value_view_column_name || ', ''label'', ' || r_form_row.label_view_column_name || ') ' ||
                    ' FROM '  || r_form_row.schema_name || '.' || r_form_row.view_name;
-        t_options := '';
+        t_options := '<option value="NULL">- NULL -</option>';
         FOR j_option IN (SELECT res_options FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_query, FALSE) AS ( res_options JSON ))
         LOOP
           t_option := r_form_row.combo_box_option_begin;
@@ -2272,7 +2274,9 @@ BEGIN
       ELSIF r_form_row.field_type_id = 'RADIO' THEN
         v_query := 'SELECT json_build_object(''value'', ' || r_form_row.value_view_column_name || ', ''label'', ' || r_form_row.label_view_column_name || ') ' ||
                    ' FROM '  || r_form_row.schema_name || '.' || r_form_row.view_name;
-        t_options := '';
+        t_options := r_form_row.input_template;
+        t_options = replace(t_options, '#VALUE#', 'NULL');
+        t_options = replace(t_options, '#INPUT_LABEL#', '- NULL -');
         FOR j_option IN (SELECT res_options FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_query, FALSE) AS ( res_options JSON ))
         LOOP
           t_option := r_form_row.input_template;
@@ -2295,7 +2299,7 @@ BEGIN
         t_form_element := r_form_row.drop_down_begin;
         v_query := 'SELECT json_build_object(''value'', ' || r_form_row.value_view_column_name || ', ''label'', ' || r_form_row.label_view_column_name || ') ' ||
                    ' FROM '  || r_form_row.schema_name || '.' || r_form_row.view_name;
-        t_options := '';
+        t_options := '<option value="NULL">- NULL -</option>';
         FOR j_option IN (SELECT res_options FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_query, FALSE) AS ( res_options JSON ))
         LOOP
           t_option := r_form_row.option_begin;
@@ -2314,7 +2318,7 @@ BEGIN
         t_form_element := r_form_row.combo_box_begin;
         v_query := 'SELECT json_build_object(''value'', ' || r_form_row.value_view_column_name || ', ''label'', ' || r_form_row.label_view_column_name || ') ' ||
                    ' FROM '  || r_form_row.schema_name || '.' || r_form_row.view_name;
-        t_options := '';
+        t_options := '<option value="NULL">- NULL -</option>';
         FOR j_option IN (SELECT res_options FROM dblink(pgapex.f_app_get_dblink_connection_name(), v_query, FALSE) AS ( res_options JSON ))
         LOOP
           t_option := r_form_row.combo_box_option_begin;
