@@ -219,27 +219,27 @@
           <div class="row" style="margin-top: 15px">
             <div class="col-md-2"
                  ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidth, 'functionParameters/' + $index + '/inputWidth')}"
-                 ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
-              <input ng-model="functionParameter.width" name="inputWidth" type="number" min="1" class="form-control" placeholder="{{'region.width'|translate}}"
-              ng-required="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
+                 ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX' && functionParameter.isVisible">
+              <input ng-model="functionParameter.width" name="inputWidth" type="number" min="1" class="form-control" placeholder="{{'region.width'|translate}} *"
+              ng-required="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX' && functionParameter.isVisible">
             </div>
             <div class="col-md-1"
                  ng-class="{'has-error': formError.showErrors(functionParameterForm.inputWidthUnit, 'functionParameters/' + $index + '/inputWidthUnit')}"
-                 ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
+                 ng-show="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX' && functionParameter.isVisible">
                   <select id="inputWidthUnit" name="inputWidthUnit" ng-model="functionParameter.widthUnit" class="form-control"
-                   ng-required="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX'">
+                   ng-required="functionParameter.fieldType !== 'RADIO' && functionParameter.fieldType !== 'CHECKBOX' && functionParameter.isVisible">
                     <option value="px">px</option>
                     <option value="%">%</option>
                   </select>
             </div>
             <div class="col-md-2"
                  ng-class="{'has-error': formError.showErrors(functionParameterForm.inputHeight, 'functionParameters/' + $index + '/inputHeight')}"
-                 ng-show="functionParameter.fieldType === 'TEXTAREA'">
+                 ng-show="functionParameter.fieldType === 'TEXTAREA' && functionParameter.isVisible">
               <input ng-model="functionParameter.height" name="inputHeight" type="number" min="1" class="form-control" placeholder="{{'region.height'|translate}}">
             </div>
             <div class="col-md-1"
                  ng-class="{'has-error': formError.showErrors(functionParameterForm.inputHeightUnit, 'inputHeightUnit/' + $index + '/inputHeightUnit')}"
-                 ng-show="functionParameter.fieldType === 'TEXTAREA'">
+                 ng-show="functionParameter.fieldType === 'TEXTAREA' && functionParameter.isVisible">
                   <select id="inputHeightUnit" name="inputHeightUnit" ng-model="functionParameter.heightUnit" class="form-control">
                     <option value="px">px</option>
                   </select>
