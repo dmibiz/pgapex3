@@ -19,6 +19,7 @@
       <label for="alias" class="col-sm-3 control-label">{{'page.alias'|translate}}</label>
       <div class="col-sm-9">
         <input type="text" class="form-control" name="alias" ng-model="page.alias" id="alias" placeholder="{{'page.alias'|translate}}">
+        <small class="form-text text-muted">{{'page.aliasHelpText' | translate}}</small>
         <div ng-show="formError.showErrors(managePageForm.alias, 'alias')">
           <span ng-repeat="error in formError.getErrors('alias')" class="help-block">{{error|translate}}</span>
         </div>

@@ -18,6 +18,7 @@
     "aliasAlreadyExists": "Alias already exists.",
     "templateIsMandatory": "Template is mandatory.",
     "template": "Template",
-    "regions": "Regions"
+    "regions": "Regions",
+    "aliasHelpText": "Must not contain spaces"
   }
 }
