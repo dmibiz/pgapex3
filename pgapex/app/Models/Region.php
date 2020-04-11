@@ -414,7 +414,7 @@ class Region extends Model {
 
       $listOfValuesStatement = $connection->prepare('SELECT pgapex.f_region_save_list_of_values(:valueColumn, :labelColumn, :viewName, :schemaName)');
       $formFieldStatement = $connection->prepare('SELECT pgapex.f_region_save_form_field(:regionId, :fieldType, :listOfValuesId, :formFieldTemplateId, '
-                                               . ':fieldPreFillViewColumnName, :formElementName, :label, :sequence, :isMandatory, :isVisible, :defaultValue, :helpText, '
+                                               . ':fieldPreFillViewColumnName, :formElementName, :label, :sequence, :isMandatory, :isVisible, :isReadOnly, :defaultValue, :helpText, '
                                                . ':functionParameterType, :functionParameterOrdinalPosition)');
       $formFieldSizeStatement = $connection->prepare('SELECT pgapex.f_region_save_form_field_size(:formFieldId, :width, :widthUnit, :height, :heightUnit)');
       $calenderFormatStatement = $connection->prepare('SELECT pgapex.f_region_save_calender_format(:formFieldId, :calenderFormat)');
@@ -441,6 +441,7 @@ class Region extends Model {
         $formFieldStatement->bindValue(':sequence',                         $formField['attributes']['sequence'],                          PDO::PARAM_INT);
         $formFieldStatement->bindValue(':isMandatory',                      $formField['attributes']['isMandatory'],                       PDO::PARAM_BOOL);
         $formFieldStatement->bindValue(':isVisible',                        $formField['attributes']['isVisible'],                         PDO::PARAM_BOOL);
+        $formFieldStatement->bindValue(':isReadOnly',                       $formField['attributes']['isReadOnly'],                        PDO::PARAM_BOOL);
         $formFieldStatement->bindValue(':defaultValue',                     $formField['attributes']['defaultValue'],                      PDO::PARAM_STR);
         $formFieldStatement->bindValue(':helpText',                         $formField['attributes']['helpText'],                          PDO::PARAM_STR);
         $formFieldStatement->bindValue(':functionParameterType',            $formField['attributes']['functionParameterType'],             PDO::PARAM_STR);
@@ -519,7 +520,7 @@ class Region extends Model {
             $subFormCalenderFormatStatement = $connection->prepare('SELECT pgapex.f_region_save_calender_format(:formFieldId, :calenderFormat)');
             $subFormFieldSizeStatement = $connection->prepare('SELECT pgapex.f_region_save_form_field_size(:formFieldId, :width, :widthUnit, :height, :heightUnit)');
             $subFormFieldStatement = $connection->prepare('SELECT pgapex.f_region_save_subform_field(:subregionId, :fieldType, :listOfValuesId, :formFieldTemplateId, '
-                                               . ':fieldPreFillViewColumnName, :formElementName, :label, :sequence, :isMandatory, :isVisible, :defaultValue, :helpText, '
+                                               . ':fieldPreFillViewColumnName, :formElementName, :label, :sequence, :isMandatory, :isVisible, :isReadOnly, :defaultValue, :helpText, '
                                                . ':functionParameterType, :functionParameterOrdinalPosition)');
 
             foreach ($subRegion['attributes']['functionParameters'] as $subFormField) {
@@ -542,6 +543,7 @@ class Region extends Model {
               $subFormFieldStatement->bindValue(':sequence',                         $subFormField['attributes']['sequence'],                          PDO::PARAM_INT);
               $subFormFieldStatement->bindValue(':isMandatory',                      $subFormField['attributes']['isMandatory'],                       PDO::PARAM_BOOL);
               $subFormFieldStatement->bindValue(':isVisible',                        $subFormField['attributes']['isVisible'],                         PDO::PARAM_BOOL);
+              $subFormFieldStatement->bindValue(':isReadOnly',                       $subFormField['attributes']['isReadOnly'],                        PDO::PARAM_BOOL);
               $subFormFieldStatement->bindValue(':defaultValue',                     $subFormField['attributes']['defaultValue'],                      PDO::PARAM_STR);
               $subFormFieldStatement->bindValue(':helpText',                         $subFormField['attributes']['helpText'],                          PDO::PARAM_STR);
               $subFormFieldStatement->bindValue(':functionParameterType',            $subFormField['attributes']['functionParameterType'],             PDO::PARAM_STR);

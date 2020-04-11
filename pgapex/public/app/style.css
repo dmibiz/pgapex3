@@ -155,3 +155,7 @@ div {
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
+
+input[type='checkbox'][readonly] {
+  opacity: 0.5
+}

@@ -1943,6 +1943,7 @@ DECLARE
   t_subregions                   TEXT;
   t_textarea_height_property     TEXT     := '';
   t_textarea_rows_attribute      TEXT     := '';
+  t_calender_background_property TEXT     := '';
 BEGIN
   SELECT fr.form_pre_fill_id, fr.button_label, ft.form_begin, ft.form_end, ft.row_begin, ft.row_end, ft.row,
          ft.mandatory_row_begin, ft.mandatory_row_end, ft.mandatory_row, ft.help_text_block, bt.template, fpf.schema_name, fpf.view_name
@@ -1987,7 +1988,7 @@ BEGIN
 
   FOR r_form_row IN (
     SELECT
-      ff.field_type_id, ff.label, ff.is_mandatory, ff.is_visible, ff.default_value, ff.help_text, ff.field_pre_fill_view_column_name,
+      ff.field_type_id, ff.label, ff.is_mandatory, ff.is_visible, ff.is_read_only, ff.default_value, ff.help_text, ff.field_pre_fill_view_column_name,
       pi.name AS form_element_name, lov.schema_name, lov.view_name, lov.label_view_column_name, lov.value_view_column_name,
       it.template AS input_template, tt.template AS textarea_template,
       ddt.drop_down_begin, ddt.drop_down_end, ddt.option_begin, ddt.option_end,
@@ -2107,11 +2108,17 @@ BEGIN
 
         t_form_element := t_form_element || t_options;
         t_form_element := t_form_element || r_form_row.combo_box_end;
-        t_form_element := t_form_element || r_form_row.combo_box_script;
+        IF r_form_row.is_read_only = FALSE THEN
+          t_form_element := t_form_element || r_form_row.combo_box_script;
+        END IF;
       ELSIF r_form_row.field_type_id = 'CALENDER' THEN
         t_form_element := r_form_row.calender_input;
         t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
-        t_form_element := t_form_element || r_form_row.calender_script;
+        IF r_form_row.is_read_only = FALSE THEN
+          t_form_element := t_form_element || r_form_row.calender_script;
+          t_calender_background_property := 'background: white';
+        END IF;
+        t_form_element := replace(t_form_element, '#BACKGROUND_PROPERTY#', t_calender_background_property);
         t_form_element := replace(t_form_element, '#CALENDER_FORMAT#', quote_literal(r_form_row.calender_format));
       END IF;
     ELSE
@@ -2128,6 +2135,11 @@ BEGIN
     t_form_element := replace(t_form_element, '#WIDTH_UNIT#', coalesce(r_form_row.width_unit::TEXT, '%'));
     IF r_form_row.is_visible = TRUE AND r_form_row.help_text IS NOT NULL THEN
       t_form_element := t_form_element || t_help_text_block_template;
+    END IF;
+    IF r_form_row.is_read_only = TRUE THEN
+      t_form_element := replace(t_form_element, '#READ_ONLY#', 'readonly');
+    ELSE
+      t_form_element := replace(t_form_element, '#READ_ONLY#', '');
     END IF;
 
     t_current_row_template := replace(t_current_row_template, '#FORM_ELEMENT#', t_form_element);
@@ -2183,6 +2195,7 @@ DECLARE
   j_option                       JSON;
   t_textarea_height_property     TEXT     := '';
   t_textarea_rows_attribute      TEXT     := '';
+  t_calender_background_property TEXT     := '';
 BEGIN
   SELECT pfr.form_pre_fill_id, fr.button_label, ft.form_begin, ft.form_end, ft.row_begin, ft.row_end, ft.row,
          ft.mandatory_row_begin, ft.mandatory_row_end, ft.mandatory_row, ft.help_text_block, bt.template, fpf.schema_name, fpf.view_name
@@ -2229,7 +2242,7 @@ BEGIN
 
   FOR r_form_row IN (
     SELECT
-      ff.field_type_id, ff.label, ff.is_mandatory, ff.is_visible, ff.default_value, ff.help_text, ff.field_pre_fill_view_column_name,
+      ff.field_type_id, ff.label, ff.is_mandatory, ff.is_visible, ff.is_read_only, ff.default_value, ff.help_text, ff.field_pre_fill_view_column_name,
       pi.name AS form_element_name, lov.schema_name, lov.view_name, lov.label_view_column_name, lov.value_view_column_name,
       it.template AS input_template, tt.template AS textarea_template,
       ddt.drop_down_begin, ddt.drop_down_end, ddt.option_begin, ddt.option_end,
@@ -2349,11 +2362,17 @@ BEGIN
 
         t_form_element := t_form_element || t_options;
         t_form_element := t_form_element || r_form_row.combo_box_end;
-        t_form_element := t_form_element || r_form_row.combo_box_script;
+        IF r_form_row.is_read_only = FALSE THEN
+          t_form_element := t_form_element || r_form_row.combo_box_script;
+        END IF;
       ELSIF r_form_row.field_type_id = 'CALENDER' THEN
         t_form_element := r_form_row.calender_input;
         t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
-        t_form_element := t_form_element || r_form_row.calender_script;
+        IF r_form_row.is_read_only = FALSE THEN
+          t_form_element := t_form_element || r_form_row.calender_script;
+          t_calender_background_property := 'background: white';
+        END IF;
+        t_form_element := replace(t_form_element, '#BACKGROUND_PROPERTY#', t_calender_background_property);
         t_form_element := replace(t_form_element, '#CALENDER_FORMAT#', quote_literal(r_form_row.calender_format));
       END IF;
     ELSE
@@ -2371,7 +2390,12 @@ BEGIN
     IF r_form_row.is_visible = TRUE AND r_form_row.help_text IS NOT NULL THEN
       t_form_element := t_form_element || t_help_text_block_template;
     END IF;
-
+    IF r_form_row.is_read_only = TRUE THEN
+      t_form_element := replace(t_form_element, '#READ_ONLY#', 'readonly');
+    ELSE
+      t_form_element := replace(t_form_element, '#READ_ONLY#', '');
+    END IF;
+    
     t_current_row_template := replace(t_current_row_template, '#FORM_ELEMENT#', t_form_element);
     t_current_row_template := replace(t_current_row_template, '#HELP_TEXT#',    coalesce(r_form_row.help_text, ''));
     t_current_row_template := replace(t_current_row_template, '#LABEL#',        r_form_row.label);

@@ -169,7 +169,7 @@ VALUES(7, '<form class="form-horizontal" method="POST" action="">', '#SUBMIT_BUT
 '<small class="form-text text-muted">#HELP_TEXT#</small>');
 
 INSERT INTO pgapex.drop_down_template (template_id, drop_down_begin, drop_down_end, option_begin, option_end)
-VALUES (8, '<select class="form-control" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#">', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>');
+VALUES (8, '<select class="form-control" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#" #READ_ONLY#>', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>');
 
 INSERT INTO pgapex.button_template (template_id, template) VALUES (9, '<div class="form-group">
   <div class="col-sm-offset-2 col-sm-10">
@@ -177,12 +177,12 @@ INSERT INTO pgapex.button_template (template_id, template) VALUES (9, '<div clas
   </div>
 </div>');
 
-INSERT INTO pgapex.textarea_template (template_id, template) VALUES (10, '<textarea class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#;#HEIGHT_PROPERTY#" #ROWS#>#VALUE#</textarea>');
+INSERT INTO pgapex.textarea_template (template_id, template) VALUES (10, '<textarea class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#;#HEIGHT_PROPERTY#" #ROWS# #READ_ONLY#>#VALUE#</textarea>');
 
-INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (11, 'TEXT', '<input type="text" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#">');
-INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (12, 'PASSWORD', '<input type="password" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#">');
-INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (13, 'RADIO', '<div><input type="radio" name="#NAME#" value="#VALUE#"#CHECKED#> #INPUT_LABEL#</div>');
-INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (14, 'CHECKBOX', '<input type="hidden" value="FALSE" name="#NAME#"><input type="checkbox" class="checkbox" name="#NAME#" value="#VALUE#"#CHECKED#>');
+INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (11, 'TEXT', '<input type="text" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#" #READ_ONLY#>');
+INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (12, 'PASSWORD', '<input type="password" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#" #READ_ONLY#>');
+INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (13, 'RADIO', '<div><input type="radio" name="#NAME#" value="#VALUE#"#CHECKED# #READ_ONLY#> #INPUT_LABEL#</div>');
+INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (14, 'CHECKBOX', '<input type="hidden" value="FALSE" name="#NAME#"><input type="checkbox" class="checkbox" name="#NAME#" value="#VALUE#"#CHECKED# #READ_ONLY#>');
 
 INSERT INTO pgapex.tabularform_template (template_ID, tabularform_begin, tabularform_end, form_begin, buttons_row_begin,
 buttons_row_content, buttons_row_end, table_begin, table_header_begin, table_header_row_begin, table_header_checkbox,
@@ -235,13 +235,13 @@ VALUES (23, '<div><table class="table table-bordered">', '</table>#PAGINATION#</
 '<nav><ul class="pagination">', '</ul></nav>', '<li><a href="#LINK#">&laquo;</a></li>', '<li><a href="#LINK#">&raquo;</a></li>', '<li class="active"><a href="#LINK#">#NUMBER#</a></li>', '<li><a href="#LINK#">#NUMBER#</a></li>');
 
 INSERT INTO pgapex.calender_template (template_ID, calender_input, calender_script)
-VALUES (24, '<input type="text" id="#NAME#" class="form-control" size="50" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#"/>', '<script>
+VALUES (24, '<input type="text" id="#NAME#" class="form-control" size="50" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="#BACKGROUND_PROPERTY#; width: #WIDTH##WIDTH_UNIT#" #READ_ONLY#/>', '<script>
                                                                       AnyTime.picker( "#NAME#",
                                                                           { format: #CALENDER_FORMAT#, firstDOW: 1 } );
                                                                   </script>');
 
 INSERT INTO pgapex.combo_box_template (template_id, combo_box_begin, combo_box_end, option_begin, option_end, combo_box_script)
-VALUES (25, '<select id="#NAME#" class="form-control" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#">', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>', '<script>$(document).ready(function() { $( "##NAME#" ).combobox(); }); $("##NAME#").next().children("input").ready(function() { $("##NAME#").next().children("input").css("width", "#WIDTH##WIDTH_UNIT#"); });</script>');
+VALUES (25, '<select id="#NAME#" class="form-control" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#" #READ_ONLY#>', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>', '<script>$(document).ready(function() { $( "##NAME#" ).combobox(); }); $("##NAME#").next().children("input").ready(function() { $("##NAME#").next().children("input").css("width", "#WIDTH##WIDTH_UNIT#"); });</script>');
 
 INSERT INTO pgapex.tabular_subform_template (template_ID, tabular_subform_begin, tabular_subform_end, form_begin, buttons_row_begin,
 buttons_row_content, buttons_row_end, table_begin, table_header_begin, table_header_row_begin, table_header_checkbox,

@@ -260,6 +260,7 @@
           "sequence": parseInt(functionParameter.sequence),
           "isMandatory": functionParameter.isMandatory || false,
           "isVisible": functionParameter.isVisible || false,
+          "isReadOnly": functionParameter.isReadOnly || false,
           "defaultValue": functionParameter.defaultValue || null,
           "helpText": functionParameter.helpText || null,
           "functionParameterType": functionParameter.attributes.argumentType,

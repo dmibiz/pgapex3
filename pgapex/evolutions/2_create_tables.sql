@@ -221,6 +221,7 @@ CREATE TABLE pgapex.form_field (
 	sequence INTEGER NOT NULL,
 	is_mandatory BOOLEAN DEFAULT FALSE NOT NULL,
 	is_visible BOOLEAN DEFAULT TRUE NOT NULL,
+	is_read_only BOOLEAN DEFAULT FALSE NOT NULL,
 	default_value TEXT,
 	help_text VARCHAR ( 255 ),
 	function_parameter_type VARCHAR ( 64 ) NOT NULL,

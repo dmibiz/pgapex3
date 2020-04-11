@@ -2049,6 +2049,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_save_form_field(
   , i_sequence                            pgapex.form_field.sequence%TYPE
   , b_is_mandatory                        pgapex.form_field.is_mandatory%TYPE
   , b_is_visible                          pgapex.form_field.is_visible%TYPE
+  , b_is_read_only                        pgapex.form_field.is_read_only%TYPE
   , v_default_value                       pgapex.form_field.default_value%TYPE
   , v_help_text                           pgapex.form_field.help_text%TYPE
   , v_function_parameter_type             pgapex.form_field.function_parameter_type%TYPE
@@ -2064,7 +2065,7 @@ BEGIN
 
   INSERT INTO pgapex.form_field (form_field_id, region_id, field_type_id, list_of_values_id, input_template_id, drop_down_template_id, textarea_template_id,
                                  combo_box_template_id, calender_template_id,
-                                 field_pre_fill_view_column_name, label, sequence, is_mandatory, is_visible, default_value, help_text,
+                                 field_pre_fill_view_column_name, label, sequence, is_mandatory, is_visible, is_read_only, default_value, help_text,
                                  function_parameter_type, function_parameter_ordinal_position
   )
   VALUES (i_new_form_field_id, i_region_id, v_field_type_id, i_list_of_values_id, (
@@ -2093,7 +2094,7 @@ BEGIN
     ELSE NULL
     END
   ),
-  v_field_pre_fill_view_column_name, v_label, i_sequence, b_is_mandatory, b_is_visible, v_default_value, v_help_text,
+  v_field_pre_fill_view_column_name, v_label, i_sequence, b_is_mandatory, b_is_visible, b_is_read_only, v_default_value, v_help_text,
   v_function_parameter_type, v_function_parameter_ordinal_position);
 
   INSERT INTO pgapex.page_item (page_id, form_field_id, name) VALUES (i_page_id, i_new_form_field_id, v_form_element_name);
@@ -2116,6 +2117,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_save_subform_field(
   , i_sequence                            pgapex.form_field.sequence%TYPE
   , b_is_mandatory                        pgapex.form_field.is_mandatory%TYPE
   , b_is_visible                          pgapex.form_field.is_visible%TYPE
+  , b_is_read_only                        pgapex.form_field.is_read_only%TYPE
   , v_default_value                       pgapex.form_field.default_value%TYPE
   , v_help_text                           pgapex.form_field.help_text%TYPE
   , v_function_parameter_type             pgapex.form_field.function_parameter_type%TYPE
@@ -2134,7 +2136,7 @@ BEGIN
 
   INSERT INTO pgapex.form_field (form_field_id, subregion_id, field_type_id, list_of_values_id, input_template_id, drop_down_template_id, textarea_template_id,
                                  combo_box_template_id, calender_template_id,
-                                 field_pre_fill_view_column_name, label, sequence, is_mandatory, is_visible, default_value, help_text,
+                                 field_pre_fill_view_column_name, label, sequence, is_mandatory, is_visible, is_read_only, default_value, help_text,
                                  function_parameter_type, function_parameter_ordinal_position
   )
   VALUES (i_new_form_field_id, i_subregion_id, v_field_type_id, i_list_of_values_id, (
@@ -2163,7 +2165,7 @@ BEGIN
     ELSE NULL
     END
   ),
-  v_field_pre_fill_view_column_name, v_label, i_sequence, b_is_mandatory, b_is_visible, v_default_value, v_help_text,
+  v_field_pre_fill_view_column_name, v_label, i_sequence, b_is_mandatory, b_is_visible, b_is_read_only, v_default_value, v_help_text,
   v_function_parameter_type, v_function_parameter_ordinal_position);
 
   INSERT INTO pgapex.page_item (page_id, form_field_id, name) VALUES (i_page_id, i_new_form_field_id, v_form_element_name);
@@ -2637,6 +2639,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_form_region(
                                     , 'sequence', ff.sequence
                                     , 'isMandatory', ff.is_mandatory
                                     , 'isVisible', ff.is_visible
+                                    , 'isReadOnly', ff.is_read_only
                                     , 'defaultValue', ff.default_value
                                     , 'helpText', ff.help_text
                                     , 'attributes', json_build_object(
@@ -2899,6 +2902,7 @@ BEGIN
                                     , 'sequence', ff.sequence
                                     , 'isMandatory', ff.is_mandatory
                                     , 'isVisible', ff.is_visible
+                                    , 'isReadOnly', ff.is_read_only
                                     , 'defaultValue', ff.default_value
                                     , 'helpText', ff.help_text
                                     , 'attributes', json_build_object(

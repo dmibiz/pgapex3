@@ -93,6 +93,7 @@
     "functionParameters": "Function parameters",
     "isMandatory": "Is mandatory",
     "isVisible": "Is visible",
+    "isReadOnly": "Is read only",
     "fieldType": "Field type",
     "fieldTemplate": "Field template",
     "listOfValuesView": "View for list of values",
