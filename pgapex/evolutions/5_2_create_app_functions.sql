@@ -2032,6 +2032,7 @@ BEGIN
         IF (r_form_row.field_type_id = 'CHECKBOX') THEN
           IF r_form_row.default_value IS NOT NULL THEN
             t_form_element := replace(t_form_element, '#CHECKED#', ' checked="checked" ');
+            t_form_element := replace(t_form_element, '#VALUE#', r_form_row.default_value);
           ELSE
             t_form_element := replace(t_form_element, '#CHECKED#', '');
             t_form_element := replace(t_form_element, '#VALUE#', 'TRUE');
@@ -2286,6 +2287,7 @@ BEGIN
         IF (r_form_row.field_type_id = 'CHECKBOX') THEN
           IF r_form_row.default_value IS NOT NULL THEN
             t_form_element := replace(t_form_element, '#CHECKED#', ' checked="checked" ');
+            t_form_element := replace(t_form_element, '#VALUE#', r_form_row.default_value);
           ELSE
             t_form_element := replace(t_form_element, '#CHECKED#', '');
             t_form_element := replace(t_form_element, '#VALUE#', 'TRUE');
