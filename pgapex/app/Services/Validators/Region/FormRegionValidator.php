@@ -157,12 +157,12 @@ class FormRegionValidator extends RegionValidator {
         $this->addError('region.calenderFormatIsMandatory', $functionParameterFormPointer . '/calenderFormat');
       }
 
-      if (!in_array($formField['fieldType'], ['RADIO', 'CHECKBOX'])) {
+      if (!in_array($formField['fieldType'], ['RADIO', 'CHECKBOX']) && $formField['isVisible']) {
         if (trim($formField['width']) === '' || $formField['width'] === null) {
-          $this->addError('region.widthIsMandatory', $functionParameterFormPointer . '/inputWidth');
+          $this->addError('region.inputWidthIsMandatory', $functionParameterFormPointer . '/inputWidth');
         }
         if (trim($formField['widthUnit']) === '' || $formField['widthUnit'] === null) {
-          $this->addError('region.widthUnitIsMandatory', $functionParameterFormPointer . '/inputWidthUnit');
+          $this->addError('region.inputWidthUnitIsMandatory', $functionParameterFormPointer . '/inputWidthUnit');
         }
       }
     }

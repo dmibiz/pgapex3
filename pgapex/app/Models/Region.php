@@ -449,7 +449,7 @@ class Region extends Model {
         $formFieldStatement->execute();
         $formFieldId = $formFieldStatement->fetchColumn();
 
-        if ($formField['attributes']['fieldType'] != 'CHECKBOX' && $formField['attributes']['fieldType'] != 'RADIO') {
+        if ($formField['attributes']['fieldType'] != 'CHECKBOX' && $formField['attributes']['fieldType'] != 'RADIO' && $formField['attributes']['isVisible']) {
           $formFieldSizeStatement->bindValue(':formFieldId', $formFieldId,                          PDO::PARAM_INT);
           $formFieldSizeStatement->bindValue(':width',       $formField['attributes']['width'],     PDO::PARAM_STR);
           $formFieldSizeStatement->bindValue(':widthUnit',   $formField['attributes']['widthUnit'], PDO::PARAM_STR);
@@ -463,7 +463,6 @@ class Region extends Model {
           $formFieldSizeStatement->bindValue(':heightUnit', $formFieldHeightUnit, PDO::PARAM_STR);
           $formFieldSizeStatement->execute();
         }
-
 
         if ($formField['attributes']['calenderFormat'] !== null) {
           $calenderFormatStatement->bindValue(':formFieldId',    $formFieldId,                               PDO::PARAM_INT);
