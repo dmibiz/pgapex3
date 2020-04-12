@@ -315,8 +315,53 @@
     this.regionService.getRegion(this.getRegionId()).then(function (response) {
       this.$scope.region = response.getDataOrDefault({'attributes': {}}).attributes;
       this.setLastSequences();
+      this.initNewAndDeletedFunctionParameters(this.$scope.region.function, this.$scope.region.functionParameters);
+      this.$scope.region.subRegions.forEach(function(subRegion) {
+        switch (subRegion.type) {
+          case 'SUBFORM':
+            this.initNewAndDeletedFunctionParameters(subRegion.function, subRegion.functionParameters);
+            break;
+          case 'TABULAR_SUBFORM':
+            subRegion.buttons.forEach(function(button) {
+              this.initNewAndDeletedFunctionParameters(button.function, button.function.attributes.parameters);
+            }.bind(this));
+            break;
+        }
+      }.bind(this));
     }.bind(this));
   };
+
+  ManageFormRegionController.prototype.initNewAndDeletedFunctionParameters = function(currentFunction, currentFunctionParameters) {
+    currentFunction = this.getFunctionBySchemaAndName(
+      currentFunction.attributes.schema, 
+      currentFunction.attributes.name, 
+      this.$scope.functionsWithParameters);
+    var newFunctionParameters = currentFunction.attributes.parameters;
+    for (var i = 0; i < newFunctionParameters.length; i++) {
+      if (this.isNewOrDeletedFunctionParameter(newFunctionParameters[i], currentFunctionParameters)) this.$scope.region.functionParameters.push(newFunctionParameters[i]);
+    }
+
+    for (var s = 0; s < currentFunctionParameters.length; s++) {
+      if (this.isNewOrDeletedFunctionParameter(currentFunctionParameters[s], newFunctionParameters)) this.$scope.region.functionParameters.splice(s, 1);
+    }
+  };
+
+  // if second argument is current function parameters list, then function will check if parameter is new.
+  // In if second argument is new function parameters list, it will check if parameter is deleted
+  ManageFormRegionController.prototype.isNewOrDeletedFunctionParameter = function(functionParameter, functionParameters) {
+    for (var i = 0; i < functionParameters.length; i++) {
+      if (functionParameters[i].attributes.name === functionParameter.attributes.name) return false;
+    }
+    return true;
+  };
+
+  ManageFormRegionController.prototype.getFunctionBySchemaAndName = function(schema, name, functionsWithParameters) {
+    for (var i = 0; i < functionsWithParameters.length; i++) {
+      var functionAttributes = functionsWithParameters[i].attributes;
+      if (functionAttributes.schema === schema && functionAttributes.name === name) return functionsWithParameters[i];
+    }
+    return false;
+  }
 
   ManageFormRegionController.prototype.getApplicationId = function() {
     return this.$routeParams.applicationId ? parseInt(this.$routeParams.applicationId) : null;
