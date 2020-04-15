@@ -195,6 +195,7 @@
     "calenderFormat": "Calender format",
     "width": "Width",
     "height": "Height",
+    "rows": "rows",
     "includeLinkToPage": "Include link to another page",
     "setLinkedPage": "Set linked page",
     "calenderFormatInfoTableDescription": "The following format specifiers are recognized:",
@@ -204,6 +205,10 @@
     "viewColumnIsMandatory": "View column is mandatory",
     "setXmin": "Set xmin",
     "xminIsMandatory": "Xmin is mandatory",
-    "tabularFormXminHelpText": "Xmin (version) of the table column, which is equal to the second parameter of the function."
+    "tabularFormXminHelpText": "Xmin (version) of the table column, which is equal to the second parameter of the function.",
+    "wysiwygEditor": "WYSIWYG editor",
+    "wysiwygMenuBar": "Show menu bar",
+    "wysiwygStatusBar": "Show status bar",
+    "wysiwygSpellCheck": "Spell check"
   }
 }

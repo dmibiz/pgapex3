@@ -66,6 +66,10 @@
       return [];
     }.bind(this);
 
+    this.$scope.processWysiwygEditorCheckboxChange = function(functionParameter) {
+      if (functionParameter.wysiwygEditor && functionParameter.heightUnit === 'rows') functionParameter.heightUnit = 'px';
+    };
+
     this.$scope.saveRegion = this.saveRegion.bind(this);
     
     this.initRegionTemplates();
@@ -261,6 +265,10 @@
           "isMandatory": functionParameter.isMandatory || false,
           "isVisible": functionParameter.isVisible || false,
           "isReadOnly": functionParameter.isReadOnly || false,
+          "wysiwygEditor": functionParameter.wysiwygEditor || false,
+          "wysiwygMenuBar": functionParameter.wysiwygMenuBar || false,
+          "wysiwygStatusBar": functionParameter.wysiwygStatusBar || false,
+          "wysiwygSpellCheck": functionParameter.wysiwygSpellCheck || false,
           "defaultValue": functionParameter.defaultValue || null,
           "helpText": functionParameter.helpText || null,
           "functionParameterType": functionParameter.attributes.argumentType,
@@ -327,6 +335,7 @@
             }.bind(this));
             break;
         }
+        console.log(this.$scope.region);
       }.bind(this));
     }.bind(this));
   };

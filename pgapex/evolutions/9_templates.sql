@@ -111,6 +111,7 @@ INSERT INTO pgapex.page_template (template_id, page_type_id, header, body, foote
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script src="https://cdn.tiny.cloud/1/8mf38z9ml3a6pc9o3ge0527gvgf951l9r8k0u2encfe4yyv2/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
   </head>', '  <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -177,7 +178,23 @@ INSERT INTO pgapex.button_template (template_id, template) VALUES (9, '<div clas
   </div>
 </div>');
 
-INSERT INTO pgapex.textarea_template (template_id, template) VALUES (10, '<textarea class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#;#HEIGHT_PROPERTY#" #ROWS# #READ_ONLY#>#VALUE#</textarea>');
+INSERT INTO pgapex.textarea_template (template_id, template, wysiwyg_editor_script) VALUES (10, '<textarea id="#NAME#" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#;#HEIGHT_PROPERTY#" #ROWS# #READ_ONLY#>#VALUE#</textarea>', '<script>
+    tinymce.init({
+      selector : "##NAME#",
+      plugins: "lists link code",
+      width: "#WIDTH##WIDTH_UNIT#",
+      height: "#HEIGHT_PROPERTY#",
+      menubar: #MENU_BAR#,
+      statusbar: #STATUS_BAR#,
+      browser_spellcheck: #BROWSER_SPELL_CHECK#,
+      contextmenu: false,
+      toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table | fontsizeselect | link | code",
+      entity_encoding : "raw",
+      default_link_target: "_blank",
+      forced_root_block : false,
+      convert_newlines_to_brs : true
+    });
+  </script>');
 
 INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (11, 'TEXT', '<input type="text" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#" #READ_ONLY#>');
 INSERT INTO pgapex.input_template (template_id, input_template_type_id, template) VALUES (12, 'PASSWORD', '<input type="password" class="form-control" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="width: #WIDTH##WIDTH_UNIT#" #READ_ONLY#>');

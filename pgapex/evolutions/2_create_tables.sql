@@ -71,6 +71,7 @@ CREATE TABLE pgapex.authentication_scheme (
 CREATE TABLE pgapex.textarea_template (
 	template_ID INTEGER NOT NULL,
 	template TEXT NOT NULL,
+	wysiwyg_editor_script TEXT NOT NULL,
 	CONSTRAINT pk_textarea_template PRIMARY KEY (template_ID)
 	);
 CREATE TABLE pgapex.button_template (
@@ -222,6 +223,7 @@ CREATE TABLE pgapex.form_field (
 	is_mandatory BOOLEAN DEFAULT FALSE NOT NULL,
 	is_visible BOOLEAN DEFAULT TRUE NOT NULL,
 	is_read_only BOOLEAN DEFAULT FALSE NOT NULL,
+	wysiwyg_editor BOOLEAN DEFAULT FALSE NOT NULL,
 	default_value TEXT,
 	help_text VARCHAR ( 255 ),
 	function_parameter_type VARCHAR ( 64 ) NOT NULL,
@@ -641,7 +643,6 @@ CREATE TABLE pgapex.subregion_template (
 	CONSTRAINT pk_subregion_template PRIMARY KEY (template_ID)
 	);
 
-/* PgApex3 new tables */
 CREATE TABLE pgapex.link_button_template (
 	template_ID INTEGER NOT NULL,
 	template TEXT NOT NULL,
@@ -782,6 +783,13 @@ CREATE TABLE pgapex.form_field_size(
 	height_unit VARCHAR(10)
 );
 
+CREATE TABLE pgapex.wysiwyg_editor_settings(
+	form_field_ID INTEGER NOT NULL,
+	menu_bar BOOLEAN DEFAULT FALSE NOT NULL,
+	status_bar BOOLEAN DEFAULT FALSE NOT NULL,
+	browser_spellcheck BOOLEAN DEFAULT FALSE NOT NULL
+);
+
 
 
 ALTER TABLE pgapex.button_template ADD CONSTRAINT fk_button_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID)  ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -878,4 +886,5 @@ ALTER TABLE pgapex.detailview_column_link ADD CONSTRAINT fk_detailview_column_li
 ALTER TABLE pgapex.report_form_template ADD CONSTRAINT fk_report_form_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID) ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.calender_format ADD CONSTRAINT fk_calender_format_form_field_id FOREIGN KEY (form_field_ID) REFERENCES pgapex.form_field (form_field_ID) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.form_field_size ADD CONSTRAINT fk_form_field_size_form_field_id FOREIGN KEY (form_field_ID) REFERENCES pgapex.form_field (form_field_ID) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE pgapex.wysiwyg_editor_settings ADD CONSTRAINT fk_wysiwyg_editor_settings_form_field_id FOREIGN KEY (form_field_ID) REFERENCES pgapex.form_field (form_field_ID) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.tabularform_subregion ADD CONSTRAINT fk_tabularform_subregion_subregion_id FOREIGN KEY (subregion_ID) REFERENCES pgapex.subregion (subregion_ID) ON DELETE CASCADE ON UPDATE NO ACTION;

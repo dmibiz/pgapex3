@@ -179,6 +179,15 @@
                 <option value="">-- {{'region.preFillColumn'|translate}} --</option>
               </select>
             </div>
+            <div
+              class="col-md-2"
+              ng-class="{'has-error': formError.showErrors(functionParameterForm.wysiwygEditor, 'functionParameters/' + $index + '/wysiwygEditor')}"
+              ng-show="functionParameter.fieldType === 'TEXTAREA'">
+              <label class="normal-label">
+                <input ng-model="functionParameter.wysiwygEditor" name="wysiwygEditor" type="checkbox" title="{{'region.wysiwygEditor'|translate}}" ng-change="processWysiwygEditorCheckboxChange(functionParameter)">
+                <span>{{'region.wysiwygEditor'|translate}}</span>
+              </label>
+            </div>
             <div ng-show="functionParameter.fieldType === 'CALENDER'">
               <div class="col-md-3"
                   ng-class="{'has-error': formError.showErrors(functionParameterForm.calenderFormat, 'functionParameters/' + $index + '/calenderFormat')}">
@@ -192,6 +201,32 @@
               <div class="col-sm-1">
                 <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.calenderFormatInfo()"></span>
               </div>
+            </div>
+          </div>
+          <div class="row" style="margin-top: 20px;" ng-show="functionParameter.wysiwygEditor">
+            <div
+              class="col-md-2"
+              ng-class="{'has-error': formError.showErrors(functionParameterForm.wysiwygMenuBar, 'functionParameters/' + $index + '/wysiwygMenuBar')}">
+              <label class="normal-label">
+                <input ng-model="functionParameter.wysiwygMenuBar" name="wysiwygMenuBar" type="checkbox" title="{{'region.wysiwygMenuBar'|translate}}">
+                <span>{{'region.wysiwygMenuBar'|translate}}</span>
+              </label>
+            </div>
+            <div
+              class="col-md-2"
+              ng-class="{'has-error': formError.showErrors(functionParameterForm.wysiwygStatusBar, 'functionParameters/' + $index + '/wysiwygStatusBar')}">
+              <label class="normal-label">
+                <input ng-model="functionParameter.wysiwygStatusBar" name="wysiwygStatusBar" type="checkbox" title="{{'region.wysiwygStatusBar'|translate}}">
+                <span>{{'region.wysiwygStatusBar'|translate}}</span>
+              </label>
+            </div>
+            <div
+              class="col-md-2"
+              ng-class="{'has-error': formError.showErrors(functionParameterForm.wysiwygSpellCheck, 'functionParameters/' + $index + '/wysiwygSpellCheck')}">
+              <label class="normal-label">
+                <input ng-model="functionParameter.wysiwygSpellCheck" name="wysiwygSpellCheck" type="checkbox" title="{{'region.wysiwygSpellCheck'|translate}}">
+                <span>{{'region.wysiwygSpellCheck'|translate}}</span>
+              </label>
             </div>
           </div>
           <div class="row" style="margin-top: 20px;" ng-show="functionParameter.fieldType === 'DROP_DOWN' || functionParameter.fieldType === 'RADIO' || functionParameter.fieldType === 'COMBO_BOX'">
@@ -248,7 +283,7 @@
                  ng-show="functionParameter.fieldType === 'TEXTAREA' && functionParameter.isVisible">
                   <select id="inputHeightUnit" name="inputHeightUnit" ng-model="functionParameter.heightUnit" class="form-control">
                     <option value="px">px</option>
-                    <option value="rows">rows</option>
+                    <option ng-show="!functionParameter.wysiwygEditor" value="rows">{{'region.rows' | translate}}</option>
                   </select>
             </div>
           </div>

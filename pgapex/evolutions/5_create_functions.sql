@@ -2050,6 +2050,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_save_form_field(
   , b_is_mandatory                        pgapex.form_field.is_mandatory%TYPE
   , b_is_visible                          pgapex.form_field.is_visible%TYPE
   , b_is_read_only                        pgapex.form_field.is_read_only%TYPE
+  , b_wysiwyg_editor                      pgapex.form_field.wysiwyg_editor%TYPE
   , v_default_value                       pgapex.form_field.default_value%TYPE
   , v_help_text                           pgapex.form_field.help_text%TYPE
   , v_function_parameter_type             pgapex.form_field.function_parameter_type%TYPE
@@ -2065,7 +2066,7 @@ BEGIN
 
   INSERT INTO pgapex.form_field (form_field_id, region_id, field_type_id, list_of_values_id, input_template_id, drop_down_template_id, textarea_template_id,
                                  combo_box_template_id, calender_template_id,
-                                 field_pre_fill_view_column_name, label, sequence, is_mandatory, is_visible, is_read_only, default_value, help_text,
+                                 field_pre_fill_view_column_name, label, sequence, is_mandatory, is_visible, is_read_only, wysiwyg_editor, default_value, help_text,
                                  function_parameter_type, function_parameter_ordinal_position
   )
   VALUES (i_new_form_field_id, i_region_id, v_field_type_id, i_list_of_values_id, (
@@ -2094,7 +2095,7 @@ BEGIN
     ELSE NULL
     END
   ),
-  v_field_pre_fill_view_column_name, v_label, i_sequence, b_is_mandatory, b_is_visible, b_is_read_only, v_default_value, v_help_text,
+  v_field_pre_fill_view_column_name, v_label, i_sequence, b_is_mandatory, b_is_visible, b_is_read_only, b_wysiwyg_editor, v_default_value, v_help_text,
   v_function_parameter_type, v_function_parameter_ordinal_position);
 
   INSERT INTO pgapex.page_item (page_id, form_field_id, name) VALUES (i_page_id, i_new_form_field_id, v_form_element_name);
@@ -2118,6 +2119,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_save_subform_field(
   , b_is_mandatory                        pgapex.form_field.is_mandatory%TYPE
   , b_is_visible                          pgapex.form_field.is_visible%TYPE
   , b_is_read_only                        pgapex.form_field.is_read_only%TYPE
+  , b_wysiwyg_editor                      pgapex.form_field.wysiwyg_editor%TYPE
   , v_default_value                       pgapex.form_field.default_value%TYPE
   , v_help_text                           pgapex.form_field.help_text%TYPE
   , v_function_parameter_type             pgapex.form_field.function_parameter_type%TYPE
@@ -2136,7 +2138,7 @@ BEGIN
 
   INSERT INTO pgapex.form_field (form_field_id, subregion_id, field_type_id, list_of_values_id, input_template_id, drop_down_template_id, textarea_template_id,
                                  combo_box_template_id, calender_template_id,
-                                 field_pre_fill_view_column_name, label, sequence, is_mandatory, is_visible, is_read_only, default_value, help_text,
+                                 field_pre_fill_view_column_name, label, sequence, is_mandatory, is_visible, is_read_only, wysiwyg_editor, default_value, help_text,
                                  function_parameter_type, function_parameter_ordinal_position
   )
   VALUES (i_new_form_field_id, i_subregion_id, v_field_type_id, i_list_of_values_id, (
@@ -2165,7 +2167,7 @@ BEGIN
     ELSE NULL
     END
   ),
-  v_field_pre_fill_view_column_name, v_label, i_sequence, b_is_mandatory, b_is_visible, b_is_read_only, v_default_value, v_help_text,
+  v_field_pre_fill_view_column_name, v_label, i_sequence, b_is_mandatory, b_is_visible, b_is_read_only, b_wysiwyg_editor, v_default_value, v_help_text,
   v_function_parameter_type, v_function_parameter_ordinal_position);
 
   INSERT INTO pgapex.page_item (page_id, form_field_id, name) VALUES (i_page_id, i_new_form_field_id, v_form_element_name);
@@ -2640,6 +2642,10 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_form_region(
                                     , 'isMandatory', ff.is_mandatory
                                     , 'isVisible', ff.is_visible
                                     , 'isReadOnly', ff.is_read_only
+                                    , 'wysiwygEditor', ff.wysiwyg_editor
+                                    , 'wysiwygMenuBar', wes.menu_bar
+                                    , 'wysiwygStatusBar', wes.status_bar
+                                    , 'wysiwygSpellCheck', wes.browser_spellcheck
                                     , 'defaultValue', ff.default_value
                                     , 'helpText', ff.help_text
                                     , 'attributes', json_build_object(
@@ -2684,6 +2690,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_form_region(
                                     LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
                                     LEFT JOIN pgapex.calender_format cf ON cf.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
+                                    LEFT JOIN pgapex.wysiwyg_editor_settings wes ON wes.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.parameter par ON (par.database_name = a.database_name AND par.schema_name = fr.schema_name AND par.function_name = fr.function_name AND par.parameter_type = ff.function_parameter_type AND par.ordinal_position = ff.function_parameter_ordinal_position)
                                     WHERE ff.region_id = r.region_id
                                     ORDER BY ff.function_parameter_ordinal_position) ff_agg
@@ -2903,6 +2910,10 @@ BEGIN
                                     , 'isMandatory', ff.is_mandatory
                                     , 'isVisible', ff.is_visible
                                     , 'isReadOnly', ff.is_read_only
+                                    , 'wysiwygEditor', ff.wysiwyg_editor
+                                    , 'wysiwygMenuBar', wes.menu_bar
+                                    , 'wysiwygStatusBar', wes.status_bar
+                                    , 'wysiwygSpellCheck', wes.browser_spellcheck
                                     , 'defaultValue', ff.default_value
                                     , 'helpText', ff.help_text
                                     , 'attributes', json_build_object(
@@ -2947,6 +2958,7 @@ BEGIN
                                     LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
                                     LEFT JOIN pgapex.calender_format cf ON cf.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
+                                    LEFT JOIN pgapex.wysiwyg_editor_settings wes ON wes.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.parameter par ON (par.database_name = app.database_name AND par.schema_name = fr.schema_name AND par.function_name = fr.function_name AND par.parameter_type = ff.function_parameter_type AND par.ordinal_position = ff.function_parameter_ordinal_position)
                                     WHERE ff.subregion_id = sr.subregion_id
                                     ORDER BY ff.function_parameter_ordinal_position) ff_agg
@@ -3449,5 +3461,18 @@ BEGIN
   VALUES (i_form_field_id, d_width, v_width_unit, d_height, v_height_unit);
 END
 $$ LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pgapex, public, pg_temp;
+
+CREATE OR REPLACE FUNCTION pgapex.f_region_save_wysiwyg_editor_settings(
+    i_form_field_id       pgapex.wysiwyg_editor_settings.form_field_id%TYPE
+  , b_menu_bar            pgapex.wysiwyg_editor_settings.menu_bar%TYPE
+  , b_status_bar          pgapex.wysiwyg_editor_settings.status_bar%TYPE
+  , b_browser_spellcheck  pgapex.wysiwyg_editor_settings.browser_spellcheck%TYPE
+)
+RETURNS void AS $$
+  INSERT INTO pgapex.wysiwyg_editor_settings (form_field_id, menu_bar, status_bar, browser_spellcheck)
+  VALUES (i_form_field_id, b_menu_bar, b_status_bar, b_browser_spellcheck);
+$$ LANGUAGE SQL
 SECURITY DEFINER
 SET search_path = pgapex, public, pg_temp;

@@ -48,6 +48,10 @@
       if (functionParameter.fieldType === "CALENDER") { return this.$scope.calenderTemplates; }
       return [];
     }.bind(this);
+
+    this.$scope.processWysiwygEditorCheckboxChange = function(functionParameter) {
+      if (functionParameter.wysiwygEditor && functionParameter.heightUnit === 'rows') functionParameter.heightUnit = 'px';
+    };
     
     this.initFunctionsWithParameters();
     this.initButtonTemplates();

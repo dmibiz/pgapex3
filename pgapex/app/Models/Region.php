@@ -414,10 +414,11 @@ class Region extends Model {
 
       $listOfValuesStatement = $connection->prepare('SELECT pgapex.f_region_save_list_of_values(:valueColumn, :labelColumn, :viewName, :schemaName)');
       $formFieldStatement = $connection->prepare('SELECT pgapex.f_region_save_form_field(:regionId, :fieldType, :listOfValuesId, :formFieldTemplateId, '
-                                               . ':fieldPreFillViewColumnName, :formElementName, :label, :sequence, :isMandatory, :isVisible, :isReadOnly, :defaultValue, :helpText, '
+                                               . ':fieldPreFillViewColumnName, :formElementName, :label, :sequence, :isMandatory, :isVisible, :isReadOnly, :wysiwygEditor, :defaultValue, :helpText, '
                                                . ':functionParameterType, :functionParameterOrdinalPosition)');
       $formFieldSizeStatement = $connection->prepare('SELECT pgapex.f_region_save_form_field_size(:formFieldId, :width, :widthUnit, :height, :heightUnit)');
       $calenderFormatStatement = $connection->prepare('SELECT pgapex.f_region_save_calender_format(:formFieldId, :calenderFormat)');
+      $wysiwygEditorSettingsStatement = $connection->prepare('SELECT pgapex.f_region_save_wysiwyg_editor_settings(:formFieldId, :menuBar, :statusBar, :browserSpellCheck)');
 
       foreach ($request->getApiAttribute('formFields') as $formField) {
         $listOfValuesId = null;
@@ -442,6 +443,7 @@ class Region extends Model {
         $formFieldStatement->bindValue(':isMandatory',                      $formField['attributes']['isMandatory'],                       PDO::PARAM_BOOL);
         $formFieldStatement->bindValue(':isVisible',                        $formField['attributes']['isVisible'],                         PDO::PARAM_BOOL);
         $formFieldStatement->bindValue(':isReadOnly',                       $formField['attributes']['isReadOnly'],                        PDO::PARAM_BOOL);
+        $formFieldStatement->bindValue(':wysiwygEditor',                    $formField['attributes']['wysiwygEditor'],                     PDO::PARAM_BOOL);
         $formFieldStatement->bindValue(':defaultValue',                     $formField['attributes']['defaultValue'],                      PDO::PARAM_STR);
         $formFieldStatement->bindValue(':helpText',                         $formField['attributes']['helpText'],                          PDO::PARAM_STR);
         $formFieldStatement->bindValue(':functionParameterType',            $formField['attributes']['functionParameterType'],             PDO::PARAM_STR);
@@ -468,6 +470,14 @@ class Region extends Model {
           $calenderFormatStatement->bindValue(':formFieldId',    $formFieldId,                               PDO::PARAM_INT);
           $calenderFormatStatement->bindValue(':calenderFormat', $formField['attributes']['calenderFormat'], PDO::PARAM_STR);
           $calenderFormatStatement->execute();
+        }
+
+        if ($formField['attributes']['wysiwygEditor'] && $formField['attributes']['fieldType'] == 'TEXTAREA') {
+          $wysiwygEditorSettingsStatement->bindValue(':formFieldId', $formFieldId,                                        PDO::PARAM_INT);
+          $wysiwygEditorSettingsStatement->bindValue(':menuBar', $formField['attributes']['wysiwygMenuBar'],              PDO::PARAM_BOOL);
+          $wysiwygEditorSettingsStatement->bindValue(':statusBar', $formField['attributes']['wysiwygStatusBar'],          PDO::PARAM_BOOL);
+          $wysiwygEditorSettingsStatement->bindValue(':browserSpellCheck', $formField['attributes']['wysiwygSpellCheck'], PDO::PARAM_BOOL);    
+          $wysiwygEditorSettingsStatement->execute();      
         }
       }
 
@@ -516,11 +526,13 @@ class Region extends Model {
             $subFormSubRegionId = $subFormStatement->fetchColumn();
             
             $subFormListOfValuesStatement = $connection->prepare('SELECT pgapex.f_region_save_list_of_values(:valueColumn, :labelColumn, :viewName, :schemaName)');
+            $subFormFieldStatement = $connection->prepare('SELECT pgapex.f_region_save_subform_field(:subregionId, :fieldType, :listOfValuesId, :formFieldTemplateId, '
+                                               . ':fieldPreFillViewColumnName, :formElementName, :label, :sequence, :isMandatory, :isVisible, :isReadOnly, :wysiwygEditor, :defaultValue, :helpText, '
+                                               . ':functionParameterType, :functionParameterOrdinalPosition)');
             $subFormCalenderFormatStatement = $connection->prepare('SELECT pgapex.f_region_save_calender_format(:formFieldId, :calenderFormat)');
             $subFormFieldSizeStatement = $connection->prepare('SELECT pgapex.f_region_save_form_field_size(:formFieldId, :width, :widthUnit, :height, :heightUnit)');
-            $subFormFieldStatement = $connection->prepare('SELECT pgapex.f_region_save_subform_field(:subregionId, :fieldType, :listOfValuesId, :formFieldTemplateId, '
-                                               . ':fieldPreFillViewColumnName, :formElementName, :label, :sequence, :isMandatory, :isVisible, :isReadOnly, :defaultValue, :helpText, '
-                                               . ':functionParameterType, :functionParameterOrdinalPosition)');
+            $subFormWysiwygEditorSettingsStatement = $connection->prepare('SELECT pgapex.f_region_save_wysiwyg_editor_settings(:formFieldId, :menuBar, :statusBar, :browserSpellCheck)');
+
 
             foreach ($subRegion['attributes']['functionParameters'] as $subFormField) {
               $subFormListOfValuesId = null;
@@ -543,6 +555,7 @@ class Region extends Model {
               $subFormFieldStatement->bindValue(':isMandatory',                      $subFormField['attributes']['isMandatory'],                       PDO::PARAM_BOOL);
               $subFormFieldStatement->bindValue(':isVisible',                        $subFormField['attributes']['isVisible'],                         PDO::PARAM_BOOL);
               $subFormFieldStatement->bindValue(':isReadOnly',                       $subFormField['attributes']['isReadOnly'],                        PDO::PARAM_BOOL);
+              $subFormFieldStatement->bindValue(':wysiwygEditor',                    $subFormField['attributes']['wysiwygEditor'],                     PDO::PARAM_BOOL);
               $subFormFieldStatement->bindValue(':defaultValue',                     $subFormField['attributes']['defaultValue'],                      PDO::PARAM_STR);
               $subFormFieldStatement->bindValue(':helpText',                         $subFormField['attributes']['helpText'],                          PDO::PARAM_STR);
               $subFormFieldStatement->bindValue(':functionParameterType',            $subFormField['attributes']['functionParameterType'],             PDO::PARAM_STR);
@@ -569,6 +582,14 @@ class Region extends Model {
                 $subFormCalenderFormatStatement->bindValue(':formFieldId',    $subFormFieldId,                               PDO::PARAM_INT);
                 $subFormCalenderFormatStatement->bindValue(':calenderFormat', $subFormField['attributes']['calenderFormat'], PDO::PARAM_STR);
                 $subFormCalenderFormatStatement->execute();
+              }
+
+              if ($subFormField['attributes']['wysiwygEditor']) {
+                $subFormWysiwygEditorSettingsStatement->bindValue(':formFieldId', $subFormFieldId,                                        PDO::PARAM_INT);
+                $subFormWysiwygEditorSettingsStatement->bindValue(':menuBar', $subFormField['attributes']['wysiwygMenuBar'],              PDO::PARAM_BOOL);
+                $subFormWysiwygEditorSettingsStatement->bindValue(':statusBar', $subFormField['attributes']['wysiwygStatusBar'],          PDO::PARAM_BOOL);
+                $subFormWysiwygEditorSettingsStatement->bindValue(':browserSpellCheck', $subFormField['attributes']['wysiwygSpellCheck'], PDO::PARAM_BOOL); 
+                $subFormWysiwygEditorSettingsStatement->execute();         
               }
             }
           } elseif ($subRegion['type'] === 'TABULAR_SUBFORM') {

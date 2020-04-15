@@ -1988,12 +1988,12 @@ BEGIN
 
   FOR r_form_row IN (
     SELECT
-      ff.field_type_id, ff.label, ff.is_mandatory, ff.is_visible, ff.is_read_only, ff.default_value, ff.help_text, ff.field_pre_fill_view_column_name,
+      ff.field_type_id, ff.label, ff.is_mandatory, ff.is_visible, ff.is_read_only, ff.wysiwyg_editor, ff.default_value, ff.help_text, ff.field_pre_fill_view_column_name,
       pi.name AS form_element_name, lov.schema_name, lov.view_name, lov.label_view_column_name, lov.value_view_column_name,
-      it.template AS input_template, tt.template AS textarea_template,
+      it.template AS input_template, tt.template AS textarea_template, tt.wysiwyg_editor_script,
       ddt.drop_down_begin, ddt.drop_down_end, ddt.option_begin, ddt.option_end,
       cbt.combo_box_begin, cbt.combo_box_end, cbt.option_begin AS combo_box_option_begin, cbt.option_end AS combo_box_option_end, cbt.combo_box_script,
-      ct.calender_input, ct.calender_script, cf.calender_format, ffs.width, ffs.width_unit, ffs.height, ffs.height_unit
+      ct.calender_input, ct.calender_script, cf.calender_format, ffs.width, ffs.width_unit, ffs.height, ffs.height_unit, wes.menu_bar, wes.status_bar, wes.browser_spellcheck
     FROM pgapex.form_field ff
       LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
       LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
@@ -2004,6 +2004,7 @@ BEGIN
       LEFT JOIN pgapex.calender_template ct ON ct.template_id = ff.calender_template_id
       LEFT JOIN pgapex.calender_format cf ON cf.form_field_id = ff.form_field_id
       LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
+      LEFT JOIN pgapex.wysiwyg_editor_settings wes ON wes.form_field_id = ff.form_field_id
     WHERE ff.region_id = i_region_id
     ORDER BY ff.sequence ASC
   )
@@ -2063,12 +2064,21 @@ BEGIN
       ELSIF r_form_row.field_type_id = 'TEXTAREA' THEN
         t_form_element := r_form_row.textarea_template;
         t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
+        IF r_form_row.wysiwyg_editor = TRUE THEN
+          t_form_element := t_form_element || r_form_row.wysiwyg_editor_script;
+          t_form_element := replace(t_form_element, '#MENU_BAR#', r_form_row.menu_bar::TEXT);
+          t_form_element := replace(t_form_element, '#STATUS_BAR#', r_form_row.status_bar::TEXT);
+          t_form_element := replace(t_form_element, '#BROWSER_SPELL_CHECK#', r_form_row.browser_spellcheck::TEXT);
+        END IF;
         IF r_form_row.height_unit = 'rows' THEN
           t_textarea_rows_attribute := coalesce(r_form_row.height_unit || '="' || r_form_row.height || '"', '');
         ELSE
-          t_textarea_height_property :=  coalesce('height: ' || r_form_row.height || r_form_row.height_unit, '');
+          t_textarea_height_property := r_form_row.height || r_form_row.height_unit;
+          IF r_form_row.wysiwyg_editor = FALSE THEN
+            t_textarea_height_property := 'height: ' || t_textarea_height_property;
+          END IF;
         END IF;
-        t_form_element := replace(t_form_element, '#HEIGHT_PROPERTY#', t_textarea_height_property);
+        t_form_element := replace(t_form_element, '#HEIGHT_PROPERTY#', coalesce(t_textarea_height_property, ''));
         t_form_element := replace(t_form_element, '#ROWS#', t_textarea_rows_attribute);
 
       ELSIF r_form_row.field_type_id = 'DROP_DOWN' THEN
@@ -2243,12 +2253,12 @@ BEGIN
 
   FOR r_form_row IN (
     SELECT
-      ff.field_type_id, ff.label, ff.is_mandatory, ff.is_visible, ff.is_read_only, ff.default_value, ff.help_text, ff.field_pre_fill_view_column_name,
+      ff.field_type_id, ff.label, ff.is_mandatory, ff.is_visible, ff.is_read_only, ff.wysiwyg_editor, ff.default_value, ff.help_text, ff.field_pre_fill_view_column_name,
       pi.name AS form_element_name, lov.schema_name, lov.view_name, lov.label_view_column_name, lov.value_view_column_name,
-      it.template AS input_template, tt.template AS textarea_template,
+      it.template AS input_template, tt.template AS textarea_template, tt.wysiwyg_editor_script,
       ddt.drop_down_begin, ddt.drop_down_end, ddt.option_begin, ddt.option_end,
       cbt.combo_box_begin, cbt.combo_box_end, cbt.option_begin AS combo_box_option_begin, cbt.option_end AS combo_box_option_end, cbt.combo_box_script,
-      ct.calender_input, ct.calender_script, cf.calender_format, ffs.width, ffs.width_unit, ffs.height, ffs.height_unit
+      ct.calender_input, ct.calender_script, cf.calender_format, ffs.width, ffs.width_unit, ffs.height, ffs.height_unit, wes.menu_bar, wes.status_bar, wes.browser_spellcheck
     FROM pgapex.form_field ff
       LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
       LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
@@ -2259,6 +2269,7 @@ BEGIN
       LEFT JOIN pgapex.calender_template ct ON ct.template_id = ff.calender_template_id
       LEFT JOIN pgapex.calender_format cf ON cf.form_field_id = ff.form_field_id
       LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
+      LEFT JOIN pgapex.wysiwyg_editor_settings wes ON wes.form_field_id = ff.form_field_id
     WHERE ff.subregion_id = i_subregion_id
     ORDER BY ff.sequence ASC
   )
@@ -2318,12 +2329,21 @@ BEGIN
       ELSIF r_form_row.field_type_id = 'TEXTAREA' THEN
         t_form_element := r_form_row.textarea_template;
         t_form_element := replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
+        IF r_form_row.wysiwyg_editor = TRUE THEN
+          t_form_element := t_form_element || r_form_row.wysiwyg_editor_script;
+          t_form_element := replace(t_form_element, '#MENU_BAR#', r_form_row.menu_bar::TEXT);
+          t_form_element := replace(t_form_element, '#STATUS_BAR#', r_form_row.status_bar::TEXT);
+          t_form_element := replace(t_form_element, '#BROWSER_SPELL_CHECK#', r_form_row.browser_spellcheck::TEXT);
+        END IF;
         IF r_form_row.height_unit = 'rows' THEN
           t_textarea_rows_attribute := coalesce(r_form_row.height_unit || '="' || r_form_row.height || '"', '');
         ELSE
-          t_textarea_height_property :=  coalesce('height: ' || r_form_row.height || r_form_row.height_unit, '');
+          t_textarea_height_property := r_form_row.height || r_form_row.height_unit;
+          IF r_form_row.wysiwyg_editor = FALSE THEN
+            t_textarea_height_property := 'height: ' || t_textarea_height_property;
+          END IF;
         END IF;
-        t_form_element := replace(t_form_element, '#HEIGHT_PROPERTY#', t_textarea_height_property);
+        t_form_element := replace(t_form_element, '#HEIGHT_PROPERTY#', coalesce(t_textarea_height_property, ''));
         t_form_element := replace(t_form_element, '#ROWS#', t_textarea_rows_attribute);
 
       ELSIF r_form_row.field_type_id = 'DROP_DOWN' THEN
