@@ -40,8 +40,8 @@
     "suchAuthenticationSchemeDoesNotExist": "Such authentication scheme does not exist.",
     "suchFunctionDoesNotExist": "Such function does not exist.",
     "suchLoginPageTemplateDoesNotExist": "Such login page template does not exist.",
-
     "databaseUsernameHelpText": "Username that pgapex uses to connect to the selected database.",
-    "databasePasswordHelpText": "Password for previously inserted username that pgapex uses to connect to the selected database."
+    "databasePasswordHelpText": "Password for previously inserted username that pgapex uses to connect to the selected database.",
+    "applicationAliasHelpText": "Must not contain spaces."
   }
 }

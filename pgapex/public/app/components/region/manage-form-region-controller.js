@@ -335,7 +335,6 @@
             }.bind(this));
             break;
         }
-        console.log(this.$scope.region);
       }.bind(this));
     }.bind(this));
   };

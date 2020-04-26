@@ -19,6 +19,6 @@
     "templateIsMandatory": "Template is mandatory.",
     "template": "Template",
     "regions": "Regions",
-    "aliasHelpText": "Must not contain spaces"
+    "aliasHelpText": "Must not contain spaces."
   }
 }

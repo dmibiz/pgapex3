@@ -3,7 +3,7 @@
   var angular = window.angular;
   var module = angular.module('pgApexApp.page');
 
-  function ManagePageController($scope, $location, $routeParams, pageService, templateService, databaseService, formErrorService) {
+  function ManagePageController($scope, $location, $routeParams, pageService, templateService, databaseService, formErrorService, helperService) {
     this.$scope = $scope;
     this.$location = $location;
     this.$routeParams = $routeParams;
@@ -11,6 +11,7 @@
     this.templateService = templateService;
     this.databaseService = databaseService;
     this.formErrorService = formErrorService;
+    this.$scope.helper = helperService;
 
     this.init();
   }
@@ -80,7 +81,7 @@
   function init() {
     module.controller('pgApexApp.page.ManagePageController',
       ['$scope', '$location', '$routeParams', 'pageService',
-      'templateService','databaseService', 'formErrorService', ManagePageController]);
+      'templateService','databaseService', 'formErrorService', 'helperService', ManagePageController]);
   }
 
   init();

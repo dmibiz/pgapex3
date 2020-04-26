@@ -22,6 +22,9 @@
           <span ng-repeat="error in formError.getErrors('alias')" class="help-block">{{error|translate}}</span>
         </div>
       </div>
+      <div class="col-sm-1">
+        <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.info('application.applicationAliasHelpText')"></span>
+      </div>
     </div>
     <div class="form-group" ng-class="{'has-error': formError.showErrors(manageApplicationForm.database, 'database')}">
       <label for="database" class="col-sm-3 control-label">{{'application.database'|translate}} *</label>

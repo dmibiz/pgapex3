@@ -7,7 +7,7 @@
   <form name="managePageForm" class="form-horizontal" ng-submit="savePage()" novalidate>
     <div class="form-group" ng-class="{'has-error': formError.showErrors(managePageForm.title, 'title')}">
       <label for="title" class="col-sm-3 control-label">{{'page.title'|translate}} *</label>
-      <div class="col-sm-9">
+      <div class="col-sm-8">
         <input type="text" class="form-control" name="title" ng-model="page.title" id="title" placeholder="{{'page.title'|translate}}" required autofocus>
         <div ng-show="formError.showErrors(managePageForm.title, 'title')">
           <span ng-show="managePageForm.title.$error.required" class="help-block">{{'page.titleIsMandatory'|translate}}</span>
@@ -17,17 +17,19 @@
     </div>
     <div class="form-group" ng-class="{'has-error': formError.showErrors(managePageForm.alias, 'alias')}">
       <label for="alias" class="col-sm-3 control-label">{{'page.alias'|translate}}</label>
-      <div class="col-sm-9">
+      <div class="col-sm-8">
         <input type="text" class="form-control" name="alias" ng-model="page.alias" id="alias" placeholder="{{'page.alias'|translate}}">
-        <small class="form-text text-muted">{{'page.aliasHelpText' | translate}}</small>
         <div ng-show="formError.showErrors(managePageForm.alias, 'alias')">
           <span ng-repeat="error in formError.getErrors('alias')" class="help-block">{{error|translate}}</span>
         </div>
       </div>
+      <div class="col-sm-1">
+        <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.info('page.aliasHelpText')"></span>
+      </div>
     </div>
     <div class="form-group" ng-class="{'has-error': formError.showErrors(managePageForm.template, 'template')}">
       <label for="template" class="col-sm-3 control-label">{{'page.template'|translate}} *</label>
-      <div class="col-sm-9">
+      <div class="col-sm-8">
         <select id="template" name="template" ng-model="page.template" class="form-control" required ng-options="template.id as template.attributes.name for template in templates">
         </select>
         <div ng-show="formError.showErrors(managePageForm.template, 'template')">
@@ -38,7 +40,7 @@
     </div>
     <div class="form-group" ng-class="{'has-error': formError.showErrors(managePageForm.isHomepage, 'isHomepage')}">
       <label for="isHomepage" class="col-sm-3 control-label">{{'page.isHomepage'|translate}}</label>
-      <div class="col-sm-9" class="checkbox">
+      <div class="col-sm-8" class="checkbox">
         <input id="isHomepage" name="isHomepage" ng-model="page.isHomepage" type="checkbox">
         <div ng-show="formError.showErrors(managePageForm.isHomepage, 'isHomepage')">
           <span ng-repeat="error in formError.getErrors('isHomepage')" class="help-block">{{error|translate}}</span>
@@ -47,7 +49,7 @@
     </div>
     <div class="form-group" ng-class="{'has-error': formError.showErrors(managePageForm.isAuthenticationRequired, 'isAuthenticationRequired')}">
       <label for="isAuthenticationRequired" class="col-sm-3 control-label">{{'page.isAuthenticationRequired'|translate}}</label>
-      <div class="col-sm-9" class="checkbox">
+      <div class="col-sm-8" class="checkbox">
         <input id="isAuthenticationRequired" name="isAuthenticationRequired" ng-model="page.isAuthenticationRequired" type="checkbox">
         <div ng-show="formError.showErrors(managePageForm.isAuthenticationRequired, 'isAuthenticationRequired')">
           <span ng-repeat="error in formError.getErrors('isAuthenticationRequired')" class="help-block">{{error|translate}}</span>
