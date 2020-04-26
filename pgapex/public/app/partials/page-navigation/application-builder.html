@@ -6,5 +6,6 @@
     <li ng-class="{'active': isNavigationsPage()}">
       <a ng-href="#/application-builder/app/{{routeParams.applicationId}}/navigations">{{'navigation.navigations'|translate}}</a>
     </li>
+    <li class="pull-right text-muted" ng-show="pageTitle">{{'page.page' | translate}}: {{pageTitle}}</li>
   </ul>
 </div>

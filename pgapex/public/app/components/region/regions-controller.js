@@ -17,21 +17,12 @@
   RegionsController.prototype.init = function() {
     this.$scope.routeParams = this.$routeParams;
     this.$scope.displayPointsWithRegions = [];
-    this.$scope.pageTitle = '';
 
     this.loadDisplayPointsWithRegions();
-    this.loadPageTitle();
   };
 
   RegionsController.prototype.getPageId = function() {
     return this.$routeParams.pageId || null;
-  };
-
-  RegionsController.prototype.loadPageTitle = function() {
-    this.pageService.getPage(this.getPageId()).then(function (response) {
-      var responseData = response.getDataOrDefault([]);
-      this.$scope.pageTitle = responseData.attributes.title;
-    }.bind(this));
   };
 
   RegionsController.prototype.loadDisplayPointsWithRegions = function() {
