@@ -12,7 +12,8 @@ $( function() {
  
       _createAutocomplete: function() {
         var selected = this.element.children( ":selected" ),
-          value = selected.val() ? selected.text() : "";
+          //value = selected.val() ? selected.text() : "";
+          value = selected.text();
 
           formControl = $(".form-control");
  
