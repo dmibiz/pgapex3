@@ -46,8 +46,8 @@ class ReportAndFormValidatorTest extends \TestCase {
     $this->request->shouldReceive('getApiAttribute')->with('reportPageId')->andReturn(1);
     $this->request->shouldReceive('getApiAttribute')->with('pageTemplateDisplayPointId')->andReturn(1);
     $this->request->shouldReceive('getApiAttribute')->with('reportIncludeEntityCreateButton')->andReturn(1);
-    $this->request->shouldReveive('getApiAttribute')->with('reportCreateEntityPageId')->andReturn(1);
-    $this->request->shouldReveive('getApiAttribute')->with('reportCreateEntityButtonLabel')->andReturn(1);
+    $this->request->shouldReceive('getApiAttribute')->with('reportCreateEntityPageId')->andReturn(1);
+    $this->request->shouldReceive('getApiAttribute')->with('reportCreateEntityButtonLabel')->andReturn(1);
 
     $this->request->shouldReceive('getApiAttribute')->with('reportSequence')->andReturn(-1);
     $this->invokeObjectMethod($this->validator, 'validateReportSequence', [$this->request]);
