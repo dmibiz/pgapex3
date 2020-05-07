@@ -156,14 +156,14 @@
             <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.fieldType, 'functionParameters/' + $index + '/fieldType')}">
               <select id="fieldType" name="fieldType" ng-model="functionParameter.fieldType" class="form-control" required ng-change="functionParameter.fieldTemplate = '' ; functionParameter.listOfValuesView = ''">
                 <option value="" disabled>-- {{'region.fieldType'|translate}} * --</option>
-                <option value="TEXT">{{'region.fieldTypeText'|translate}}</option>
+                <option value="CALENDER">{{'region.fieldTypeCalender'|translate}}</option>
+                <option value="CHECKBOX">{{'region.fieldTypeCheckbox'|translate}}</option>
+                <option value="COMBO_BOX">{{'region.fieldTypeComboBox'|translate}}</option>
+                <option value="DROP_DOWN">{{'region.fieldTypeDropDown'|translate}}</option>
                 <option value="PASSWORD">{{'region.fieldTypePassword'|translate}}</option>
                 <option value="RADIO">{{'region.fieldTypeRadio'|translate}}</option>
-                <option value="CHECKBOX">{{'region.fieldTypeCheckbox'|translate}}</option>
-                <option value="DROP_DOWN">{{'region.fieldTypeDropDown'|translate}}</option>
+                <option value="TEXT">{{'region.fieldTypeText'|translate}}</option>
                 <option value="TEXTAREA">{{'region.fieldTypeTextarea'|translate}}</option>
-                <option value="COMBO_BOX">{{'region.fieldTypeComboBox'|translate}}</option>
-                <option value="CALENDER">{{'region.fieldTypeCalender'|translate}}</option>
               </select>
             </div>
             <div class="col-md-3" ng-class="{'has-error': formError.showErrors(functionParameterForm.fieldTemplate, 'functionParameters/' + $index + '/fieldTemplate')}">
