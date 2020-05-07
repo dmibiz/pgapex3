@@ -6,11 +6,11 @@
     <li ng-class="{'active': isNavigationsPage()}">
       <a ng-href="#/application-builder/app/{{routeParams.applicationId}}/navigations">{{'navigation.navigations'|translate}}</a>
     </li>
-    <li class="pull-right" ng-show="pageTitle">
-      <a ng-href="#/application-builder/app/{{routeParams.applicationId}}/pages/{{routeParams.pageId}}/regions">{{'page.page' | translate}}: {{pageTitle}}</a>
-    </li>
     <li class="pull-right" ng-show="applicationName">
       <a ng-href="#/application-builder/app/{{routeParams.applicationId}}/pages">{{'application.application' | translate}}: {{applicationName}}</a>
+    </li>
+    <li class="pull-right" ng-show="pageTitle">
+      <a ng-href="#/application-builder/app/{{routeParams.applicationId}}/pages/{{routeParams.pageId}}/regions">{{'page.page' | translate}}: {{pageTitle}}</a>
     </li>
   </ul>
 </div>
