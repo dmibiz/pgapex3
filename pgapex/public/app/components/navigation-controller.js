@@ -3,12 +3,13 @@
   var angular = window.angular;
   var module = angular.module('pgApexApp');
 
-  function NavigationController($scope, $location, $routeParams, pageService) {
+  function NavigationController($scope, $location, $routeParams, pageService, applicationService) {
     this.pageService = pageService;
+    this.applicationService = applicationService;
     var path = $location.path();
     $scope.routeParams = $routeParams;
     $scope.pageTitle = '';
-
+    $scope.applicationName = '';
     $scope.isApplicationBuilderPage = function () {
       return path.startsWith('/application-builder');
     }
@@ -23,14 +24,21 @@
     this.$scope = $scope;
 
     this.loadPageTitle();
+    this.loadApplicationName();
   }
 
   function init() {
-    module.controller('pgApexApp.NavigationController', ['$scope', '$location', '$routeParams', 'pageService', NavigationController]);
+    module.controller(
+      'pgApexApp.NavigationController', 
+      ['$scope', '$location', '$routeParams', 'pageService', 'applicationService', NavigationController]);
   }
 
   NavigationController.prototype.getPageId = function() {
     return this.$scope.routeParams.pageId || null;
+  };
+
+  NavigationController.prototype.getApplicationId = function() {
+    return this.$scope.routeParams.applicationId || null;
   };
 
   NavigationController.prototype.loadPageTitle = function() {
@@ -39,6 +47,16 @@
       this.pageService.getPage(pageId).then(function (response) {
         var responseData = response.getDataOrDefault([]);
         this.$scope.pageTitle = responseData.attributes.title;
+      }.bind(this));
+    }
+  };
+
+  NavigationController.prototype.loadApplicationName = function() {
+    var applicationId = this.getApplicationId();
+    if (applicationId) {
+      this.applicationService.getApplication(applicationId).then(function(response) {
+        var responseData = response.getDataOrDefault([]);
+        this.$scope.applicationName = responseData.attributes.name;
       }.bind(this));
     }
   };
