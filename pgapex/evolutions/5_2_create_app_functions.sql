@@ -2140,13 +2140,15 @@ BEGIN
       t_form_element :=  replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
     END IF;
 
+    IF r_form_row.is_visible = TRUE AND r_form_row.help_text IS NOT NULL THEN
+      t_form_element := t_form_element || t_help_text_block_template;
+    END IF;
+
     t_form_element := replace(t_form_element, '#NAME#',      pgapex.f_app_html_special_chars(r_form_row.form_element_name));
     t_form_element := replace(t_form_element, '#ROW_LABEL#', pgapex.f_app_html_special_chars(r_form_row.label));
     t_form_element := replace(t_form_element, '#WIDTH#', coalesce(r_form_row.width::TEXT, '100'));
     t_form_element := replace(t_form_element, '#WIDTH_UNIT#', coalesce(r_form_row.width_unit::TEXT, '%'));
-    IF r_form_row.is_visible = TRUE AND r_form_row.help_text IS NOT NULL THEN
-      t_form_element := t_form_element || t_help_text_block_template;
-    END IF;
+
     IF r_form_row.is_read_only = TRUE THEN
       t_form_element := replace(t_form_element, '#READ_ONLY#', 'readonly');
     ELSE
@@ -2405,13 +2407,15 @@ BEGIN
       t_form_element :=  replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
     END IF;
 
+    IF r_form_row.is_visible = TRUE AND r_form_row.help_text IS NOT NULL THEN
+      t_form_element := t_form_element || t_help_text_block_template;
+    END IF;
+    
     t_form_element := replace(t_form_element, '#NAME#',      pgapex.f_app_html_special_chars(r_form_row.form_element_name));
     t_form_element := replace(t_form_element, '#ROW_LABEL#', pgapex.f_app_html_special_chars(r_form_row.label));
     t_form_element := replace(t_form_element, '#WIDTH#', coalesce(r_form_row.width::TEXT, '100'));
     t_form_element := replace(t_form_element, '#WIDTH_UNIT#', coalesce(r_form_row.width_unit::TEXT, '%'));
-    IF r_form_row.is_visible = TRUE AND r_form_row.help_text IS NOT NULL THEN
-      t_form_element := t_form_element || t_help_text_block_template;
-    END IF;
+    
     IF r_form_row.is_read_only = TRUE THEN
       t_form_element := replace(t_form_element, '#READ_ONLY#', 'readonly');
     ELSE

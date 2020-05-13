@@ -167,7 +167,7 @@ INSERT INTO pgapex.form_template (template_id, form_begin, form_end, row_begin, 
 VALUES(7, '<form class="form-horizontal" method="POST" action="">', '#SUBMIT_BUTTON#</form>',
 '<div class="form-group">', '</div>', '<label class="col-sm-2 control-label" title="#HELP_TEXT#">#LABEL#</label><div class="col-sm-10">#FORM_ELEMENT#</div>',
 '<div class="form-group">', '</div>', '<label class="col-sm-2 control-label" title="#HELP_TEXT#">#LABEL# *</label><div class="col-sm-10">#FORM_ELEMENT#</div>',
-'<small class="form-text text-muted">#HELP_TEXT#</small>');
+'<div style="width: #WIDTH##WIDTH_UNIT#"><small class="form-text text-muted">#HELP_TEXT#</small></div>');
 
 INSERT INTO pgapex.drop_down_template (template_id, drop_down_begin, drop_down_end, option_begin, option_end)
 VALUES (8, '<select class="form-control" name="#NAME#" style="width: #WIDTH##WIDTH_UNIT#" #READ_ONLY#>', '</select>', '<option value="#VALUE#"#SELECTED#>', '</option>');
