@@ -114,7 +114,7 @@
     "listOfValuesValueIsMandatory": "Value for list of values is mandatory.",
     "listOfValuesLabelIsMandatory": "Label for list of values is mandatory.",
     "functionIsMandatory": "Function is mandatory.",
-    "helpText": "Help text",
+    "helpText": "Help text - up to 255 symbols",
     "visible": "Visible",
     "hidden": "Hidden",
     "sequenceAlreadyExists": "Sequence already exists.",
