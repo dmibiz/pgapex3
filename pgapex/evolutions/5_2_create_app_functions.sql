@@ -2152,7 +2152,7 @@ BEGIN
       t_form_element :=  replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
     END IF;
 
-    IF r_form_row.is_visible = TRUE AND r_form_row.help_text IS NOT NULL THEN
+    IF r_form_row.is_visible = TRUE AND r_form_row.help_text IS NOT NULL AND length(r_form_row.help_text) < 100 THEN
       t_form_element := t_form_element || t_help_text_block_template;
     END IF;
 
@@ -2431,7 +2431,7 @@ BEGIN
       t_form_element :=  replace(t_form_element, '#VALUE#', pgapex.f_app_html_special_chars(coalesce(r_form_row.default_value, '')));
     END IF;
 
-    IF r_form_row.is_visible = TRUE AND r_form_row.help_text IS NOT NULL THEN
+    IF r_form_row.is_visible = TRUE AND r_form_row.help_text IS NOT NULL AND length(r_form_row.help_text) < 100 THEN
       t_form_element := t_form_element || t_help_text_block_template;
     END IF;
 
