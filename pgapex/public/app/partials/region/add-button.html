@@ -65,13 +65,13 @@
         <input
             ng-class="{'has-error': formError.showErrors(addButtonForm.successMessage, 'addButton/' + $index + '/successMessage')}"
             required ng-model="button.successMessage" name="successMessage" type="text" class="form-control"
-            placeholder="{{'region.successMessage'|translate}} *">
+            placeholder="{{'region.successMessage'|translate}} - {{'region.upTo255Symbols'|translate}} *" maxlength="255">
       </div>
       <div class="col-md-5">
         <input
             ng-class="{'has-error': formError.showErrors(addButtonForm.errorMessage, 'addButton/' + $index + '/errorMessage')}"
             required ng-model="button.errorMessage" name="errorMessage" type="text" class="form-control"
-            placeholder="{{'region.errorMessage'|translate}} *">
+            placeholder="{{'region.errorMessage'|translate}} - {{'region.upTo255Symbols'|translate}}*" maxlength="255">
       </div>
     </div>
     <div class="row add-button__item__checkbox">
