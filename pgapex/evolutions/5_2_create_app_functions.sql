@@ -1109,7 +1109,7 @@ DECLARE
   t_app_user_param    TEXT  := '';
   t_xmin_param        TEXT  := '';
   t_function_call     TEXT;
-  t_function_response INT;
+  t_function_response TEXT;
 BEGIN
   IF (SELECT NOT EXISTS(SELECT 1
                         FROM pgapex.region r
