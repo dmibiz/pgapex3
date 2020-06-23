@@ -216,7 +216,7 @@ CREATE TABLE pgapex.form_field (
 	drop_down_template_ID INTEGER,
 	textarea_template_ID INTEGER,
 	combo_box_template_ID INTEGER,
-	calender_tamplate_ID INTEGER,
+	calender_template_ID INTEGER,
 	field_pre_fill_view_column_name VARCHAR ( 64 ),
 	label VARCHAR ( 255 ) NOT NULL,
 	sequence INTEGER NOT NULL,
