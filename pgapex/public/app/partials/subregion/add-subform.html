@@ -99,7 +99,7 @@
             <div class="col-md-2" ng-class="{'has-error': formError.showErrors(functionParameterForm.fieldType, 'subform/' + index + '/functionParameters/' + $index + '/fieldType')}">
               <select id="fieldType" name="fieldType" ng-model="functionParameter.fieldType" class="form-control" required ng-change="functionParameter.fieldTemplate = '' ; functionParameter.listOfValuesView = ''">
                 <option value="" disabled>-- {{'region.fieldType'|translate}} * --</option>
-                <option value="CALENDER">{{'region.fieldTypeCalender'|translate}}</option>
+                <option value="CALENDAR">{{'region.fieldTypeCalendar'|translate}}</option>
                 <option value="CHECKBOX">{{'region.fieldTypeCheckbox'|translate}}</option>
                 <option value="COMBO_BOX">{{'region.fieldTypeComboBox'|translate}}</option>
                 <option value="DROP_DOWN">{{'region.fieldTypeDropDown'|translate}}</option>
@@ -131,18 +131,18 @@
                 <span>{{'region.wysiwygEditor'|translate}}</span>
               </label>
             </div>
-            <div ng-show="functionParameter.fieldType === 'CALENDER'">
+            <div ng-show="functionParameter.fieldType === 'CALENDAR'">
               <div class="col-md-3"
-                    ng-class="{'has-error': formError.showErrors(functionParameterForm.calenderFormat, 'subform/' + index + '/functionParameters/' + $index + '/calenderFormat')}">
-                  <input ng-model="functionParameter.calenderFormat"
-                         ng-required="functionParameter.fieldType === 'CALENDER'" 
-                         name="calenderFormat" 
+                    ng-class="{'has-error': formError.showErrors(functionParameterForm.calendarFormat, 'subform/' + index + '/functionParameters/' + $index + '/calendarFormat')}">
+                  <input ng-model="functionParameter.calendarFormat"
+                         ng-required="functionParameter.fieldType === 'CALENDAR'" 
+                         name="calendarFormat" 
                          type="text" 
                          class="form-control" 
-                         placeholder="{{'region.calenderFormat'|translate}}">
+                         placeholder="{{'region.calendarFormat'|translate}}">
                 </div>
                 <div class="col-sm-1">
-                  <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.calenderFormatInfo()"></span>
+                  <span class="glyphicon glyphicon-info-sign help-text" ng-click="helper.calendarFormatInfo()"></span>
                 </div>
             </div>
           </div>
@@ -247,7 +247,7 @@
             formError.showErrors(functionParameterForm.helpText, 'subform/' + index + '/functionParameters/' + $index + '/helpText') ||
             formError.showErrors(functionParameterForm.inputWidth, 'subform/' + index + '/functionParameters/' + $index + '/inputWidth') ||
             formError.showErrors(functionParameterForm.inputWidthUnit, 'subform/' + index + '/functionParameters/' + $index + '/inputWidthUnit') ||
-            formError.showErrors(functionParameterForm.calenderFormat, 'subform/' + index + '/functionParameters/' + $index + '/calenderFormat')
+            formError.showErrors(functionParameterForm.calendarFormat, 'subform/' + index + '/functionParameters/' + $index + '/calendarFormat')
           ">
             <div class="col-sm-12">
               <span ng-show="functionParameterForm.inputName.$touched && functionParameterForm.inputName.$error.required" class="help-block">{{'region.inputNameIsMandatory'|translate}}</span>
@@ -260,7 +260,7 @@
               <span ng-show="functionParameterForm.listOfValuesLabel.$touched && functionParameterForm.listOfValuesLabel.$error.required" class="help-block">{{'region.listOfValuesLabelIsMandatory'|translate}}</span>
               <span ng-show="functionParameterForm.inputWidth.$touched && functionParameterForm.inputWidth.$error.required" class="help-block">{{'region.inputWidthIsMandatory'|translate}}</span>
               <span ng-show="functionParameterForm.inputWidthUnit.$touched && functionParameterForm.inputWidthUnit.$error.required" class="help-block">{{'region.inputWidthUnitIsMandatory'|translate}}</span>
-              <span ng-show="functionParameterForm.calenderFormat.$touched && functionParameterForm.calenderFormat.$error.required" class="help-block">{{'region.calenderFormatIsMandatory'|translate}}</span>
+              <span ng-show="functionParameterForm.calendarFormat.$touched && functionParameterForm.calendarFormat.$error.required" class="help-block">{{'region.calendarFormatIsMandatory'|translate}}</span>
 
               <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/inputName')" class="help-block">{{error|translate}}</span>
               <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/label')" class="help-block">{{error|translate}}</span>
@@ -277,7 +277,7 @@
               <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/helpText')" class="help-block">{{error|translate}}</span>
               <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/inputWidth')" class="help-block">{{error|translate}}</span>
               <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/inputWidthUnit')" class="help-block">{{error|translate}}</span>
-              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/calenderFormat')" class="help-block">{{error|translate}}</span>
+              <span ng-repeat="error in formError.getErrors('subform/' + index + '/functionParameters/' + $index + '/calendarFormat')" class="help-block">{{error|translate}}</span>
             </div>
           </div>
         </ng-form>

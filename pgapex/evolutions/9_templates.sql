@@ -21,7 +21,7 @@ INSERT INTO pgapex.template (template_id, name) VALUES (20, 'Default detail view
 INSERT INTO pgapex.template (template_id, name) VALUES (21, 'Subregion template');
 INSERT INTO pgapex.template (template_id, name) VALUES (22, 'Link button template');
 INSERT INTO pgapex.template (template_id, name) VALUES (23, 'Report with form links template');
-INSERT INTO pgapex.template (template_id, name) VALUES (24, 'Calender template');
+INSERT INTO pgapex.template (template_id, name) VALUES (24, 'Calendar template');
 INSERT INTO pgapex.template (template_id, name) VALUES (25, 'Combo box template');
 
 
@@ -251,10 +251,10 @@ VALUES (23, '<div><table class="table table-bordered">', '</table>#PAGINATION#</
 '<tbody>', '<tr>', '<td class="cell--fit-content"><a href="#PATH#?#UNIQUE_ID#=#UNIQUE_ID_VALUE#"><span class="glyphicon glyphicon-edit"></span></td>', '<td>#CELL_CONTENT#</td>', '</tr>', '</tbody>',
 '<nav><ul class="pagination">', '</ul></nav>', '<li><a href="#LINK#">&laquo;</a></li>', '<li><a href="#LINK#">&raquo;</a></li>', '<li class="active"><a href="#LINK#">#NUMBER#</a></li>', '<li><a href="#LINK#">#NUMBER#</a></li>');
 
-INSERT INTO pgapex.calender_template (template_ID, calender_input, calender_script)
+INSERT INTO pgapex.calendar_template (template_ID, calendar_input, calendar_script)
 VALUES (24, '<input type="text" id="#NAME#" class="form-control" size="50" placeholder="#ROW_LABEL#" name="#NAME#" value="#VALUE#" style="#BACKGROUND_PROPERTY#; width: #WIDTH##WIDTH_UNIT#" #READ_ONLY#/>', '<script>
                                                                       AnyTime.picker( "#NAME#",
-                                                                          { format: #CALENDER_FORMAT#, firstDOW: 1 } );
+                                                                          { format: #CALENDAR_FORMAT#, firstDOW: 1 } );
                                                                   </script>');
 
 INSERT INTO pgapex.combo_box_template (template_id, combo_box_begin, combo_box_end, option_begin, option_end, combo_box_script)

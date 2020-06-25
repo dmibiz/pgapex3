@@ -93,8 +93,8 @@ class TemplateController extends Controller {
       ->getApiResponse();
   }
 
-  public function getCalenderTemplates(Request $request, Response $response) {
-    return $response->setApiDataAsJson($this->getTemplateModel()->getCalenderTemplates())
+  public function getCalendarTemplates(Request $request, Response $response) {
+    return $response->setApiDataAsJson($this->getTemplateModel()->getCalendarTemplates())
       ->getApiResponse();
   }
 }

@@ -113,9 +113,9 @@ class Template extends Model {
     return $statement->fetchColumn();
   }
 
-  public function getCalenderTemplates() {
+  public function getCalendarTemplates() {
     $connection = $this->getDb()->getConnection();
-    $statement = $connection->prepare('SELECT pgapex.f_template_get_calender_templates()');
+    $statement = $connection->prepare('SELECT pgapex.f_template_get_calendar_templates()');
     $statement->execute();
     return $statement->fetchColumn();
   }

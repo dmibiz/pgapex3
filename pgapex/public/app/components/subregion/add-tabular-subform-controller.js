@@ -41,7 +41,7 @@
       if (functionParameter.fieldType === 'TEXTAREA') { return this.$scope.textareaTemplates; }
       if (functionParameter.fieldType === 'DROP_DOWN') { return this.$scope.dropDownTemplates; }
       if (functionParameter.fieldType === "COMBO_BOX") { return this.$scope.comboBoxTemplates; }
-      if (functionParameter.fieldType === "CALENDER") { return this.$scope.calenderTemplates; }
+      if (functionParameter.fieldType === "CALENDAR") { return this.$scope.calendarTemplates; }
       return [];
     }.bind(this);
     
@@ -171,9 +171,9 @@
     }.bind(this));
   };
 
-  AddTabularSubFormController.prototype.initCalenderTemplates = function() {
-    this.templateService.getCalenderTemplates().then(function (response) {
-      this.$scope.calenderTemplates = response.getDataOrDefault([]);
+  AddTabularSubFormController.prototype.initCalendarTemplates = function() {
+    this.templateService.getCalendarTemplates().then(function (response) {
+      this.$scope.calendarTemplates = response.getDataOrDefault([]);
     }.bind(this));
   };
 

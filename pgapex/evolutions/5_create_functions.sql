@@ -621,17 +621,17 @@ SET search_path = pgapex, public, pg_temp;
 
 ----------
 
-CREATE OR REPLACE FUNCTION pgapex.f_template_get_calender_templates()
+CREATE OR REPLACE FUNCTION pgapex.f_template_get_calendar_templates()
   RETURNS json AS $$
 SELECT COALESCE(JSON_AGG(a), '[]')
   FROM (
     SELECT
       t.template_id AS id
-    , 'calender-template' AS type
+    , 'calendar-template' AS type
     , json_build_object(
         'name', t.name
     ) AS attributes
-    FROM pgapex.calender_template ct
+    FROM pgapex.calendar_template ct
     LEFT JOIN pgapex.template t ON ct.template_id = t.template_id
     ORDER BY t.name
   ) a
@@ -2065,7 +2065,7 @@ BEGIN
   SELECT page_id INTO i_page_id FROM pgapex.region WHERE region_id = i_region_id;
 
   INSERT INTO pgapex.form_field (form_field_id, region_id, field_type_id, list_of_values_id, input_template_id, drop_down_template_id, textarea_template_id,
-                                 combo_box_template_id, calender_template_id,
+                                 combo_box_template_id, calendar_template_id,
                                  field_pre_fill_view_column_name, label, sequence, is_mandatory, is_visible, is_read_only, wysiwyg_editor, default_value, help_text,
                                  function_parameter_type, function_parameter_ordinal_position
   )
@@ -2091,7 +2091,7 @@ BEGIN
     END
   ), (
     CASE
-    WHEN v_field_type_id = 'CALENDER' THEN i_form_field_template_id
+    WHEN v_field_type_id = 'CALENDAR' THEN i_form_field_template_id
     ELSE NULL
     END
   ),
@@ -2137,7 +2137,7 @@ BEGIN
   WHERE sr.subregion_id = i_subregion_id;
 
   INSERT INTO pgapex.form_field (form_field_id, subregion_id, field_type_id, list_of_values_id, input_template_id, drop_down_template_id, textarea_template_id,
-                                 combo_box_template_id, calender_template_id,
+                                 combo_box_template_id, calendar_template_id,
                                  field_pre_fill_view_column_name, label, sequence, is_mandatory, is_visible, is_read_only, wysiwyg_editor, default_value, help_text,
                                  function_parameter_type, function_parameter_ordinal_position
   )
@@ -2163,7 +2163,7 @@ BEGIN
     END
   ), (
     CASE
-    WHEN v_field_type_id = 'CALENDER' THEN i_form_field_template_id
+    WHEN v_field_type_id = 'CALENDAR' THEN i_form_field_template_id
     ELSE NULL
     END
   ),
@@ -2201,13 +2201,13 @@ SET search_path = pgapex, public, pg_temp;
 
 ----------
 
-CREATE OR REPLACE FUNCTION pgapex.f_region_save_calender_format(
-  i_form_field_id pgapex.calender_format.form_field_id%TYPE,
-  v_calender_format pgapex.calender_format.calender_format%TYPE
+CREATE OR REPLACE FUNCTION pgapex.f_region_save_calendar_format(
+  i_form_field_id pgapex.calendar_format.form_field_id%TYPE,
+  v_calendar_format pgapex.calendar_format.calendar_format%TYPE
 )
   RETURNS void AS $$
 BEGIN
-  INSERT INTO pgapex.calender_format (form_field_id, calender_format) VALUES (i_form_field_id, v_calender_format);
+  INSERT INTO pgapex.calendar_format (form_field_id, calendar_format) VALUES (i_form_field_id, v_calendar_format);
 END
 $$ LANGUAGE plpgsql
 SECURITY DEFINER
@@ -2635,7 +2635,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_form_region(
             , 'functionParameters', (SELECT json_agg(ff_agg.ff_obj) FROM (
                                     SELECT json_build_object(
                                       'fieldType', ff.field_type_id
-                                    , 'fieldTemplate', COALESCE(ff.input_template_id, ff.drop_down_template_id, ff.textarea_template_id, ff.combo_box_template_id, ff.calender_template_id)
+                                    , 'fieldTemplate', COALESCE(ff.input_template_id, ff.drop_down_template_id, ff.textarea_template_id, ff.combo_box_template_id, ff.calendar_template_id)
                                     , 'label', ff.label
                                     , 'inputName', pi.name
                                     , 'sequence', ff.sequence
@@ -2679,7 +2679,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_form_region(
                                           'name', lov.label_view_column_name
                                         )
                                       )
-                                    , 'calenderFormat', cf.calender_format
+                                    , 'calendarFormat', cf.calendar_format
                                     , 'width', COALESCE(ffs.width, 100)
                                     , 'widthUnit', COALESCE(ffs.width_unit, '%')
                                     , 'height', ffs.height
@@ -2688,7 +2688,7 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_form_region(
                                     FROM pgapex.form_field ff
                                     LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
-                                    LEFT JOIN pgapex.calender_format cf ON cf.form_field_id = ff.form_field_id
+                                    LEFT JOIN pgapex.calendar_format cf ON cf.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.wysiwyg_editor_settings wes ON wes.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.parameter par ON (par.database_name = a.database_name AND par.schema_name = fr.schema_name AND par.function_name = fr.function_name AND par.parameter_type = ff.function_parameter_type AND par.ordinal_position = ff.function_parameter_ordinal_position)
@@ -2903,7 +2903,7 @@ BEGIN
       'functionParameters', (SELECT json_agg(ff_agg.ff_obj) FROM (
                                     SELECT json_build_object(
                                       'fieldType', ff.field_type_id
-                                    , 'fieldTemplate', COALESCE(ff.input_template_id, ff.drop_down_template_id, ff.textarea_template_id, ff.combo_box_template_id, ff.calender_template_id)
+                                    , 'fieldTemplate', COALESCE(ff.input_template_id, ff.drop_down_template_id, ff.textarea_template_id, ff.combo_box_template_id, ff.calendar_template_id)
                                     , 'label', ff.label
                                     , 'inputName', pi.name
                                     , 'sequence', ff.sequence
@@ -2947,7 +2947,7 @@ BEGIN
                                           'name', lov.label_view_column_name
                                         )
                                       )
-                                    , 'calenderFormat', cf.calender_format
+                                    , 'calendarFormat', cf.calendar_format
                                     , 'width', COALESCE(ffs.width, 100)
                                     , 'widthUnit', COALESCE(ffs.width_unit, '%')
                                     , 'height', ffs.height
@@ -2956,7 +2956,7 @@ BEGIN
                                     FROM pgapex.form_field ff
                                     LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
-                                    LEFT JOIN pgapex.calender_format cf ON cf.form_field_id = ff.form_field_id
+                                    LEFT JOIN pgapex.calendar_format cf ON cf.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.wysiwyg_editor_settings wes ON wes.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.parameter par ON (par.database_name = app.database_name AND par.schema_name = fr.schema_name AND par.function_name = fr.function_name AND par.parameter_type = ff.function_parameter_type AND par.ordinal_position = ff.function_parameter_ordinal_position)

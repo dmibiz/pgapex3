@@ -38,7 +38,7 @@
     this.$scope.textareaTemplates = [];
     this.$scope.dropDownTemplates = [];
     this.$scope.comboBoxTemplates = [];
-    this.$scope.calenderTemplates = [];
+    this.$scope.calendarTemplates = [];
     this.$scope.viewsWithColumns = [];
     this.$scope.functionsWithParameters = [];
     this.$scope.region.formPreFillColumns = [];
@@ -62,7 +62,7 @@
       if (functionParameter.fieldType === 'TEXTAREA') { return this.$scope.textareaTemplates; }
       if (functionParameter.fieldType === 'DROP_DOWN') { return this.$scope.dropDownTemplates; }
       if (functionParameter.fieldType === "COMBO_BOX") { return this.$scope.comboBoxTemplates; }
-      if (functionParameter.fieldType === "CALENDER") { return this.$scope.calenderTemplates; }
+      if (functionParameter.fieldType === "CALENDAR") { return this.$scope.calendarTemplates; }
       return [];
     }.bind(this);
 
@@ -80,7 +80,7 @@
     this.initTextareaTemplates();
     this.initDropDownTemplates();
     this.initComboBoxTemplates();
-    this.initCalenderTemplates();
+    this.initCalendarTemplates();
     this.initViewsWithColumns();
     this.initAvailablePages();
     this.loadRegion();
@@ -144,9 +144,9 @@
     }.bind(this));
   };
 
-  ManageFormRegionController.prototype.initCalenderTemplates = function() {
-    this.templateService.getCalenderTemplates().then(function (response) {
-      this.$scope.calenderTemplates = response.getDataOrDefault([]);
+  ManageFormRegionController.prototype.initCalendarTemplates = function() {
+    this.templateService.getCalendarTemplates().then(function (response) {
+      this.$scope.calendarTemplates = response.getDataOrDefault([]);
     }.bind(this));
   };
 
@@ -278,7 +278,7 @@
           "listOfValuesView": (functionParameter.listOfValuesView) ? functionParameter.listOfValuesView.attributes.name : null,
           "listOfValuesValue": (functionParameter.listOfValuesValue) ? functionParameter.listOfValuesValue.attributes.name : null,
           "listOfValuesLabel": (functionParameter.listOfValuesLabel) ? functionParameter.listOfValuesLabel.attributes.name : null,
-          "calenderFormat": functionParameter.calenderFormat || null,
+          "calendarFormat": functionParameter.calendarFormat || null,
           "width": functionParameter.width || null,
           "widthUnit": functionParameter.widthUnit || null,
           "height": functionParameter.height || null,

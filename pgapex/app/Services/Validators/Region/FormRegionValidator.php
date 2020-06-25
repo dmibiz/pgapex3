@@ -131,7 +131,7 @@ class FormRegionValidator extends RegionValidator {
         $sequences[] = $formField['sequence'];
       }
 
-      if (!in_array($formField['fieldType'], ['TEXT', 'PASSWORD', 'RADIO', 'CHECKBOX', 'DROP_DOWN', 'TEXTAREA', 'COMBO_BOX', 'CALENDER'])) {
+      if (!in_array($formField['fieldType'], ['TEXT', 'PASSWORD', 'RADIO', 'CHECKBOX', 'DROP_DOWN', 'TEXTAREA', 'COMBO_BOX', 'CALENDAR'])) {
         $this->addError('region.fieldTypeIsMandatory', $functionParameterFormPointer . '/fieldType');
       }
 
@@ -153,8 +153,8 @@ class FormRegionValidator extends RegionValidator {
         }
       }
 
-      if ($formField['fieldType'] === 'CALENDER' && (trim($formField['calenderFormat']) === '' || $formField['calenderFormat'] === null)) {
-        $this->addError('region.calenderFormatIsMandatory', $functionParameterFormPointer . '/calenderFormat');
+      if ($formField['fieldType'] === 'CALENDAR' && (trim($formField['calendarFormat']) === '' || $formField['calendarFormat'] === null)) {
+        $this->addError('region.calendarFormatIsMandatory', $functionParameterFormPointer . '/calendarFormat');
       }
 
       if (!in_array($formField['fieldType'], ['RADIO', 'CHECKBOX']) && $formField['isVisible']) {

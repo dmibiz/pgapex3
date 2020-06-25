@@ -89,8 +89,8 @@
     return this.apiService.get('template/combo-box-templates');
   }
 
-  TemplateService.prototype.getCalenderTemplates = function() {
-    return this.apiService.get('template/calender-templates')
+  TemplateService.prototype.getCalendarTemplates = function() {
+    return this.apiService.get('template/calendar-templates')
   }
 
   function init() {

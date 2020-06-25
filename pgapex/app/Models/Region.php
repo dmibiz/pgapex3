@@ -417,7 +417,7 @@ class Region extends Model {
                                                . ':fieldPreFillViewColumnName, :formElementName, :label, :sequence, :isMandatory, :isVisible, :isReadOnly, :wysiwygEditor, :defaultValue, :helpText, '
                                                . ':functionParameterType, :functionParameterOrdinalPosition)');
       $formFieldSizeStatement = $connection->prepare('SELECT pgapex.f_region_save_form_field_size(:formFieldId, :width, :widthUnit, :height, :heightUnit)');
-      $calenderFormatStatement = $connection->prepare('SELECT pgapex.f_region_save_calender_format(:formFieldId, :calenderFormat)');
+      $calendarFormatStatement = $connection->prepare('SELECT pgapex.f_region_save_calendar_format(:formFieldId, :calendarFormat)');
       $wysiwygEditorSettingsStatement = $connection->prepare('SELECT pgapex.f_region_save_wysiwyg_editor_settings(:formFieldId, :menuBar, :statusBar, :browserSpellCheck)');
 
       foreach ($request->getApiAttribute('formFields') as $formField) {
@@ -466,10 +466,10 @@ class Region extends Model {
           $formFieldSizeStatement->execute();
         }
 
-        if ($formField['attributes']['calenderFormat'] !== null) {
-          $calenderFormatStatement->bindValue(':formFieldId',    $formFieldId,                               PDO::PARAM_INT);
-          $calenderFormatStatement->bindValue(':calenderFormat', $formField['attributes']['calenderFormat'], PDO::PARAM_STR);
-          $calenderFormatStatement->execute();
+        if ($formField['attributes']['calendarFormat'] !== null) {
+          $calendarFormatStatement->bindValue(':formFieldId',    $formFieldId,                               PDO::PARAM_INT);
+          $calendarFormatStatement->bindValue(':calendarFormat', $formField['attributes']['calendarFormat'], PDO::PARAM_STR);
+          $calendarFormatStatement->execute();
         }
 
         if ($formField['attributes']['wysiwygEditor'] && $formField['attributes']['fieldType'] == 'TEXTAREA') {
@@ -529,7 +529,7 @@ class Region extends Model {
             $subFormFieldStatement = $connection->prepare('SELECT pgapex.f_region_save_subform_field(:subregionId, :fieldType, :listOfValuesId, :formFieldTemplateId, '
                                                . ':fieldPreFillViewColumnName, :formElementName, :label, :sequence, :isMandatory, :isVisible, :isReadOnly, :wysiwygEditor, :defaultValue, :helpText, '
                                                . ':functionParameterType, :functionParameterOrdinalPosition)');
-            $subFormCalenderFormatStatement = $connection->prepare('SELECT pgapex.f_region_save_calender_format(:formFieldId, :calenderFormat)');
+            $subFormCalendarFormatStatement = $connection->prepare('SELECT pgapex.f_region_save_calendar_format(:formFieldId, :calendarFormat)');
             $subFormFieldSizeStatement = $connection->prepare('SELECT pgapex.f_region_save_form_field_size(:formFieldId, :width, :widthUnit, :height, :heightUnit)');
             $subFormWysiwygEditorSettingsStatement = $connection->prepare('SELECT pgapex.f_region_save_wysiwyg_editor_settings(:formFieldId, :menuBar, :statusBar, :browserSpellCheck)');
 
@@ -578,10 +578,10 @@ class Region extends Model {
                 $subFormFieldSizeStatement->execute();
               }
 
-              if ($subFormField['attributes']['calenderFormat'] !== null) {
-                $subFormCalenderFormatStatement->bindValue(':formFieldId',    $subFormFieldId,                               PDO::PARAM_INT);
-                $subFormCalenderFormatStatement->bindValue(':calenderFormat', $subFormField['attributes']['calenderFormat'], PDO::PARAM_STR);
-                $subFormCalenderFormatStatement->execute();
+              if ($subFormField['attributes']['calendarFormat'] !== null) {
+                $subFormCalendarFormatStatement->bindValue(':formFieldId',    $subFormFieldId,                               PDO::PARAM_INT);
+                $subFormCalendarFormatStatement->bindValue(':calendarFormat', $subFormField['attributes']['calendarFormat'], PDO::PARAM_STR);
+                $subFormCalendarFormatStatement->execute();
               }
 
               if ($subFormField['attributes']['wysiwygEditor']) {

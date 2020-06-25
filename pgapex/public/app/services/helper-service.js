@@ -37,9 +37,9 @@
     });
   };
 
-  HelperService.prototype.calenderFormatInfo = function() {
+  HelperService.prototype.calendarFormatInfo = function() {
     return this.$uibModal.open({
-      templateUrl: "app/partials/helper/calender-format-info-modal.html",
+      templateUrl: "app/partials/helper/calendar-format-info-modal.html",
       controller: ['$scope', '$uibModalInstance', function($scope, $uibModalInstance) {
         $scope.ok = function() {
           $uibModalInstance.close(true);
