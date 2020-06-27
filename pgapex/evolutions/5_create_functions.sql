@@ -2681,15 +2681,17 @@ CREATE OR REPLACE FUNCTION pgapex.f_region_get_form_region(
                                       )
                                     , 'calendarFormat', cf.calendar_format
                                     , 'width', COALESCE(ffs.width, 100)
-                                    , 'widthUnit', COALESCE(ffs.width_unit, '%')
+                                    , 'widthUnit', COALESCE(suw.size_unit_name, '%')
                                     , 'height', ffs.height
-                                    , 'heightUnit', COALESCE(ffs.height_unit, 'px')
+                                    , 'heightUnit', COALESCE(suh.size_unit_name, 'px')
                                     ) ff_obj
                                     FROM pgapex.form_field ff
                                     LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
                                     LEFT JOIN pgapex.calendar_format cf ON cf.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
+                                    LEFT JOIN pgapex.size_unit suw ON suw.size_unit_id = ffs.width_unit_id
+                                    LEFT JOIN pgapex.size_unit suh ON suh.size_unit_id = ffs.height_unit_id
                                     LEFT JOIN pgapex.wysiwyg_editor_settings wes ON wes.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.parameter par ON (par.database_name = a.database_name AND par.schema_name = fr.schema_name AND par.function_name = fr.function_name AND par.parameter_type = ff.function_parameter_type AND par.ordinal_position = ff.function_parameter_ordinal_position)
                                     WHERE ff.region_id = r.region_id
@@ -2949,15 +2951,17 @@ BEGIN
                                       )
                                     , 'calendarFormat', cf.calendar_format
                                     , 'width', COALESCE(ffs.width, 100)
-                                    , 'widthUnit', COALESCE(ffs.width_unit, '%')
+                                    , 'widthUnit', COALESCE(suw.size_unit_name, '%')
                                     , 'height', ffs.height
-                                    , 'heightUnit', COALESCE(ffs.height_unit, 'px')
+                                    , 'heightUnit', COALESCE(suh.size_unit_name, 'px')
                                     ) ff_obj
                                     FROM pgapex.form_field ff
                                     LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
                                     LEFT JOIN pgapex.calendar_format cf ON cf.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
+                                    LEFT JOIN pgapex.size_unit suw ON suw.size_unit_id = ffs.width_unit_id
+                                    LEFT JOIN pgapex.size_unit suh ON suh.size_unit_id = ffs.height_unit_id
                                     LEFT JOIN pgapex.wysiwyg_editor_settings wes ON wes.form_field_id = ff.form_field_id
                                     LEFT JOIN pgapex.parameter par ON (par.database_name = app.database_name AND par.schema_name = fr.schema_name AND par.function_name = fr.function_name AND par.parameter_type = ff.function_parameter_type AND par.ordinal_position = ff.function_parameter_ordinal_position)
                                     WHERE ff.subregion_id = sr.subregion_id
@@ -3451,14 +3455,19 @@ SET search_path = pgapex, public, pg_temp;
 CREATE OR REPLACE FUNCTION pgapex.f_region_save_form_field_size(
     i_form_field_id pgapex.form_field_size.form_field_id%TYPE
   , d_width         pgapex.form_field_size.width%TYPE
-  , v_width_unit    pgapex.form_field_size.width_unit%TYPE
+  , v_width_unit    pgapex.size_unit.size_unit_name%TYPE
   , d_height        pgapex.form_field_size.height%TYPE
-  , v_height_unit   pgapex.form_field_size.height_unit%TYPE
+  , v_height_unit   pgapex.size_unit.size_unit_name%TYPE
 )
 RETURNS void AS $$
 BEGIN
-  INSERT INTO pgapex.form_field_size(form_field_id, width, width_unit, height, height_unit)
-  VALUES (i_form_field_id, d_width, v_width_unit, d_height, v_height_unit);
+  INSERT INTO pgapex.form_field_size(form_field_id, width, width_unit_id, height, height_unit_id)
+  VALUES (
+    i_form_field_id, 
+    d_width, 
+    (SELECT size_unit_id FROM pgapex.size_unit WHERE size_unit_name = v_width_unit), 
+    d_height, 
+    (SELECT size_unit_id FROM pgapex.size_unit WHERE size_unit_name = v_height_unit));
 END
 $$ LANGUAGE plpgsql
 SECURITY DEFINER

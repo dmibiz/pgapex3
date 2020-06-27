@@ -1993,7 +1993,7 @@ BEGIN
       it.template AS input_template, tt.template AS textarea_template, tt.wysiwyg_editor_script,
       ddt.drop_down_begin, ddt.drop_down_end, ddt.option_begin, ddt.option_end,
       cbt.combo_box_begin, cbt.combo_box_end, cbt.option_begin AS combo_box_option_begin, cbt.option_end AS combo_box_option_end, cbt.combo_box_script,
-      ct.calendar_input, ct.calendar_script, cf.calendar_format, ffs.width, ffs.width_unit, ffs.height, ffs.height_unit, wes.menu_bar, wes.status_bar, wes.browser_spellcheck
+      ct.calendar_input, ct.calendar_script, cf.calendar_format, ffs.width, suw.size_unit_name AS width_unit, ffs.height, suh.size_unit_name AS height_unit, wes.menu_bar, wes.status_bar, wes.browser_spellcheck
     FROM pgapex.form_field ff
       LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
       LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
@@ -2004,6 +2004,8 @@ BEGIN
       LEFT JOIN pgapex.calendar_template ct ON ct.template_id = ff.calendar_template_id
       LEFT JOIN pgapex.calendar_format cf ON cf.form_field_id = ff.form_field_id
       LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
+      LEFT JOIN pgapex.size_unit suw ON suw.size_unit_id = ffs.width_unit_id
+      LEFT JOIN pgapex.size_unit suh ON suh.size_unit_id = ffs.height_unit_id
       LEFT JOIN pgapex.wysiwyg_editor_settings wes ON wes.form_field_id = ff.form_field_id
     WHERE ff.region_id = i_region_id
     ORDER BY ff.sequence ASC
@@ -2272,7 +2274,7 @@ BEGIN
       it.template AS input_template, tt.template AS textarea_template, tt.wysiwyg_editor_script,
       ddt.drop_down_begin, ddt.drop_down_end, ddt.option_begin, ddt.option_end,
       cbt.combo_box_begin, cbt.combo_box_end, cbt.option_begin AS combo_box_option_begin, cbt.option_end AS combo_box_option_end, cbt.combo_box_script,
-      ct.calendar_input, ct.calendar_script, cf.calendar_format, ffs.width, ffs.width_unit, ffs.height, ffs.height_unit, wes.menu_bar, wes.status_bar, wes.browser_spellcheck
+      ct.calendar_input, ct.calendar_script, cf.calendar_format, ffs.width, suw.size_unit_name AS width_unit, ffs.height, suh.size_unit_name AS height_unit, wes.menu_bar, wes.status_bar, wes.browser_spellcheck
     FROM pgapex.form_field ff
       LEFT JOIN pgapex.list_of_values lov ON lov.list_of_values_id = ff.list_of_values_id
       LEFT JOIN pgapex.page_item pi ON pi.form_field_id = ff.form_field_id
@@ -2283,6 +2285,8 @@ BEGIN
       LEFT JOIN pgapex.calendar_template ct ON ct.template_id = ff.calendar_template_id
       LEFT JOIN pgapex.calendar_format cf ON cf.form_field_id = ff.form_field_id
       LEFT JOIN pgapex.form_field_size ffs ON ffs.form_field_id = ff.form_field_id
+      LEFT JOIN pgapex.size_unit suw ON suw.size_unit_id = ffs.width_unit_id
+      LEFT JOIN pgapex.size_unit suh ON suh.size_unit_id = ffs.height_unit_id
       LEFT JOIN pgapex.wysiwyg_editor_settings wes ON wes.form_field_id = ff.form_field_id
     WHERE ff.subregion_id = i_subregion_id
     ORDER BY ff.sequence ASC

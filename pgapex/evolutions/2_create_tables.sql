@@ -778,9 +778,15 @@ CREATE TABLE pgapex.calendar_format(
 CREATE TABLE pgapex.form_field_size(
 	form_field_ID INTEGER NOT NULL,
 	width DECIMAL NOT NULL,
-	width_unit VARCHAR(10) NOT NULL,
+	width_unit_ID INTEGER NOT NULL,
 	height DECIMAL,
-	height_unit VARCHAR(10)
+	height_unit_ID INTEGER
+);
+
+CREATE TABLE pgapex.size_unit(
+	size_unit_ID INTEGER NOT NULL,
+	size_unit_name VARCHAR(255) NOT NULL,
+	CONSTRAINT pk_size_unit PRIMARY kEY (size_unit_ID)
 );
 
 CREATE TABLE pgapex.wysiwyg_editor_settings(
@@ -886,5 +892,7 @@ ALTER TABLE pgapex.detailview_column_link ADD CONSTRAINT fk_detailview_column_li
 ALTER TABLE pgapex.report_form_template ADD CONSTRAINT fk_report_form_template_template_id FOREIGN KEY (template_ID) REFERENCES pgapex.template (template_ID) ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.calendar_format ADD CONSTRAINT fk_calendar_format_form_field_id FOREIGN KEY (form_field_ID) REFERENCES pgapex.form_field (form_field_ID) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.form_field_size ADD CONSTRAINT fk_form_field_size_form_field_id FOREIGN KEY (form_field_ID) REFERENCES pgapex.form_field (form_field_ID) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE pgapex.form_field_size ADD CONSTRAINT fk_form_field_size_width_unit FOREIGN KEY (width_unit_ID) REFERENCES pgapex.size_unit (size_unit_ID) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE pgapex.form_field_size ADD CONSTRAINT fk_form_field_size_height_unit FOREIGN KEY (height_unit_ID) REFERENCES pgapex.size_unit (size_unit_ID) ON DELETE NO ACTION ON UPDATE NO ACTION;
 ALTER TABLE pgapex.wysiwyg_editor_settings ADD CONSTRAINT fk_wysiwyg_editor_settings_form_field_id FOREIGN KEY (form_field_ID) REFERENCES pgapex.form_field (form_field_ID) ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE pgapex.tabularform_subregion ADD CONSTRAINT fk_tabularform_subregion_subregion_id FOREIGN KEY (subregion_ID) REFERENCES pgapex.subregion (subregion_ID) ON DELETE CASCADE ON UPDATE NO ACTION;

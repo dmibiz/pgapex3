@@ -40,3 +40,7 @@ INSERT INTO pgapex.input_template_type (input_template_type_id) VALUES ('TEXT');
 INSERT INTO pgapex.input_template_type (input_template_type_id) VALUES ('PASSWORD');
 INSERT INTO pgapex.input_template_type (input_template_type_id) VALUES ('RADIO');
 INSERT INTO pgapex.input_template_type (input_template_type_id) VALUES ('CHECKBOX');
+
+INSERT INTO pgapex.size_unit (size_unit_id, size_unit_name) VALUES (1, 'px');
+INSERT INTO pgapex.size_unit (size_unit_id, size_unit_name) VALUES (2, '%');
+INSERT INTO pgapex.size_unit (size_unit_id, size_unit_name) VALUES (3, 'rows');
