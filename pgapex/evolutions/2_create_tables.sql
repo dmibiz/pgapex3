@@ -772,7 +772,8 @@ CREATE TABLE pgapex.tabular_subform_template (
 
 CREATE TABLE pgapex.calendar_format(
 	form_field_ID INTEGER NOT NULL,
-	calendar_format TEXT NOT NULL
+	calendar_format TEXT NOT NULL,
+	CONSTRAINT pk_calendar_format PRIMARY KEY (form_field_ID)
 );
 
 CREATE TABLE pgapex.form_field_size(
@@ -780,7 +781,8 @@ CREATE TABLE pgapex.form_field_size(
 	width DECIMAL NOT NULL,
 	width_unit_ID INTEGER NOT NULL,
 	height DECIMAL,
-	height_unit_ID INTEGER
+	height_unit_ID INTEGER,
+	CONSTRAINT pk_form_field_size_ID PRIMARY KEY (form_field_ID)
 );
 
 CREATE TABLE pgapex.size_unit(
@@ -793,7 +795,8 @@ CREATE TABLE pgapex.wysiwyg_editor_settings(
 	form_field_ID INTEGER NOT NULL,
 	menu_bar BOOLEAN DEFAULT FALSE NOT NULL,
 	status_bar BOOLEAN DEFAULT FALSE NOT NULL,
-	browser_spellcheck BOOLEAN DEFAULT FALSE NOT NULL
+	browser_spellcheck BOOLEAN DEFAULT FALSE NOT NULL,
+	CONSTRAINT pk_wysiwyg_editor_settings PRIMARY KEY (form_field_ID)
 );
 
 
